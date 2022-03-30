@@ -1,0 +1,16 @@
+C:\Programms\GameLife\bin\Debug\netcoreapp3.0\GameLife.exe
+C:\Programms\GameLife\bin\Debug\netcoreapp3.0\GameLife.deps.json
+C:\Programms\GameLife\bin\Debug\netcoreapp3.0\GameLife.runtimeconfig.json
+C:\Programms\GameLife\bin\Debug\netcoreapp3.0\GameLife.runtimeconfig.dev.json
+C:\Programms\GameLife\bin\Debug\netcoreapp3.0\GameLife.dll
+C:\Programms\GameLife\bin\Debug\netcoreapp3.0\GameLife.pdb
+C:\Programms\GameLife\bin\Debug\netcoreapp3.0\Newtonsoft.Json.dll
+C:\Programms\GameLife\obj\Debug\netcoreapp3.0\GameLife.csproj.AssemblyReference.cache
+C:\Programms\GameLife\obj\Debug\netcoreapp3.0\GameLife.GeneratedMSBuildEditorConfig.editorconfig
+C:\Programms\GameLife\obj\Debug\netcoreapp3.0\GameLife.AssemblyInfoInputs.cache
+C:\Programms\GameLife\obj\Debug\netcoreapp3.0\GameLife.AssemblyInfo.cs
+C:\Programms\GameLife\obj\Debug\netcoreapp3.0\GameLife.csproj.CoreCompileInputs.cache
+C:\Programms\GameLife\obj\Debug\netcoreapp3.0\GameLife.csproj.CopyComplete
+C:\Programms\GameLife\obj\Debug\netcoreapp3.0\GameLife.dll
+C:\Programms\GameLife\obj\Debug\netcoreapp3.0\GameLife.pdb
+C:\Programms\GameLife\obj\Debug\netcoreapp3.0\GameLife.genruntimeconfig.cache
