@@ -1,0 +1,10 @@
+C:\Users\123\source\repos\Life\Life\bin\Debug\netcoreapp3.0\GameOfLife.exe
+C:\Users\123\source\repos\Life\Life\bin\Debug\netcoreapp3.0\GameOfLife.deps.json
+C:\Users\123\source\repos\Life\Life\bin\Debug\netcoreapp3.0\GameOfLife.runtimeconfig.json
+C:\Users\123\source\repos\Life\Life\bin\Debug\netcoreapp3.0\GameOfLife.runtimeconfig.dev.json
+C:\Users\123\source\repos\Life\Life\bin\Debug\netcoreapp3.0\GameOfLife.dll
+C:\Users\123\source\repos\Life\Life\bin\Debug\netcoreapp3.0\GameOfLife.pdb
+C:\Users\123\source\repos\Life\Life\obj\Debug\netcoreapp3.0\GameOfLife.AssemblyInfoInputs.cache
+C:\Users\123\source\repos\Life\Life\obj\Debug\netcoreapp3.0\GameOfLife.AssemblyInfo.cs
+C:\Users\123\source\repos\Life\Life\obj\Debug\netcoreapp3.0\GameOfLife.dll
+C:\Users\123\source\repos\Life\Life\obj\Debug\netcoreapp3.0\GameOfLife.pdb
