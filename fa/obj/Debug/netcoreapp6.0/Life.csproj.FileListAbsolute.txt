@@ -1,0 +1,15 @@
+/home/semen/МИПИС/mod-lab04-life/fa/bin/Debug/netcoreapp6.0/Life
+/home/semen/МИПИС/mod-lab04-life/fa/bin/Debug/netcoreapp6.0/Life.deps.json
+/home/semen/МИПИС/mod-lab04-life/fa/bin/Debug/netcoreapp6.0/Life.runtimeconfig.json
+/home/semen/МИПИС/mod-lab04-life/fa/bin/Debug/netcoreapp6.0/Life.dll
+/home/semen/МИПИС/mod-lab04-life/fa/bin/Debug/netcoreapp6.0/Life.pdb
+/home/semen/МИПИС/mod-lab04-life/fa/obj/Debug/netcoreapp6.0/Life.csproj.AssemblyReference.cache
+/home/semen/МИПИС/mod-lab04-life/fa/obj/Debug/netcoreapp6.0/Life.GeneratedMSBuildEditorConfig.editorconfig
+/home/semen/МИПИС/mod-lab04-life/fa/obj/Debug/netcoreapp6.0/Life.AssemblyInfoInputs.cache
+/home/semen/МИПИС/mod-lab04-life/fa/obj/Debug/netcoreapp6.0/Life.AssemblyInfo.cs
+/home/semen/МИПИС/mod-lab04-life/fa/obj/Debug/netcoreapp6.0/Life.csproj.CoreCompileInputs.cache
+/home/semen/МИПИС/mod-lab04-life/fa/obj/Debug/netcoreapp6.0/Life.dll
+/home/semen/МИПИС/mod-lab04-life/fa/obj/Debug/netcoreapp6.0/refint/Life.dll
+/home/semen/МИПИС/mod-lab04-life/fa/obj/Debug/netcoreapp6.0/Life.pdb
+/home/semen/МИПИС/mod-lab04-life/fa/obj/Debug/netcoreapp6.0/Life.genruntimeconfig.cache
+/home/semen/МИПИС/mod-lab04-life/fa/obj/Debug/netcoreapp6.0/ref/Life.dll
