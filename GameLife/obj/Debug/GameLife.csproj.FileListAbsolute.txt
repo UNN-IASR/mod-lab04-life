@@ -1,0 +1,16 @@
+C:\Users\USER\source\repos\GameLife\GameLife\bin\Debug\GameLife.exe.config
+C:\Users\USER\source\repos\GameLife\GameLife\bin\Debug\GameLife.exe
+C:\Users\USER\source\repos\GameLife\GameLife\bin\Debug\GameLife.pdb
+C:\Users\USER\source\repos\GameLife\GameLife\obj\Debug\GameLife.csproj.AssemblyReference.cache
+C:\Users\USER\source\repos\GameLife\GameLife\obj\Debug\GameLife.csproj.SuggestedBindingRedirects.cache
+C:\Users\USER\source\repos\GameLife\GameLife\obj\Debug\GameLife.csproj.CoreCompileInputs.cache
+C:\Users\USER\source\repos\GameLife\GameLife\obj\Debug\GameLife.exe
+C:\Users\USER\source\repos\GameLife\GameLife\obj\Debug\GameLife.pdb
+C:\Users\masli\source\repos\GameLife\GameLife\bin\Debug\GameLife.exe.config
+C:\Users\masli\source\repos\GameLife\GameLife\bin\Debug\GameLife.exe
+C:\Users\masli\source\repos\GameLife\GameLife\bin\Debug\GameLife.pdb
+C:\Users\masli\source\repos\GameLife\GameLife\obj\Debug\GameLife.csproj.AssemblyReference.cache
+C:\Users\masli\source\repos\GameLife\GameLife\obj\Debug\GameLife.csproj.SuggestedBindingRedirects.cache
+C:\Users\masli\source\repos\GameLife\GameLife\obj\Debug\GameLife.csproj.CoreCompileInputs.cache
+C:\Users\masli\source\repos\GameLife\GameLife\obj\Debug\GameLife.exe
+C:\Users\masli\source\repos\GameLife\GameLife\obj\Debug\GameLife.pdb
