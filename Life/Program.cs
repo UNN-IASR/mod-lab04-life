@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.IO;
 
 namespace cli_life
 {
@@ -43,9 +44,42 @@ namespace cli_life
             for (int x = 0; x < Columns; x++)
                 for (int y = 0; y < Rows; y++)
                     Cells[x, y] = new Cell();
-
             ConnectNeighbors();
-            Randomize(liveDensity);
+            Console.WriteLine("Do you want to load? 1-yes,2-no");
+            string a = Console.ReadLine();
+            if (a == "1")
+            {
+                string adress;
+                adress = Console.ReadLine();    
+                using (StreamReader sr = File.OpenText(adress))
+                {
+                    int i = 0;
+                    int j = 0;
+                    while (sr.Peek() != -1)
+                    {
+                        char c = (char)sr.Read();
+                        if (c == ' ')
+                        {
+                            Cells[i, j].IsAlive = false;
+                            i++;
+                        }
+                        else if (c == '*')
+                        {
+                            Cells[i, j].IsAlive = true;
+                            i++;
+                        }
+                        else if (c == '\n')
+                        {
+                            j++;
+                            i = 0;
+                        }
+                            
+
+                    }
+                }
+            }
+            else
+                Randomize(liveDensity);
         }
 
         readonly Random rand = new Random();
@@ -89,43 +123,124 @@ namespace cli_life
     class Program
     {
         static Board board;
-        static private void Reset()
+        static private int Reset()
         {
+            string[] setting = new string[3];
+            string path = "settings.txt";
+            using (StreamReader reader = new StreamReader(path))
+            {
+                int i = 0;
+                string? line;
+                while (true)
+                {
+                    line = reader.ReadLine();
+                    if (line == null)
+                        break;
+                    setting[i] = line;
+                    i++;
+                }
+            }
             board = new Board(
-                width: 50,
-                height: 20,
+                width: Int32.Parse(setting[0]),
+                height: Int32.Parse(setting[1]),
                 cellSize: 1,
                 liveDensity: 0.5);
+            int gens = Int32.Parse(setting[2]);
+            return gens;
         }
         static void Render()
         {
+            string path = "state.txt";
+            using (StreamWriter writer = new StreamWriter(path, false))
+            {
+                writer.Write(string.Empty);
+            }
             for (int row = 0; row < board.Rows; row++)
             {
+
                 for (int col = 0; col < board.Columns; col++)   
                 {
                     var cell = board.Cells[col, row];
                     if (cell.IsAlive)
                     {
+                        using (StreamWriter writer = new StreamWriter(path, true))
+                        {
+                            writer.Write('*');
+                        }
                         Console.Write('*');
                     }
                     else
                     {
+                        using (StreamWriter writer = new StreamWriter(path, true))
+                        {
+                            writer.Write(' ');
+                        }
                         Console.Write(' ');
                     }
+                }
+                using (StreamWriter writer = new StreamWriter(path, true))
+                {
+                    writer.Write('\n');
                 }
                 Console.Write('\n');
             }
         }
+        static int Alive()
+        {
+            int cells_alive = 0;
+            for (int row = 0; row < board.Rows; row++)
+            {
+
+                for (int col = 0; col < board.Columns; col++)
+                {
+                    var cell = board.Cells[col, row];
+                    if (cell.IsAlive)
+                    {
+                       cells_alive++;
+                    }
+                }
+            }
+            return cells_alive;
+        }
+        static int Badya()
+        {
+            int figures = 0;
+            for (int row = 0; row < board.Rows - 2; row++)
+            {
+
+                for (int col = 1; col < board.Columns - 1; col++)
+                {
+                    var cell = board.Cells[col, row];
+                    if (cell.IsAlive)
+                    {
+                        if(board.Cells[col - 1,row + 1].IsAlive && board.Cells[col + 1, row + 1].IsAlive && board.Cells[col, row + 2].IsAlive && board.Cells[col, row + 1].IsAlive == false)
+                        {
+                            figures++;
+                        }
+                    }
+                }
+            }
+            return figures;
+        }
         static void Main(string[] args)
         {
-            Reset();
-            while(true)
+         
+            int gens = Reset();
+            int last_Alive = Alive();
+            int count = 0;
+            for(int i = 0; i < gens; i++)
             {
                 Console.Clear();
                 Render();
                 board.Advance();
                 Thread.Sleep(1000);
+                if (Alive() != last_Alive)
+                    count++;
+                last_Alive = Alive();
             }
+            Console.WriteLine($"Alive cells: {Alive()}");
+            Console.WriteLine($"How many badya's: {Badya()}");
+            Console.WriteLine($"How many gens to statatic: {count}");
         }
     }
 }
