@@ -1,0 +1,7 @@
+{
+  "Width": 20,
+  "Height": 20,
+  "cellSize": 1,
+  "liveDensity": 0.1,
+  "stepsNeeded": 10
+}
