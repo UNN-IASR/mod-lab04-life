@@ -1,0 +1,2 @@
+C:\Users\Makskyreer\Desktop\mod-lab04-life-b34\Tests\UnitTestProject1\obj\Debug\UnitTestProject1.csproj.AssemblyReference.cache
+C:\Users\Makskyreer\Desktop\mod-lab04-life-b34\Tests\UnitTestProject1\obj\Debug\UnitTestProject1.csproj.CoreCompileInputs.cache
