@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,8 +35,10 @@ namespace cli_life
         public int Rows { get { return Cells.GetLength(1); } }
         public int Width { get { return Columns * CellSize; } }
         public int Height { get { return Rows * CellSize; } }
+        public int option;
+        public static string filePath = "D:\\projects\\МИПиС\\test1.txt";
 
-        public Board(int width, int height, int cellSize, double liveDensity = .1)
+        public Board(int width, int height, int cellSize, double liveDensity = .1, int option = 1)
         {
             CellSize = cellSize;
 
@@ -45,7 +48,15 @@ namespace cli_life
                     Cells[x, y] = new Cell();
 
             ConnectNeighbors();
-            Randomize(liveDensity);
+            switch (option)
+            {
+                case 1:
+                    Randomize(liveDensity);
+                    break;
+                case 2:
+                    ReadFile();
+                    break;
+            }
         }
 
         readonly Random rand = new Random();
@@ -53,6 +64,38 @@ namespace cli_life
         {
             foreach (var cell in Cells)
                 cell.IsAlive = rand.NextDouble() < liveDensity;
+        }
+        public void ReadFile()
+        {
+            var list = new List<string>();           
+            string line;
+            StreamReader sr = new StreamReader(filePath);
+            line = sr.ReadLine();
+            int colLength = line.Length;            
+            list.Add(line);
+            int rowLength = 1;
+            while (line != null)
+            {
+                line = sr.ReadLine();
+                list.Add(line);
+                rowLength++;
+            }
+            sr.Close();
+            for (int row = 0; row < rowLength-1; row++)
+            {
+                for (int col = 0; col < colLength; col++)
+                {
+                    var simb = list[row][col];
+                    if (simb == '*')
+                    {
+                        Cells[col, row].IsAlive = true;                    
+                    }
+                    else
+                    {
+                        Cells[col, row].IsAlive = false;                  
+                    }
+                }          
+            }
         }
 
         public void Advance()
@@ -86,46 +129,85 @@ namespace cli_life
             }
         }
     }
-    class Program
+    public class Program
     {
+        public static int numberOfAlive;
         static Board board;
         static private void Reset()
         {
             board = new Board(
-                width: 50,
-                height: 20,
-                cellSize: 1,
-                liveDensity: 0.5);
+                width: Settings.width,
+                height: Settings.height,
+                cellSize: Settings.cellSize,
+                liveDensity: Settings.liveDensity,
+                option: Settings.option);
         }
         static void Render()
         {
+            numberOfAlive = 0;
+            string filePath = "D:\\projects\\МИПиС\\file.txt";
+            FileStream fileStream = File.Open(filePath, FileMode.Create);
+            StreamWriter output = new StreamWriter(fileStream);
+            string text = "";
             for (int row = 0; row < board.Rows; row++)
             {
-                for (int col = 0; col < board.Columns; col++)   
+                for (int col = 0; col < board.Columns; col++)
                 {
                     var cell = board.Cells[col, row];
                     if (cell.IsAlive)
                     {
                         Console.Write('*');
+                        text += '*';
+                        numberOfAlive++;
                     }
                     else
                     {
                         Console.Write(' ');
+                        text += ' ';
                     }
                 }
                 Console.Write('\n');
+                text += '\n';
             }
+            output.Write(text);
+            output.Close();
         }
-        static void Main(string[] args)
+
+       
+        public static void Main(string[] args)
         {
+            int test = 5;
+            int[] Results = { 12, 17, 19, 8, 28 };
+            switch (test)
+            {
+                case 1:
+                    Board.filePath = "D:\\projects\\МИПиС\\test1.txt";
+                    break;
+                case 2:
+                    Board.filePath = "D:\\projects\\МИПиС\\test2.txt";
+                    break;
+                case 3:
+                    Board.filePath = "D:\\projects\\МИПиС\\test3.txt";
+                    break;
+                case 4:
+                    Board.filePath = "D:\\projects\\МИПиС\\test4.txt";
+                    break;
+                case 5:
+                    Board.filePath = "D:\\projects\\МИПиС\\test5.txt";
+                    break;
+            }
+            
             Reset();
-            while(true)
+            for (int i = 0; i < 10; i++)
             {
                 Console.Clear();
                 Render();
                 board.Advance();
                 Thread.Sleep(1000);
             }
+
+            bool result = numberOfAlive == Results[test-1];
+            Console.WriteLine(result);
         }
     }
 }
