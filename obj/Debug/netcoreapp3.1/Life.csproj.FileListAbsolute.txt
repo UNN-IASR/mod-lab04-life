@@ -1,0 +1,16 @@
+D:\Life\bin\Debug\netcoreapp3.1\Life.exe
+D:\Life\bin\Debug\netcoreapp3.1\Life.deps.json
+D:\Life\bin\Debug\netcoreapp3.1\Life.runtimeconfig.json
+D:\Life\bin\Debug\netcoreapp3.1\Life.runtimeconfig.dev.json
+D:\Life\bin\Debug\netcoreapp3.1\Life.dll
+D:\Life\bin\Debug\netcoreapp3.1\Life.pdb
+D:\Life\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+D:\Life\obj\Debug\netcoreapp3.1\Life.csproj.AssemblyReference.cache
+D:\Life\obj\Debug\netcoreapp3.1\Life.GeneratedMSBuildEditorConfig.editorconfig
+D:\Life\obj\Debug\netcoreapp3.1\Life.AssemblyInfoInputs.cache
+D:\Life\obj\Debug\netcoreapp3.1\Life.AssemblyInfo.cs
+D:\Life\obj\Debug\netcoreapp3.1\Life.csproj.CoreCompileInputs.cache
+D:\Life\obj\Debug\netcoreapp3.1\Life.csproj.CopyComplete
+D:\Life\obj\Debug\netcoreapp3.1\Life.dll
+D:\Life\obj\Debug\netcoreapp3.1\Life.pdb
+D:\Life\obj\Debug\netcoreapp3.1\Life.genruntimeconfig.cache
