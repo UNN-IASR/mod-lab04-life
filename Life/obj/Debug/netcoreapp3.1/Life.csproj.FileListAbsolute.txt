@@ -1,0 +1,14 @@
+C:\Users\123\source\repos\LifeK\Life\Life\bin\Debug\netcoreapp3.1\Life.exe
+C:\Users\123\source\repos\LifeK\Life\Life\bin\Debug\netcoreapp3.1\Life.deps.json
+C:\Users\123\source\repos\LifeK\Life\Life\bin\Debug\netcoreapp3.1\Life.runtimeconfig.json
+C:\Users\123\source\repos\LifeK\Life\Life\bin\Debug\netcoreapp3.1\Life.runtimeconfig.dev.json
+C:\Users\123\source\repos\LifeK\Life\Life\bin\Debug\netcoreapp3.1\Life.dll
+C:\Users\123\source\repos\LifeK\Life\Life\bin\Debug\netcoreapp3.1\Life.pdb
+C:\Users\123\source\repos\LifeK\Life\Life\obj\Debug\netcoreapp3.1\Life.csproj.AssemblyReference.cache
+C:\Users\123\source\repos\LifeK\Life\Life\obj\Debug\netcoreapp3.1\Life.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\123\source\repos\LifeK\Life\Life\obj\Debug\netcoreapp3.1\Life.AssemblyInfoInputs.cache
+C:\Users\123\source\repos\LifeK\Life\Life\obj\Debug\netcoreapp3.1\Life.AssemblyInfo.cs
+C:\Users\123\source\repos\LifeK\Life\Life\obj\Debug\netcoreapp3.1\Life.csproj.CoreCompileInputs.cache
+C:\Users\123\source\repos\LifeK\Life\Life\obj\Debug\netcoreapp3.1\Life.dll
+C:\Users\123\source\repos\LifeK\Life\Life\obj\Debug\netcoreapp3.1\Life.pdb
+C:\Users\123\source\repos\LifeK\Life\Life\obj\Debug\netcoreapp3.1\Life.genruntimeconfig.cache
