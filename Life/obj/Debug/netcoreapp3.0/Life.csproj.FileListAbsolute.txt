@@ -1,0 +1,13 @@
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/bin/Debug/netcoreapp3.0/Life.deps.json
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/bin/Debug/netcoreapp3.0/Life.runtimeconfig.json
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/bin/Debug/netcoreapp3.0/Life.runtimeconfig.dev.json
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/bin/Debug/netcoreapp3.0/Life.dll
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/bin/Debug/netcoreapp3.0/Life.pdb
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/obj/Debug/netcoreapp3.0/Life.csproj.AssemblyReference.cache
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/obj/Debug/netcoreapp3.0/Life.GeneratedMSBuildEditorConfig.editorconfig
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/obj/Debug/netcoreapp3.0/Life.AssemblyInfoInputs.cache
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/obj/Debug/netcoreapp3.0/Life.AssemblyInfo.cs
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/obj/Debug/netcoreapp3.0/Life.csproj.CoreCompileInputs.cache
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/obj/Debug/netcoreapp3.0/Life.dll
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/obj/Debug/netcoreapp3.0/Life.pdb
+/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/obj/Debug/netcoreapp3.0/Life.genruntimeconfig.cache

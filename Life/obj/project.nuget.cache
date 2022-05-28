@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "+/WJswpituF6xcccwVyoqrCoZ8GFIj6pcaK4QoQYBwGs/bnC+aD2loWfgHwzlMvDXA0n0IdI/CTNt6st5frY7A==",
+  "success": true,
+  "projectFilePath": "/Users/nikolajoverin/Desktop/alinaoverina/my_projects/mod-lab00-training/mod-lab04-life/Life/Life.csproj",
+  "expectedPackageFiles": [
+    "/Users/nikolajoverin/.nuget/packages/microsoft.netcore.app.ref/3.0.0/microsoft.netcore.app.ref.3.0.0.nupkg.sha512",
+    "/Users/nikolajoverin/.nuget/packages/microsoft.aspnetcore.app.ref/3.0.1/microsoft.aspnetcore.app.ref.3.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
