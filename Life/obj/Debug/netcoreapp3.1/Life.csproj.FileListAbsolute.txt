@@ -1,0 +1,13 @@
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\bin\Debug\netcoreapp3.1\Life.exe
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\bin\Debug\netcoreapp3.1\Life.deps.json
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\bin\Debug\netcoreapp3.1\Life.runtimeconfig.json
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\bin\Debug\netcoreapp3.1\Life.runtimeconfig.dev.json
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\bin\Debug\netcoreapp3.1\Life.dll
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\bin\Debug\netcoreapp3.1\Life.pdb
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\obj\Debug\netcoreapp3.1\Life.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\obj\Debug\netcoreapp3.1\Life.AssemblyInfoInputs.cache
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\obj\Debug\netcoreapp3.1\Life.AssemblyInfo.cs
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\obj\Debug\netcoreapp3.1\Life.csproj.CoreCompileInputs.cache
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\obj\Debug\netcoreapp3.1\Life.dll
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\obj\Debug\netcoreapp3.1\Life.pdb
+C:\Users\Владимир\source\repos\mod-lab04-life\Life\obj\Debug\netcoreapp3.1\Life.genruntimeconfig.cache
