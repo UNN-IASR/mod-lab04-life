@@ -180,7 +180,6 @@ namespace cli_life
             { 
                 for (int col = 0; col < board.Columns; col++)
                 {
-                    var cell = board.Cells[col, row];
                     Cell cell = board.Cells[col, row];
                     if (cell.IsAlive) {
                         Console.Write('*');
