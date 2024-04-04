@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
 using Newtonsoft.Json;
+using System.Xml.Schema;
 
 namespace cli_life
 {
@@ -50,6 +51,21 @@ namespace cli_life
             Randomize(liveDensity);
         }
 
+        public Board(int width, int height, int cellSize, bool[,] gameStateArray)
+        {
+            CellSize = cellSize;
+
+            Cells = new Cell[width / cellSize, height / cellSize];
+            for (int x = 0; x < Columns; x++)
+                for (int y = 0; y < Rows; y++)
+                {
+                    Cells[x, y] = new Cell();
+                    Cells[x, y].IsAlive = gameStateArray[x, y];
+                }     
+
+            ConnectNeighbors();
+        }
+
         readonly Random rand = new Random();
         public void Randomize(double liveDensity)
         {
@@ -87,45 +103,6 @@ namespace cli_life
                 }
             }
         }
-        public BoardState GetCurrentState()
-        {
-            var state = new BoardState(Columns, Rows);
-            for (int x = 0; x < Columns; x++)
-            {
-                for (int y = 0; y < Rows; y++)
-                {
-                    state.CellStates[x, y] = new CellState { IsAlive = Cells[x, y].IsAlive };
-                }
-            }
-            return state;
-        }
-
-        public void SetState(BoardState state)
-        {
-            for (int x = 0; x < Columns; x++)
-            {
-                for (int y = 0; y < Rows; y++)
-                {
-                    Cells[x, y].IsAlive = state.CellStates[x, y].IsAlive;
-                }
-            }
-        }
-
-    }
-
-    public class BoardState
-    {
-        public CellState[,] CellStates { get; set; }
-
-        public BoardState(int width, int height)
-        {
-            CellStates = new CellState[width, height];
-        }
-    }
-
-    public class CellState
-    {
-        public bool IsAlive { get; set; }
     }
 
     public class Settings
@@ -136,10 +113,59 @@ namespace cli_life
         public double LiveDensity { get; set; }
     }
 
-    public class GameState
+    public class FileHandler
     {
-        public Settings Settings { get; set; }
-        public BoardState BoardState { get; set; }
+        public static void SaveToFile(string filePath, Board board, Settings settings)
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                writer.WriteLine($"{settings.Width} {settings.Height} {settings.CellSize} {settings.LiveDensity}");
+
+                for (int row = 0; row < board.Rows; row++)
+                {
+                    for (int col = 0; col < board.Columns; col++)
+                    {
+                        writer.Write(board.Cells[col, row].IsAlive ? '*' : '-');
+                    }
+                    writer.WriteLine();
+                }
+            }
+        }
+
+        public static void LoadFromFile(string filePath, out Board board, out Settings settings)
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                string[] settingsArray = reader.ReadLine().Split(' ');
+                settings = new Settings
+                {
+                    Width = int.Parse(settingsArray[0]),
+                    Height = int.Parse(settingsArray[1]),
+                    CellSize = int.Parse(settingsArray[2]),
+                    LiveDensity = double.Parse(settingsArray[3])
+                };
+
+                int rows = settings.Height / settings.CellSize;
+                int columns = settings.Width / settings.CellSize;
+
+                bool[,] gameStateArray = new bool[columns, rows];
+
+                for (int row = 0; row < rows; row++)
+                {
+                    string line = reader.ReadLine();
+                    for (int col = 0; col < columns; col++)
+                    {
+                        gameStateArray[col, row] = line[col] == '*';
+                    }
+                }
+
+                board = new Board(
+                width: settings.Width,
+                height: settings.Height,
+                cellSize: settings.CellSize,
+                gameStateArray);
+            }
+        }
     }
 
     class Program
@@ -176,17 +202,13 @@ namespace cli_life
 
         static void Main(string[] args)
         {
-            string file_state = "..\\..\\..\\game_state.json";
+            string file_state = "..\\..\\..\\game_state.txt";
             string file_settings = "..\\..\\..\\settings.json";
             bool f = true;
 
             if (File.Exists(file_state) && f)
             {
-                string gameStateJson = File.ReadAllText(file_state);
-                var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
-                settings = gameState.Settings;
-                board = new Board(settings.Width, settings.Height, settings.CellSize);
-                board.SetState(gameState.BoardState);
+                FileHandler.LoadFromFile(file_state, out board, out settings);
             }
             else
             {
@@ -195,16 +217,9 @@ namespace cli_life
                 Reset(settings);
             }
 
-
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
-                var currentState = new GameState
-                {
-                    Settings = settings,
-                    BoardState = board.GetCurrentState()
-                };
-                string currentStateJson = JsonConvert.SerializeObject(currentState);
-                File.WriteAllText(file_state, currentStateJson);
+                FileHandler.SaveToFile(file_state, board, settings);
             };
 
             while (true)
