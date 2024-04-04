@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace cli_life
 {
@@ -86,16 +88,24 @@ namespace cli_life
             }
         }
     }
+
+    public class Settings
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public int CellSize { get; set; }
+        public double LiveDensity { get; set; }
+    }
     class Program
     {
         static Board board;
-        static private void Reset()
+        static private void Reset(Settings settings)
         {
             board = new Board(
-                width: 50,
-                height: 20,
-                cellSize: 1,
-                liveDensity: 0.5);
+                width: settings.Width,
+                height: settings.Height,
+                cellSize: settings.CellSize,
+                liveDensity: settings.LiveDensity);
         }
         static void Render()
         {
@@ -118,7 +128,10 @@ namespace cli_life
         }
         static void Main(string[] args)
         {
-            Reset();
+            string json = File.ReadAllText("..\\..\\..\\settings.json");
+            Settings settings = JsonConvert.DeserializeObject<Settings>(json);
+
+            Reset(settings);
             while(true)
             {
                 Console.Clear();
