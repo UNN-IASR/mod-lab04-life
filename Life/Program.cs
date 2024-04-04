@@ -227,7 +227,7 @@ namespace cli_life
                 Console.Clear();
                 Render();
                 board.Advance();
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
             }
         }
     }
