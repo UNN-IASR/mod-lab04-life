@@ -87,6 +87,45 @@ namespace cli_life
                 }
             }
         }
+        public BoardState GetCurrentState()
+        {
+            var state = new BoardState(Columns, Rows);
+            for (int x = 0; x < Columns; x++)
+            {
+                for (int y = 0; y < Rows; y++)
+                {
+                    state.CellStates[x, y] = new CellState { IsAlive = Cells[x, y].IsAlive };
+                }
+            }
+            return state;
+        }
+
+        public void SetState(BoardState state)
+        {
+            for (int x = 0; x < Columns; x++)
+            {
+                for (int y = 0; y < Rows; y++)
+                {
+                    Cells[x, y].IsAlive = state.CellStates[x, y].IsAlive;
+                }
+            }
+        }
+
+    }
+
+    public class BoardState
+    {
+        public CellState[,] CellStates { get; set; }
+
+        public BoardState(int width, int height)
+        {
+            CellStates = new CellState[width, height];
+        }
+    }
+
+    public class CellState
+    {
+        public bool IsAlive { get; set; }
     }
 
     public class Settings
@@ -128,16 +167,38 @@ namespace cli_life
         }
         static void Main(string[] args)
         {
-            string json = File.ReadAllText("..\\..\\..\\settings.json");
+            string file_state = "..\\..\\..\\board_state.json";
+            string file_settings = "..\\..\\..\\settings.json";
+
+            string json = File.ReadAllText(file_settings);
             Settings settings = JsonConvert.DeserializeObject<Settings>(json);
 
             Reset(settings);
-            while(true)
+
+            if (File.Exists(file_state))
+            {
+                string savedStateJson = File.ReadAllText(file_state);
+                var savedState = JsonConvert.DeserializeObject<BoardState>(savedStateJson);
+                board.SetState(savedState);
+            }
+
+            AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
+            {
+                var currentState = board.GetCurrentState();
+                string currentStateJson = JsonConvert.SerializeObject(currentState);
+                File.WriteAllText(file_state, currentStateJson);
+            };
+
+            while (true)
             {
                 Console.Clear();
                 Render();
                 board.Advance();
                 Thread.Sleep(1000);
+
+                //var currentState = board.GetCurrentState();
+                //string currentStateJson = JsonConvert.SerializeObject(currentState);
+                //File.WriteAllText(file_state, currentStateJson);
             }
         }
     }
