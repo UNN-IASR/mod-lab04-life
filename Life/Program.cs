@@ -7,44 +7,45 @@ using System.Threading;
 
 namespace cli_life
 {
-    public class Cell
+    public class Cell //клетка
     {
         public bool IsAlive;
         public readonly List<Cell> neighbors = new List<Cell>();
         private bool IsAliveNext;
-        public void DetermineNextLiveState()
+        public void DetermineNextLiveState() //метод определяет состояние клетки на следующем шаге
         {
-            int liveNeighbors = neighbors.Where(x => x.IsAlive).Count();
+            int liveNeighbors = neighbors.Where(x => x.IsAlive).Count(); //пробегаемся по списку с лямда выражением (считаем количество живых клеток рядом с нашей)
             if (IsAlive)
                 IsAliveNext = liveNeighbors == 2 || liveNeighbors == 3;
             else
                 IsAliveNext = liveNeighbors == 3;
         }
-        public void Advance()
+        public void Advance() //вызывается, когда все клетки получили статус
         {
             IsAlive = IsAliveNext;
         }
     }
-    public class Board
+    public class Board //доска
     {
-        public readonly Cell[,] Cells;
-        public readonly int CellSize;
+        public readonly Cell[,] Cells; //двумерный массив из клеток
+        public readonly int CellSize; //размер ячейки
 
-        public int Columns { get { return Cells.GetLength(0); } }
-        public int Rows { get { return Cells.GetLength(1); } }
+        //свойства
+        public int Columns { get { return Cells.GetLength(0); } } //количество столбцов
+        public int Rows { get { return Cells.GetLength(1); } } //колисетво строк
         public int Width { get { return Columns * CellSize; } }
         public int Height { get { return Rows * CellSize; } }
 
-        public Board(int width, int height, int cellSize, double liveDensity = .1)
+        public Board(int width, int height, int cellSize, double liveDensity = .1) //liveDensity - плотность распределения живых и мертвых
         {
             CellSize = cellSize;
 
-            Cells = new Cell[width / cellSize, height / cellSize];
+            Cells = new Cell[width / cellSize, height / cellSize]; //тк в пикселях
             for (int x = 0; x < Columns; x++)
                 for (int y = 0; y < Rows; y++)
                     Cells[x, y] = new Cell();
 
-            ConnectNeighbors();
+            ConnectNeighbors(); //соединяет всех соседий друг с другом
             Randomize(liveDensity);
         }
 
@@ -52,7 +53,7 @@ namespace cli_life
         public void Randomize(double liveDensity)
         {
             foreach (var cell in Cells)
-                cell.IsAlive = rand.NextDouble() < liveDensity;
+                cell.IsAlive = rand.NextDouble() < liveDensity; //смотря в какой диапозон попала => живая или мертвая
         }
 
         public void Advance()
@@ -62,7 +63,7 @@ namespace cli_life
             foreach (var cell in Cells)
                 cell.Advance();
         }
-        private void ConnectNeighbors()
+        private void ConnectNeighbors() //шарообразный мир
         {
             for (int x = 0; x < Columns; x++)
             {
@@ -88,7 +89,7 @@ namespace cli_life
     }
     class Program
     {
-        static Board board;
+        static Board board; //нужна одна доска, поэтому поле статическое 
         static private void Reset()
         {
             board = new Board(
