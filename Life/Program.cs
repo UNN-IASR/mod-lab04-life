@@ -7,6 +7,7 @@ using System.Threading;
 using System.IO;
 using Newtonsoft.Json;
 using System.Xml.Schema;
+using System.Drawing;
 
 namespace cli_life
 {
@@ -120,8 +121,47 @@ namespace cli_life
             return aliveCount;
         }
 
-        public static int CountCombinations(Board board)
+        private static Dictionary<string, Dictionary<string, int>> InitializeClassification()
         {
+            Dictionary<string, Dictionary<string, int>> classification = new Dictionary<string, Dictionary<string, int>>
+            {
+                {
+                    "Stable", new Dictionary<string, int>
+                    {
+                        { "Block", 0 },
+                        { "Beehive", 0 },
+                        { "Loaf", 0 }
+                    }
+                },
+                {
+                    "Periodic", new Dictionary<string, int>()
+                },
+                {
+                    "Moving", new Dictionary<string, int>()
+                },
+                {
+                    "Guns", new Dictionary<string, int>()
+                },
+                {
+                    "Locomotive", new Dictionary<string, int>()
+                },
+                {
+                    "Eater", new Dictionary<string, int>()
+                },
+                {
+                    "Other", new Dictionary<string, int>()
+                    {
+                        { "Unknown", 0 },
+                    }
+                }
+            };
+
+            return classification;
+        }
+
+        public static (int combinationCount, Dictionary<string, Dictionary<string, int>> classification) CountCombinations(Board board)
+        {
+            Dictionary<string, Dictionary<string, int>> classification = InitializeClassification();
             bool[,] visited = new bool[board.Columns, board.Rows];
             int combinationCount = 0;
 
@@ -132,23 +172,33 @@ namespace cli_life
                     if (board.Cells[x, y].IsAlive && !visited[x, y])
                     {
                         // new unvisited living cell has been found - we start a new combination
-                        ExploreCombination(board, visited, x, y);
+                        HashSet<Point> liveCellCoordinates = ExploreCombination(board, visited, x, y);
+                        //foreach (var p in liveCellCoordinates)
+                        //{
+                        //    Console.WriteLine(p);
+                        //}
+                        //Console.WriteLine();
+                        ClassifyFigures(board, liveCellCoordinates, classification);
                         combinationCount++;
                     }
                 }
             }
 
-            return combinationCount;
+            return (combinationCount, classification);
         }
 
-        private static void ExploreCombination(Board board, bool[,] visited, int startX, int startY)
+        private static HashSet<Point> ExploreCombination(Board board, bool[,] visited, int startX, int startY)
         {
-            Stack<(int, int)> stack = new Stack<(int, int)>();
-            stack.Push((startX, startY));
+            HashSet<Point> liveCellCoordinates = new HashSet<Point>();
+            Stack<Point> stack = new Stack<Point>();
+            stack.Push(new Point(startX, startY));
 
             while (stack.Count > 0)
             {
-                var (x, y) = stack.Pop();
+                Point current = stack.Pop();
+
+                int x = current.X;
+                int y = current.Y;
 
                 if (x < 0 || x >= board.Columns || y < 0 || y >= board.Rows || visited[x, y] || !board.Cells[x, y].IsAlive)
                 {
@@ -156,22 +206,90 @@ namespace cli_life
                 }
 
                 visited[x, y] = true;
+                liveCellCoordinates.Add(current);
 
-                // Sorting through the neighbors
                 for (int dx = -1; dx <= 1; dx++)
                 {
                     for (int dy = -1; dy <= 1; dy++)
                     {
                         if (!(dx == 0 && dy == 0))
                         {
-                            int neighborX = (x + dx + board.Columns) % board.Columns; // processing of cyclic boundaries horizontally
-                            int neighborY = (y + dy + board.Rows) % board.Rows; // processing of cyclic boundaries vertically
+                            int neighborX = (x + dx + board.Columns) % board.Columns;
+                            int neighborY = (y + dy + board.Rows) % board.Rows;
 
-                            stack.Push((neighborX, neighborY));
+                            stack.Push(new Point(neighborX, neighborY));
                         }
                     }
                 }
             }
+
+            return liveCellCoordinates;
+        }
+
+        private static void ClassifyFigures(Board board, HashSet<Point> liveCellCoordinates, Dictionary<string, Dictionary<string, int>> classification)
+        {
+            foreach (var key in classification.Keys)
+            {
+                foreach (var figure in classification[key].Keys) 
+                {
+                    if (WhatFigure(liveCellCoordinates, board.Columns, board.Rows) == figure)
+                    {
+                        classification[key][figure]++;
+                    }
+                }
+            }
+        }
+
+        private static string WhatFigure(HashSet<Point> liveCellCoordinates, int columns, int rows)
+        {
+            foreach (var point in liveCellCoordinates)
+            {
+                int x = point.X;
+                int y = point.Y;
+
+                // Block
+                // **
+                // **
+                if (liveCellCoordinates.Contains(new Point(x, y)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, y)) &&
+                    liveCellCoordinates.Contains(new Point(x, (y + 1) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, (y + 1) % rows)))
+                {
+                    return "Block";
+                }
+
+                // Beehive
+                // - * -
+                // * - *
+                // * - *
+                // - * -
+                //
+                //- * * -
+                //* - - *
+                //- * * -
+                if ((liveCellCoordinates.Contains(new Point(x, y)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, (y - 1) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 2) % columns, y)) &&
+                    liveCellCoordinates.Contains(new Point((x + 2) % columns, (y + 1) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, (y + 2) % rows)) &&
+                    liveCellCoordinates.Contains(new Point(x, (y + 1) % rows))) ||
+                    (liveCellCoordinates.Contains(new Point(x, y)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, y)) &&
+                    liveCellCoordinates.Contains(new Point((x + 2) % columns, (y + 1) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, (y + 2) % rows)) &&
+                    liveCellCoordinates.Contains(new Point(x, (y + 2) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x - 1) % columns, (y + 1) % rows))))
+                {
+                    return "Beehive";
+                }
+
+                // Loaf
+
+
+
+            }
+
+            return "Unknown";
         }
     }
 
@@ -297,7 +415,16 @@ namespace cli_life
                 Console.Clear();
                 Render();
                 Console.WriteLine($"Alive cells: {FieldAnalyzer.CountAliveCells(board)}");
-                Console.WriteLine($"Сombinations: {FieldAnalyzer.CountCombinations(board)}");
+                var (combinationCount, classification) = FieldAnalyzer.CountCombinations(board);
+                Console.WriteLine($"Combinations: {combinationCount}");
+                foreach (var category in classification)
+                {
+                    Console.WriteLine($"Category: {category.Key}");
+                    foreach (var figureType in category.Value)
+                    {
+                        Console.WriteLine($"  {figureType.Key}: {figureType.Value}");
+                    }
+                }
                 board.Advance();
                 Thread.Sleep(1000);
             }
