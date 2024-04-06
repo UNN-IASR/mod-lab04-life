@@ -105,6 +105,76 @@ namespace cli_life
         }
     }
 
+    public class FieldAnalyzer
+    {
+        public static int CountAliveCells(Board board)
+        {
+            int aliveCount = 0;
+            foreach (var cell in board.Cells)
+            {
+                if (cell.IsAlive)
+                {
+                    aliveCount++;
+                }
+            }
+            return aliveCount;
+        }
+
+        public static int CountCombinations(Board board)
+        {
+            bool[,] visited = new bool[board.Columns, board.Rows];
+            int combinationCount = 0;
+
+            for (int x = 0; x < board.Columns; x++)
+            {
+                for (int y = 0; y < board.Rows; y++)
+                {
+                    if (board.Cells[x, y].IsAlive && !visited[x, y])
+                    {
+                        // new unvisited living cell has been found - we start a new combination
+                        ExploreCombination(board, visited, x, y);
+                        combinationCount++;
+                    }
+                }
+            }
+
+            return combinationCount;
+        }
+
+        private static void ExploreCombination(Board board, bool[,] visited, int startX, int startY)
+        {
+            Stack<(int, int)> stack = new Stack<(int, int)>();
+            stack.Push((startX, startY));
+
+            while (stack.Count > 0)
+            {
+                var (x, y) = stack.Pop();
+
+                if (x < 0 || x >= board.Columns || y < 0 || y >= board.Rows || visited[x, y] || !board.Cells[x, y].IsAlive)
+                {
+                    continue;
+                }
+
+                visited[x, y] = true;
+
+                // Sorting through the neighbors
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    for (int dy = -1; dy <= 1; dy++)
+                    {
+                        if (!(dx == 0 && dy == 0))
+                        {
+                            int neighborX = (x + dx + board.Columns) % board.Columns; // processing of cyclic boundaries horizontally
+                            int neighborY = (y + dy + board.Rows) % board.Rows; // processing of cyclic boundaries vertically
+
+                            stack.Push((neighborX, neighborY));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public class Settings
     {
         public int Width { get; set; }
@@ -226,8 +296,10 @@ namespace cli_life
             {
                 Console.Clear();
                 Render();
+                Console.WriteLine($"Alive cells: {FieldAnalyzer.CountAliveCells(board)}");
+                Console.WriteLine($"Сombinations: {FieldAnalyzer.CountCombinations(board)}");
                 board.Advance();
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
             }
         }
     }
