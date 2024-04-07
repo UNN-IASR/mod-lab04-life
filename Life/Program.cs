@@ -1,9 +1,12 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using SkiaSharp;
+using System.IO;
+using System.Text.Json;
 
 namespace cli_life
 {
@@ -86,16 +89,29 @@ namespace cli_life
             }
         }
     }
+
+    class SettingsParser
+    {
+        public int width {get; set;}
+        public int height {get; set;}
+        public int cellSize {get; set;}
+        public double liveDensity {get; set;}
+    }
+
     class Program
     {
         static Board board;
         static private void Reset()
         {
+            if(!Directory.Exists("Input")) Directory.CreateDirectory("Input/");
+            if(!File.Exists("Input/settings.json")) File.Create("Input/settings.json");
+            string raw = File.ReadAllText("Input/settings.json");
+            var settings = JsonSerializer.Deserialize<SettingsParser>(raw);
             board = new Board(
-                width: 50,
-                height: 20,
-                cellSize: 1,
-                liveDensity: 0.5);
+                width: settings.width,
+                height: settings.height,
+                cellSize: settings.cellSize,
+                liveDensity: settings.liveDensity);
         }
         static void Render()
         {
@@ -119,12 +135,78 @@ namespace cli_life
         static void Main(string[] args)
         {
             Reset();
+            int genCount = 0;
             while(true)
             {
+                if(Console.KeyAvailable) {
+                //if(!Console.IsInputRedirected && Console.KeyAvailable) {
+                    ConsoleKeyInfo name = Console.ReadKey();
+                    if(name.KeyChar == 'q')
+                        break;
+                    else if(name.KeyChar == 's') {
+                        string fname = "gen-" + genCount.ToString();
+                        if(!Directory.Exists("Data")) Directory.CreateDirectory("Data/");
+                        StreamWriter writer = new StreamWriter("Data/"+ fname + ".txt");
+                        // Create an image and fill it blue
+                        SKBitmap bmp = new(board.Columns * 10, board.Rows * 10);
+                        using SKCanvas canvas = new(bmp);
+                        canvas.Clear(SKColor.Parse("#003366"));
+                        double[,] data = new double[board.Rows, board.Columns];
+                        for (int row = 0; row < board.Rows; row++)
+                        {
+                           for (int col = 0; col < board.Columns; col++)   
+                           {
+                               var cell = board.Cells[col, row];
+                               if (cell.IsAlive) {
+                                   writer.Write('1');
+                                   data[row,col] = 1;
+                               }
+                               else {
+                                   writer.Write('0');
+                                   data[row,col] = 0;
+                               }
+                               writer.Write(',');  
+                           }
+                           writer.Write("\n");
+                        }
+                        writer.Close();
+
+                        SKPaint paint1 = new() { 
+                            Color = SKColors.White.WithAlpha(100), 
+                            IsAntialias = true 
+                        };
+                        SKPaint paint0 = new() { 
+                            Color = SKColors.Black.WithAlpha(100), 
+                            IsAntialias = true 
+                        };
+                        for (int row = 0; row < board.Rows; row++)
+                           for (int col = 0; col < board.Columns; col++)   
+                           { 
+                                if(data[row,col] == 1) {
+                                   SKPoint pt1 = new(col*10, row*10);
+                                   paint1.StrokeWidth = 10;
+                                   canvas.DrawPoint(pt1, paint1);
+                               }
+                               else {
+                                   SKPoint pt0 = new(col*10, row*10);
+                                   paint0.StrokeWidth = 10;
+                                   canvas.DrawPoint(pt0, paint0);                                
+                               }
+                           }                       
+                        // Save the image to disk
+                        SKFileWStream fs = new("Data/" + fname + ".jpg");
+                        Console.WriteLine(fs.IsValid);
+                        bmp.Encode(fs, SKEncodedImageFormat.Jpeg, quality: 85);
+
+                        //break;
+                    }
+                }  
+                
                 Console.Clear();
                 Render();
                 board.Advance();
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
+                ++genCount;
             }
         }
     }
