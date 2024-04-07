@@ -132,6 +132,50 @@ namespace cli_life
                 Console.Write('\n');
             }
         }
+
+        static int Load()
+        {
+            if(!Directory.Exists("Input")) {
+                Directory.CreateDirectory("Input/");
+                File.WriteAllText("Input/gen-0.txt", "");
+            }
+            else if(!File.Exists("Input/gen-0.txt")) {
+                File.WriteAllText("Input/gen-0.txt", "");
+            }
+
+            string raw = File.ReadAllText("Input/gen-0.txt");
+
+            int wid = 0;
+            int hei = 0;
+            int gen = 0;
+            if (raw.Length > 0) {
+                wid = raw.Split('\n', StringSplitOptions.RemoveEmptyEntries)[0].Length;
+                hei = raw.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length - 1;
+                gen = int.Parse(raw.Split('\n', StringSplitOptions.RemoveEmptyEntries)[hei]);
+            }
+
+            board = new Board(
+                width: wid,
+                height: hei,
+                cellSize: 1,
+                liveDensity: 0);
+
+            for (int row = 0; row < board.Rows; row++)
+            {
+                string str = raw.Split('\n')[row];
+                for (int col = 0; col < board.Columns; col++)   
+                {
+                    var cell = board.Cells[col, row];
+                    if (str[col] == '1') {
+                        cell.IsAlive = true;
+                    }
+                    else {
+                        cell.IsAlive = false;
+                    }
+                }
+            }
+            return gen;
+        }
         static void Main(string[] args)
         {
             Reset();
@@ -139,7 +183,6 @@ namespace cli_life
             while(true)
             {
                 if(Console.KeyAvailable) {
-                //if(!Console.IsInputRedirected && Console.KeyAvailable) {
                     ConsoleKeyInfo name = Console.ReadKey();
                     if(name.KeyChar == 'q')
                         break;
@@ -147,10 +190,6 @@ namespace cli_life
                         string fname = "gen-" + genCount.ToString();
                         if(!Directory.Exists("Data")) Directory.CreateDirectory("Data/");
                         StreamWriter writer = new StreamWriter("Data/"+ fname + ".txt");
-                        // Create an image and fill it blue
-                        SKBitmap bmp = new(board.Columns * 10, board.Rows * 10);
-                        using SKCanvas canvas = new(bmp);
-                        canvas.Clear(SKColor.Parse("#003366"));
                         double[,] data = new double[board.Rows, board.Columns];
                         for (int row = 0; row < board.Rows; row++)
                         {
@@ -165,40 +204,14 @@ namespace cli_life
                                    writer.Write('0');
                                    data[row,col] = 0;
                                }
-                               writer.Write(',');  
                            }
                            writer.Write("\n");
                         }
+                        writer.Write(genCount);
                         writer.Close();
-
-                        SKPaint paint1 = new() { 
-                            Color = SKColors.White.WithAlpha(100), 
-                            IsAntialias = true 
-                        };
-                        SKPaint paint0 = new() { 
-                            Color = SKColors.Black.WithAlpha(100), 
-                            IsAntialias = true 
-                        };
-                        for (int row = 0; row < board.Rows; row++)
-                           for (int col = 0; col < board.Columns; col++)   
-                           { 
-                                if(data[row,col] == 1) {
-                                   SKPoint pt1 = new(col*10, row*10);
-                                   paint1.StrokeWidth = 10;
-                                   canvas.DrawPoint(pt1, paint1);
-                               }
-                               else {
-                                   SKPoint pt0 = new(col*10, row*10);
-                                   paint0.StrokeWidth = 10;
-                                   canvas.DrawPoint(pt0, paint0);                                
-                               }
-                           }                       
-                        // Save the image to disk
-                        SKFileWStream fs = new("Data/" + fname + ".jpg");
-                        Console.WriteLine(fs.IsValid);
-                        bmp.Encode(fs, SKEncodedImageFormat.Jpeg, quality: 85);
-
-                        //break;
+                    }
+                    else if (name.KeyChar == 'l') {
+                        genCount = Load();
                     }
                 }  
                 
