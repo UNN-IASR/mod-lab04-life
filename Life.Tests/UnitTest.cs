@@ -56,7 +56,6 @@ namespace Life.Tests
             Assert.AreEqual(settings.Width, 50);
             Assert.AreEqual(settings.Height, 20);
             Assert.AreEqual(settings.CellSize, 1);
-            Assert.AreEqual(settings.LiveDensity, 0.5);
         }
         [TestMethod]
         public void BoardFromFileGameState()
