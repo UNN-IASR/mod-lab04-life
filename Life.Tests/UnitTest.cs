@@ -9,10 +9,10 @@ namespace Life.Tests
     public class UnitTest
     {
         private static Board board;
-        private static string fileState = "..\\..\\..\\game_state4.txt";
-        private static string fileStateFigures = "..\\..\\..\\game_state5.txt";
-        private static string fileNotStateFigures = "..\\..\\..\\game_state6.txt";
-        private static string fileSettings = "..\\..\\..\\settings.json";
+        private static string fileState = "game_state4.txt";
+        private static string fileStateFigures = "game_state5.txt";
+        private static string fileNotStateFigures = "game_state6.txt";
+        private static string fileSettings = "settings.json";
 
         [TestInitialize]
         public void Setup()
