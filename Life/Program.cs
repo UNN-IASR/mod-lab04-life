@@ -106,12 +106,21 @@ namespace cli_life
             if(!Directory.Exists("Input")) Directory.CreateDirectory("Input/");
             if(!File.Exists("Input/settings.json")) File.Create("Input/settings.json");
             string raw = File.ReadAllText("Input/settings.json");
-            var settings = JsonSerializer.Deserialize<SettingsParser>(raw);
-            board = new Board(
-                width: settings.width,
-                height: settings.height,
-                cellSize: settings.cellSize,
-                liveDensity: settings.liveDensity);
+            if (raw != ""){
+                var settings = JsonSerializer.Deserialize<SettingsParser>(raw);
+                board = new Board(
+                    width: settings.width,
+                    height: settings.height,
+                    cellSize: settings.cellSize,
+                    liveDensity: settings.liveDensity);
+            }
+            else {
+                board = new Board(
+                    width: 20,
+                    height: 20,
+                    cellSize: 1,
+                    liveDensity: 0.5);
+            }
         }
         static void Render()
         {
@@ -143,15 +152,15 @@ namespace cli_life
                 File.WriteAllText("Input/gen-0.txt", "");
             }
 
-            string raw = File.ReadAllText("Input/gen-0.txt");
+            string[] raw = File.ReadAllLines("Input/gen-0.txt");
 
             int wid = 0;
             int hei = 0;
             int gen = 0;
             if (raw.Length > 0) {
-                wid = raw.Split('\n', StringSplitOptions.RemoveEmptyEntries)[0].Length;
-                hei = raw.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length - 1;
-                gen = int.Parse(raw.Split('\n', StringSplitOptions.RemoveEmptyEntries)[hei]);
+                wid = raw[0].Length;
+                hei = raw.Length - 1;
+                gen = int.Parse(raw[hei]);
             }
 
             board = new Board(
@@ -162,11 +171,10 @@ namespace cli_life
 
             for (int row = 0; row < board.Rows; row++)
             {
-                string str = raw.Split('\n')[row];
                 for (int col = 0; col < board.Columns; col++)   
                 {
                     var cell = board.Cells[col, row];
-                    if (str[col] == '1') {
+                    if (raw[row][col] == '1') {
                         cell.IsAlive = true;
                     }
                     else {
