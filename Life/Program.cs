@@ -10,6 +10,7 @@ using System.Xml.Schema;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Collections;
+using ScottPlot;
 
 namespace cli_life
 {
@@ -273,7 +274,7 @@ namespace cli_life
                 return false;
             }
 
-            for (int len = 1; len <= length / 2; len++)
+            for (int len = 3; len <= length / 2; len++)
             {
                 bool isRepeating = true;
 
@@ -518,6 +519,29 @@ namespace cli_life
                 writer.WriteLine(densityAlive);
             }
         }
+
+        public static void CreateGraph(string filePath, string fileCount)
+        {
+            if (!File.Exists(fileCount))
+            {
+                Console.WriteLine("Файл densityAlive.txt не найден.");
+                return;
+            }
+
+            var densities = File.ReadAllLines(fileCount)
+                            .Select(line => Convert.ToInt32(line))
+                            .ToList();
+
+            var steps = Enumerable.Range(0, densities.Count).ToList();
+
+            ScottPlot.Plot plot = new();
+            plot.Add.Scatter(steps, densities);
+            plot.Title("Transition to Stable State");
+            plot.XLabel("Times");
+            plot.YLabel("Density");
+            plot.SavePng(filePath, 1920, 1080);
+        }
+        
     }
 
     class Program
@@ -525,7 +549,6 @@ namespace cli_life
         static Board board;
         static Settings settings;
         static QueueDensity queueDensity;
-        static int densityAlive = 0;
         static int sizeStabilityDefinition = 10;
         static private void Reset(Settings settings)
         {
@@ -557,33 +580,38 @@ namespace cli_life
 
         static void Main(string[] args)
         {
-            string file_state = "..\\..\\..\\game_state.txt";
-            string file_settings = "..\\..\\..\\settings.json";
-            string file_count = "..\\..\\..\\densityAlive.txt";
+            string fileState = "..\\..\\..\\game_state.txt";
+            string fileSettings = "..\\..\\..\\settings.json";
+            string fileCount = "..\\..\\..\\density_alive.txt";
+            string fileGraph = "..\\..\\..\\graph.png";
             FieldAnalyzer fieldAnalyzer = new FieldAnalyzer();
             bool f = true;
 
             queueDensity = new QueueDensity(sizeStabilityDefinition);
 
-            if (File.Exists(file_state) && f)
+            if (File.Exists(fileState) && f)
             {
-                FileHandler.LoadFromFile(file_state, out board, out settings);
+                FileHandler.LoadFromFile(fileState, out board, out settings);
             }
             else
             {
-                string json = File.ReadAllText(file_settings);
+                string json = File.ReadAllText(fileSettings);
                 settings = JsonConvert.DeserializeObject<Settings>(json);
                 Reset(settings);
             }
 
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
-                FileHandler.SaveToFile(file_state, board, settings);
+                FileHandler.SaveToFile(fileState, board, settings);
             };
 
-            if (File.Exists(file_count))
+            if (File.Exists(fileCount))
             {
-                File.Delete(file_count);
+                File.Delete(fileCount);
+            }
+            if (File.Exists(fileGraph))
+            {
+                File.Delete(fileGraph);
             }
 
             while (true)
@@ -603,11 +631,15 @@ namespace cli_life
                     }
                 }
 
-                FileHandler.SaveCountAliveCell(file_count, countAliveCells);
+                FileHandler.SaveCountAliveCell(fileCount, countAliveCells);
                 if (FieldAnalyzer.IsStable(queueDensity))
                 {
                     Console.WriteLine("Game is stable!");
                     Console.WriteLine($"Number generations of transition to a stable phase: {fieldAnalyzer.CountStableState}");
+                    if (!File.Exists(fileGraph))
+                    {
+                        FileHandler.CreateGraph(fileGraph, fileCount);
+                    }
                 }
                 else
                 {
@@ -616,7 +648,7 @@ namespace cli_life
                 }
 
                 board.Advance();
-                Thread.Sleep(1000);
+                Thread.Sleep(10);
             }
         }
     }
