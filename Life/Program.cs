@@ -38,7 +38,6 @@ namespace cli_life
         public int Rows { get { return Cells.GetLength(1); } }
         public int Width { get { return Columns * CellSize; } }
         public int Height { get { return Rows * CellSize; } }
-
         public Board(int width, int height, int cellSize, double liveDensity = .1)
         {
             CellSize = cellSize;
@@ -51,7 +50,6 @@ namespace cli_life
             ConnectNeighbors();
             Randomize(liveDensity);
         }
-
         public Board(int width, int height, int cellSize, bool[,] gameStateArray)
         {
             CellSize = cellSize;
@@ -73,7 +71,6 @@ namespace cli_life
             foreach (var cell in Cells)
                 cell.IsAlive = rand.NextDouble() < liveDensity;
         }
-
         public void Advance()
         {
             foreach (var cell in Cells)
@@ -120,7 +117,6 @@ namespace cli_life
             }
             return aliveCount;
         }
-
         private static Dictionary<string, Dictionary<string, int>> InitializeClassification()
         {
             Dictionary<string, Dictionary<string, int>> classification = new Dictionary<string, Dictionary<string, int>>
@@ -158,7 +154,6 @@ namespace cli_life
 
             return classification;
         }
-
         public static (int combinationCount, Dictionary<string, Dictionary<string, int>> classification) CountCombinations(Board board)
         {
             Dictionary<string, Dictionary<string, int>> classification = InitializeClassification();
@@ -171,13 +166,7 @@ namespace cli_life
                 {
                     if (board.Cells[x, y].IsAlive && !visited[x, y])
                     {
-                        // new unvisited living cell has been found - we start a new combination
                         HashSet<Point> liveCellCoordinates = ExploreCombination(board, visited, x, y);
-                        //foreach (var p in liveCellCoordinates)
-                        //{
-                        //    Console.WriteLine(p);
-                        //}
-                        //Console.WriteLine();
                         ClassifyFigures(board, liveCellCoordinates, classification);
                         combinationCount++;
                     }
@@ -186,7 +175,6 @@ namespace cli_life
 
             return (combinationCount, classification);
         }
-
         private static HashSet<Point> ExploreCombination(Board board, bool[,] visited, int startX, int startY)
         {
             HashSet<Point> liveCellCoordinates = new HashSet<Point>();
@@ -225,22 +213,70 @@ namespace cli_life
 
             return liveCellCoordinates;
         }
-
         private static void ClassifyFigures(Board board, HashSet<Point> liveCellCoordinates, Dictionary<string, Dictionary<string, int>> classification)
         {
             foreach (var key in classification.Keys)
             {
                 foreach (var figure in classification[key].Keys) 
                 {
-                    if (WhatFigure(liveCellCoordinates, board.Columns, board.Rows) == figure)
+                    if (Figures.IdentifyFigure(liveCellCoordinates, board.Columns, board.Rows) == figure)
                     {
                         classification[key][figure]++;
                     }
                 }
             }
         }
+        public static bool IsStable(bool[,] currentGameState, bool[,] previousGameState, bool[,] beforePreviousGameState)
+        {
+            bool correctPreviousGameState = currentGameState.Length == previousGameState.Length;
+            bool correctBeforePreviousGameState = currentGameState.Length == beforePreviousGameState.Length;
+            bool stablePreviousGame = true;
+            bool stableBeforePreviousGameState = true;
 
-        private static string WhatFigure(HashSet<Point> liveCellCoordinates, int columns, int rows)
+            for (int x = 0; x < currentGameState.GetLength(0); x++)
+            {
+                for (int y = 0; y < currentGameState.GetLength(1); y++)
+                {
+                    if (correctPreviousGameState && stablePreviousGame)
+                    {
+                        if (currentGameState[x, y] != previousGameState[x, y])
+                        {
+                            stablePreviousGame = false;
+                        }
+                    }
+
+                    if (correctBeforePreviousGameState && stableBeforePreviousGameState)
+                    {
+                        if (currentGameState[x, y] != beforePreviousGameState[x, y])
+                        {
+                            stableBeforePreviousGameState = false;
+                        }
+                    }
+                }
+                if (!stablePreviousGame && !stableBeforePreviousGameState)
+                {
+                    break;
+                }
+            }
+
+            return stableBeforePreviousGameState || stableBeforePreviousGameState;
+        }
+    }
+
+    public class Figures()
+    {
+        public static string IdentifyFigure(HashSet<Point> liveCellCoordinates, int columns, int rows)
+        {
+            if (IsBlock(liveCellCoordinates, columns, rows))
+                return "Block";
+            else if (IsBeehive(liveCellCoordinates, columns, rows))
+                return "Beehive";
+            
+
+            return "Unknown";
+        }
+
+        private static bool IsBlock(HashSet<Point> liveCellCoordinates, int columns, int rows)
         {
             foreach (var point in liveCellCoordinates)
             {
@@ -255,8 +291,19 @@ namespace cli_life
                     liveCellCoordinates.Contains(new Point(x, (y + 1) % rows)) &&
                     liveCellCoordinates.Contains(new Point((x + 1) % columns, (y + 1) % rows)))
                 {
-                    return "Block";
+                    return true;
                 }
+            }
+
+            return false;
+        }
+
+        private static bool IsBeehive(HashSet<Point> liveCellCoordinates, int columns, int rows)
+        {
+            foreach (var point in liveCellCoordinates)
+            {
+                int x = point.X;
+                int y = point.Y;
 
                 // Beehive
                 // - * -
@@ -280,16 +327,11 @@ namespace cli_life
                     liveCellCoordinates.Contains(new Point(x, (y + 2) % rows)) &&
                     liveCellCoordinates.Contains(new Point((x - 1) % columns, (y + 1) % rows))))
                 {
-                    return "Beehive";
+                    return true;
                 }
-
-                // Loaf
-
-
-
             }
 
-            return "Unknown";
+            return false;
         }
     }
 
@@ -319,7 +361,6 @@ namespace cli_life
                 }
             }
         }
-
         public static void LoadFromFile(string filePath, out Board board, out Settings settings)
         {
             using (StreamReader reader = new StreamReader(filePath))
@@ -354,12 +395,26 @@ namespace cli_life
                 gameStateArray);
             }
         }
+        public static void SaveBoard(Board board, out bool[,] state)
+        {
+            state = new bool[board.Columns, board.Rows];
+            for (int row = 0; row < board.Rows; row++)
+            {
+                for (int col = 0; col < board.Columns; col++)
+                {
+                    state[col, row] = board.Cells[col, row].IsAlive;
+                }
+            }
+        }
     }
 
     class Program
     {
         static Board board;
         static Settings settings;
+        static bool[,] currentGameState;
+        static bool[,] previousGameState;
+        static bool[,] beforePreviousGameState;
         static private void Reset(Settings settings)
         {
             board = new Board(
@@ -392,7 +447,7 @@ namespace cli_life
         {
             string file_state = "..\\..\\..\\game_state.txt";
             string file_settings = "..\\..\\..\\settings.json";
-            bool f = true;
+            bool f = false;
 
             if (File.Exists(file_state) && f)
             {
@@ -405,6 +460,10 @@ namespace cli_life
                 Reset(settings);
             }
 
+            currentGameState = new bool[board.Columns, board.Rows];
+            previousGameState = new bool[board.Columns, board.Rows];
+            beforePreviousGameState = new bool[board.Columns, board.Rows];
+
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
                 FileHandler.SaveToFile(file_state, board, settings);
@@ -414,6 +473,7 @@ namespace cli_life
             {
                 Console.Clear();
                 Render();
+
                 Console.WriteLine($"Alive cells: {FieldAnalyzer.CountAliveCells(board)}");
                 var (combinationCount, classification) = FieldAnalyzer.CountCombinations(board);
                 Console.WriteLine($"Combinations: {combinationCount}");
@@ -425,6 +485,15 @@ namespace cli_life
                         Console.WriteLine($"  {figureType.Key}: {figureType.Value}");
                     }
                 }
+
+                FileHandler.SaveBoard(board, out currentGameState);
+                if (FieldAnalyzer.IsStable(currentGameState, previousGameState, beforePreviousGameState))
+                {
+                    Console.WriteLine("Game is stable!");
+                }
+                Array.Copy(previousGameState, beforePreviousGameState, previousGameState.Length);
+                Array.Copy(currentGameState, previousGameState, currentGameState.Length);
+
                 board.Advance();
                 Thread.Sleep(1000);
             }
