@@ -130,7 +130,7 @@ namespace cli_life
         private int countStableState;
         public int CountStableState
         {
-            get { return countStableState - 9; }
+            get { return countStableState; }
             private set { countStableState = value; }
         }
         public FieldAnalyzer()
@@ -274,7 +274,7 @@ namespace cli_life
                 return false;
             }
 
-            for (int len = 3; len <= length / 2; len++)
+            for (int len = 5; len <= length / 2; len++)
             {
                 bool isRepeating = true;
 
@@ -544,13 +544,13 @@ namespace cli_life
         
     }
 
-    class Program
+    public class Program
     {
         static Board board;
         static Settings settings;
         static QueueDensity queueDensity;
-        static int sizeStabilityDefinition = 10;
-        static private void Reset(Settings settings)
+        static int sizeStabilityDefinition = 20;
+        static public void Reset(Settings settings, out Board board)
         {
             board = new Board(
                 width: settings.Width,
@@ -558,7 +558,7 @@ namespace cli_life
                 cellSize: settings.CellSize,
                 liveDensity: settings.LiveDensity);
         }
-        static void Render()
+        static void Render(Board board)
         {
             for (int row = 0; row < board.Rows; row++)
             {
@@ -597,7 +597,7 @@ namespace cli_life
             {
                 string json = File.ReadAllText(fileSettings);
                 settings = JsonConvert.DeserializeObject<Settings>(json);
-                Reset(settings);
+                Reset(settings, out board);
             }
 
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
@@ -617,7 +617,7 @@ namespace cli_life
             while (true)
             {
                 Console.Clear();
-                Render();
+                Render(board);
                 int countAliveCells = FieldAnalyzer.CountAliveCells(board);
                 Console.WriteLine($"Alive cells: {countAliveCells}");
                 var (combinationCount, classification) = FieldAnalyzer.CountCombinations(board);
@@ -635,7 +635,7 @@ namespace cli_life
                 if (FieldAnalyzer.IsStable(queueDensity))
                 {
                     Console.WriteLine("Game is stable!");
-                    Console.WriteLine($"Number generations of transition to a stable phase: {fieldAnalyzer.CountStableState}");
+                    Console.WriteLine($"Number generations of transition to a stable phase: {fieldAnalyzer.CountStableState - (queueDensity.MaxSize - 1)}");
                     if (!File.Exists(fileGraph))
                     {
                         FileHandler.CreateGraph(fileGraph, fileCount);
@@ -648,7 +648,7 @@ namespace cli_life
                 }
 
                 board.Advance();
-                Thread.Sleep(10);
+                Thread.Sleep(1000);
             }
         }
     }
