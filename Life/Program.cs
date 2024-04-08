@@ -8,6 +8,8 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Xml.Schema;
 using System.Drawing;
+using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace cli_life
 {
@@ -102,9 +104,42 @@ namespace cli_life
             }
         }
     }
+    public class QueueDensity
+    {
+        public readonly int MaxSize;
+        public readonly Queue<int> Densities;
+        public QueueDensity(int maxSize)
+        {
+            MaxSize = maxSize;
+            Densities = new Queue<int>();
+        }
+
+        public void AddDensity(int density)
+        {
+            Densities.Enqueue(density);
+            if (Densities.Count >= MaxSize)
+            {
+                Densities.Dequeue();
+            }            
+        }
+    }
 
     public class FieldAnalyzer
     {
+        private int countStableState;
+        public int CountStableState
+        {
+            get { return countStableState - 9; }
+            private set { countStableState = value; }
+        }
+        public FieldAnalyzer()
+        {
+            countStableState = 0;
+        }
+        public void AddCountStableState()
+        {
+            countStableState++;
+        }
         public static int CountAliveCells(Board board)
         {
             int aliveCount = 0;
@@ -126,24 +161,26 @@ namespace cli_life
                     {
                         { "Block", 0 },
                         { "Beehive", 0 },
-                        { "Loaf", 0 }
+                        { "Box", 0 },
+                        { "Pond", 0 },
+                        { "Snake", 0 }
                     }
                 },
-                {
-                    "Periodic", new Dictionary<string, int>()
-                },
-                {
-                    "Moving", new Dictionary<string, int>()
-                },
-                {
-                    "Guns", new Dictionary<string, int>()
-                },
-                {
-                    "Locomotive", new Dictionary<string, int>()
-                },
-                {
-                    "Eater", new Dictionary<string, int>()
-                },
+                //{
+                //    "Periodic", new Dictionary<string, int>()
+                //},
+                //{
+                //    "Moving", new Dictionary<string, int>()
+                //},
+                //{
+                //    "Guns", new Dictionary<string, int>()
+                //},
+                //{
+                //    "Locomotive", new Dictionary<string, int>()
+                //},
+                //{
+                //    "Eater", new Dictionary<string, int>()
+                //},
                 {
                     "Other", new Dictionary<string, int>()
                     {
@@ -226,40 +263,38 @@ namespace cli_life
                 }
             }
         }
-        public static bool IsStable(bool[,] currentGameState, bool[,] previousGameState, bool[,] beforePreviousGameState)
+        public static bool IsStable(QueueDensity queueDensity)
         {
-            bool correctPreviousGameState = currentGameState.Length == previousGameState.Length;
-            bool correctBeforePreviousGameState = currentGameState.Length == beforePreviousGameState.Length;
-            bool stablePreviousGame = true;
-            bool stableBeforePreviousGameState = true;
+            var array = queueDensity.Densities.ToArray();
+            int length = array.Length;
 
-            for (int x = 0; x < currentGameState.GetLength(0); x++)
+            if (length < queueDensity.MaxSize - 1)
             {
-                for (int y = 0; y < currentGameState.GetLength(1); y++)
-                {
-                    if (correctPreviousGameState && stablePreviousGame)
-                    {
-                        if (currentGameState[x, y] != previousGameState[x, y])
-                        {
-                            stablePreviousGame = false;
-                        }
-                    }
-
-                    if (correctBeforePreviousGameState && stableBeforePreviousGameState)
-                    {
-                        if (currentGameState[x, y] != beforePreviousGameState[x, y])
-                        {
-                            stableBeforePreviousGameState = false;
-                        }
-                    }
-                }
-                if (!stablePreviousGame && !stableBeforePreviousGameState)
-                {
-                    break;
-                }
+                return false;
             }
 
-            return stableBeforePreviousGameState || stableBeforePreviousGameState;
+            for (int len = 1; len <= length / 2; len++)
+            {
+                bool isRepeating = true;
+
+                for (int start = 0; start <= length - 2 * len; start++)
+                {
+                    for (int i = 0; i < len; i++)
+                    {
+                        if (array[start + i] != array[start + len + i])
+                        {
+                            isRepeating = false;
+                            break;
+                        }
+                    }
+
+                    if (isRepeating)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 
@@ -271,11 +306,15 @@ namespace cli_life
                 return "Block";
             else if (IsBeehive(liveCellCoordinates, columns, rows))
                 return "Beehive";
-            
+            else if (IsBox(liveCellCoordinates, columns, rows))
+                return "Box";
+            else if (IsPond(liveCellCoordinates, columns, rows))
+                return "Pond";
+            else if (IsSnake(liveCellCoordinates, columns, rows))
+                return "Snake";
 
             return "Unknown";
         }
-
         private static bool IsBlock(HashSet<Point> liveCellCoordinates, int columns, int rows)
         {
             foreach (var point in liveCellCoordinates)
@@ -294,10 +333,8 @@ namespace cli_life
                     return true;
                 }
             }
-
             return false;
         }
-
         private static bool IsBeehive(HashSet<Point> liveCellCoordinates, int columns, int rows)
         {
             foreach (var point in liveCellCoordinates)
@@ -330,7 +367,86 @@ namespace cli_life
                     return true;
                 }
             }
+            return false;
+        }
+        private static bool IsBox(HashSet<Point> liveCellCoordinates, int columns, int rows)
+        {
+            foreach (var point in liveCellCoordinates)
+            {
+                int x = point.X;
+                int y = point.Y;
 
+                // Box
+                // - * -
+                // * - *
+                // - * -
+                if (liveCellCoordinates.Contains(new Point(x, y)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, (y +1) % rows)) &&
+                    liveCellCoordinates.Contains(new Point(x, (y + 2) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x - 1) % columns, (y + 1) % rows)))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private static bool IsPond(HashSet<Point> liveCellCoordinates, int columns, int rows)
+        {
+            foreach (var point in liveCellCoordinates)
+            {
+                int x = point.X;
+                int y = point.Y;
+
+                // Pond
+                // - * * -
+                // * - - *
+                // * - - *
+                // - * * -
+                if (liveCellCoordinates.Contains(new Point(x, y)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, (y - 1) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 2) % columns, (y - 1) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 3) % columns, y)) &&
+                    liveCellCoordinates.Contains(new Point((x + 3) % columns, (y + 1) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 2) % columns, (y + 2) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, (y + 2) % rows)) &&
+                    liveCellCoordinates.Contains(new Point(x, (y + 1) % rows)))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private static bool IsSnake(HashSet<Point> liveCellCoordinates, int columns, int rows)
+        {
+            foreach (var point in liveCellCoordinates)
+            {
+                int x = point.X;
+                int y = point.Y;
+
+                // Snake
+                // * - * *
+                // * * - *
+                //
+                // * *
+                // * -
+                // - *
+                // * *
+                if ((liveCellCoordinates.Contains(new Point(x, y)) &&
+                    liveCellCoordinates.Contains(new Point((x + 2) % columns, y)) &&
+                    liveCellCoordinates.Contains(new Point((x + 3) % columns, y)) &&
+                    liveCellCoordinates.Contains(new Point(x, (y + 1) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, (y + 1) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 3) % columns, (y + 1) % rows))) ||
+                    (liveCellCoordinates.Contains(new Point(x, y)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, y)) &&
+                    liveCellCoordinates.Contains(new Point(x, (y + 1) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, (y + 2) % rows)) &&
+                    liveCellCoordinates.Contains(new Point((x + 1) % columns, (y + 3) % rows)) &&
+                    liveCellCoordinates.Contains(new Point(x, (y + 3) % rows))))
+                {
+                    return true;
+                }
+            }
             return false;
         }
     }
@@ -395,15 +511,11 @@ namespace cli_life
                 gameStateArray);
             }
         }
-        public static void SaveBoard(Board board, out bool[,] state)
+        public static void SaveCountAliveCell(string filePath, int densityAlive)
         {
-            state = new bool[board.Columns, board.Rows];
-            for (int row = 0; row < board.Rows; row++)
+            using (StreamWriter writer = new StreamWriter(filePath, true))
             {
-                for (int col = 0; col < board.Columns; col++)
-                {
-                    state[col, row] = board.Cells[col, row].IsAlive;
-                }
+                writer.WriteLine(densityAlive);
             }
         }
     }
@@ -412,9 +524,9 @@ namespace cli_life
     {
         static Board board;
         static Settings settings;
-        static bool[,] currentGameState;
-        static bool[,] previousGameState;
-        static bool[,] beforePreviousGameState;
+        static QueueDensity queueDensity;
+        static int densityAlive = 0;
+        static int sizeStabilityDefinition = 10;
         static private void Reset(Settings settings)
         {
             board = new Board(
@@ -447,7 +559,11 @@ namespace cli_life
         {
             string file_state = "..\\..\\..\\game_state.txt";
             string file_settings = "..\\..\\..\\settings.json";
-            bool f = false;
+            string file_count = "..\\..\\..\\densityAlive.txt";
+            FieldAnalyzer fieldAnalyzer = new FieldAnalyzer();
+            bool f = true;
+
+            queueDensity = new QueueDensity(sizeStabilityDefinition);
 
             if (File.Exists(file_state) && f)
             {
@@ -460,21 +576,22 @@ namespace cli_life
                 Reset(settings);
             }
 
-            currentGameState = new bool[board.Columns, board.Rows];
-            previousGameState = new bool[board.Columns, board.Rows];
-            beforePreviousGameState = new bool[board.Columns, board.Rows];
-
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
                 FileHandler.SaveToFile(file_state, board, settings);
             };
 
+            if (File.Exists(file_count))
+            {
+                File.Delete(file_count);
+            }
+
             while (true)
             {
                 Console.Clear();
                 Render();
-
-                Console.WriteLine($"Alive cells: {FieldAnalyzer.CountAliveCells(board)}");
+                int countAliveCells = FieldAnalyzer.CountAliveCells(board);
+                Console.WriteLine($"Alive cells: {countAliveCells}");
                 var (combinationCount, classification) = FieldAnalyzer.CountCombinations(board);
                 Console.WriteLine($"Combinations: {combinationCount}");
                 foreach (var category in classification)
@@ -486,13 +603,17 @@ namespace cli_life
                     }
                 }
 
-                FileHandler.SaveBoard(board, out currentGameState);
-                if (FieldAnalyzer.IsStable(currentGameState, previousGameState, beforePreviousGameState))
+                FileHandler.SaveCountAliveCell(file_count, countAliveCells);
+                if (FieldAnalyzer.IsStable(queueDensity))
                 {
                     Console.WriteLine("Game is stable!");
+                    Console.WriteLine($"Number generations of transition to a stable phase: {fieldAnalyzer.CountStableState}");
                 }
-                Array.Copy(previousGameState, beforePreviousGameState, previousGameState.Length);
-                Array.Copy(currentGameState, previousGameState, currentGameState.Length);
+                else
+                {
+                    fieldAnalyzer.AddCountStableState();
+                    queueDensity.AddDensity(countAliveCells);
+                }
 
                 board.Advance();
                 Thread.Sleep(1000);
