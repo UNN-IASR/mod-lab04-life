@@ -5,9 +5,6 @@ namespace UnitTests;
 [TestClass]
 public class BoardAnalyzerTests
 {
-    //Test count patterns
-    //Test IsStable
-
     [TestMethod]
     public void CountAliveCells_ReturnNumberOfAliveCells()
     {
@@ -179,5 +176,59 @@ public class BoardAnalyzerTests
 
         //Assert
         Assert.AreEqual(1, result.Value);
+    }
+
+    [TestMethod]
+    public void IsStable_StableBoard_ReturnsTrue()
+    {
+        //Arrange
+        var board = Helpers.LoadBoardFromFile("hives.txt");
+
+        for (int i = 0; i < 2; i++) // give data to determine if the state is stable
+        {
+            board.Advance();
+        }
+
+        //Act
+        var result = board.IsStable();
+
+        //Assert
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void IsStable_UnstableBoard_ReturnsFalse()
+    {
+        //Arrange
+        var board = Helpers.LoadBoardFromFile("somePatterns.txt");
+
+        for (int i = 0; i < 5; i++) // give data to determine if the state is stable
+        {
+            board.Advance();
+        }
+
+        //Act
+        var result = board.IsStable();
+
+        //Assert
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public void IsStable_PeriodicBoard_ReturnsTrue()
+    {
+        //Arrange
+        var board = Helpers.LoadBoardFromFile("galactic.txt");
+
+        for (int i = 0; i < 10; i++) // give data to determine if the state is stable
+        {
+            board.Advance();
+        }
+
+        //Act
+        var result = board.IsStable();
+
+        //Assert
+        Assert.IsTrue(result);
     }
 }
