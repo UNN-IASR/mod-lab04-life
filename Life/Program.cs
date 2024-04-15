@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.Json;
 using System.Drawing;
 using System.Formats.Asn1;
+using ScottPlot;
 
 namespace cli_life
 {
@@ -300,11 +301,6 @@ namespace cli_life
             writer.Close();
         }
 
-        static ScottPlot.Color GetColor(){
-            Random rnd = new Random();
-            Color randomColor = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-            return ScottPlot.Color.FromARGB((uint)Convert.ToUInt64(randomColor.ToArgb()));
-        }
         static void Main(string[] args)
         {
             int left = 20;
@@ -388,7 +384,7 @@ namespace cli_life
             int k = 0;
             foreach (var avg in avg_life){
                 bars[k] = new () {Position = avg.Key, Value = avg.Value, 
-                    FillColor=GetColor(), Size = 0.03};
+                    FillColor=Colors.AliceBlue, Size = 0.03};
                 k ++;
             }
             AvgPlot.Add.Bars(bars);
