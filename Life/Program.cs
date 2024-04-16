@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -38,6 +38,32 @@ namespace cli_life
         public int Width { get { return Columns * CellSize; } }
         public int Height { get { return Rows * CellSize; } }
         public int SleepAccuracy { get { return Convert.ToInt32(Math.Round(Math.Sqrt(Height * Width))); } }
+
+        public Board(Cell[][] cells, int cellSize){
+            count_sleeping = new Dictionary<int, int>();
+            CellSize = cellSize;
+            Cells = new Cell[cells.Length, cells[0].Length];
+            for (int x = 0; x < Columns; x++)
+                for (int y = 0; y < Rows; y++)
+                    Cells[x, y] = new Cell()
+                    {
+                        IsAlive = cells[x][y].IsAlive
+                    };
+            ConnectNeighbors();
+        }
+
+        public Board(int width, int height, int cellSize, string[] s)
+        {
+            count_sleeping = new Dictionary<int, int>();
+            CellSize = cellSize;
+
+            Cells = new Cell[width / cellSize, height / cellSize];
+            for (int x = 0; x < Columns; x++)
+                for (int y = 0; y < Rows; y++)
+                    Cells[x, y] = new Cell(){ IsAlive = s[y][x] == '1' ? true : false };
+
+            ConnectNeighbors();
+        }
 
         public Board(int width, int height, int cellSize, double liveDensity = .1)
         {
@@ -112,46 +138,47 @@ namespace cli_life
             Dictionary <string, string> life = new Dictionary<string, string>()
             {
                 // block 4x4
-                {"0000011001100000", "block"},
+                {"00000110011000004x4", "block"},
                 // hive 6x5, 5x6
-                {"000000001100010010001100000000", "hive"},
-                {"000000010001010010100010000000", "hive"},
+                {"0000000011000100100011000000006x5", "hive"},
+                {"0000000100010100101000100000005x6", "hive"},
                 // loaf 6x6
-                {"000000000100001010010010001100000000", "loaf"},
-                {"000000001000010100010010001100000000", "loaf"},
-                {"000000001100010010010100001000000000", "loaf"},
-                {"000000001100010010001010000100000000", "loaf"},
+                {"0000000001000010100100100011000000006x6", "loaf"},
+                {"0000000010000101000100100011000000006x6", "loaf"},
+                {"0000000011000100100101000010000000006x6", "loaf"},
+                {"0000000011000100100010100001000000006x6", "loaf"},
                 // tub 5x5
-                {"00000001000101000100000000", "tub"},
+                {"00000001000101000100000005x5", "tub"},
                 // boat 5x5
-                {"00000011000101000100000000", "boat"},
-                {"00000010000101000110000000", "boat"},
-                {"00000001100101000100000000", "boat"},
-                {"00000001000101001100000000", "boat"},
+                {"00000011000101000100000005x5", "boat"},
+                {"00000001100101000100000005x5", "boat"},
+                {"00000001000101001100000005x5", "boat"},
+                {"00000001000101000110000005x5", "boat"},
                 // ship 5x5
-                {"00000011000101000110000000", "ship"},
-                {"00000001100101001100000000", "ship"},
+                {"00000011000101000110000005x5", "ship"},
+                {"00000001100101001100000005x5", "ship"},
                 // pond 6x6
-                {"000000001100010010010010001100000000", "pond"},
+                {"0000000011000100100100100011000000006x6", "pond"},
                 // spinner 5x3, 3x5
-                {"000000111000000", "spinner"},
-                {"000010010010000", "spinner"}
+                {"0000001110000005x3", "spinner"},
+                {"0000100100100003x5", "spinner"}
 
             };
             int[] heights = new int[] { 3, 4, 5, 6};
             int[] widths = new int[] { 3, 4, 5, 6};
-            foreach (int h in heights){
-                foreach (int w in widths){
-                    for (int x = 0; x < Width; x++){
-                        for (int y = 0; y < Height; y++){
+            foreach (int w in widths) {
+                foreach (int h in heights) {
+                    for (int y = 0; y < Height; y++) {
+                        for (int x = 0; x < Width; x++) {
                             string window = "";
-                            for (int i = x; i < x+w; i++){
-                                for (int j = y; j < y+h; j++){
+                            for (int j = y; j < y + h; j++) {
+                                for (int i = x; i < x + w; i++) {
                                     window += Cells[i % Width, j % Height].IsAlive ? "1" : "0";
-                                } 
+                                }
                             }
-                            if (life.ContainsKey(window)){
-                                if (!entities.ContainsKey(life[window])){
+                            window += w.ToString() + "x" + h.ToString();
+                            if (life.ContainsKey(window)) {
+                                if (!entities.ContainsKey(life[window])) {
                                     entities[life[window]] = 0;
                                 }
                                 entities[life[window]] += 1;

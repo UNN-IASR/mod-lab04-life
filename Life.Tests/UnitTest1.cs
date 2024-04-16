@@ -4,26 +4,9 @@ using cli_life;
 [TestClass]
 public class UnitTest1
 {
-    //клетка родилась
-    //клетка умерла от перенаселения
-    //клетка умерла от одиночества
-    //клетки живы в стабильном
-    //клетки живы в спинере
-    //глайдер катается
-    //нормально считает живых
-    //нормально считает блоки
-    //нормально считает спинеры
-    //нормально считает буханки
-    //нормально считает улей
-    //нормально считает пруд
-    //считает коробки
-    //считает лодки
-    //считает корабли
-    //нормально завершает на пустом
-    //нормально завершает большой пример
 
     [TestMethod]
-    public void TestMethod1()
+    public void BoardSize()
     {
         int w = 10;
         int h = 10;
@@ -36,72 +19,348 @@ public class UnitTest1
     }
 
     [TestMethod]
-    public void TestMethod2()
+    public void CellBirth()
     {
+        //####
+        //#**#
+        //##*#
+        //####
+        Cell[][] cells = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        //####
+        //#**#
+        //#**#
+        //####
+        Cell[][] correct = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        Board board = new Board(cells, 1);
+        board.Advance();
+        for (int x = 0; x < board.Columns; x++)
+            for (int y = 0; y < board.Rows; y++)
+                Assert.AreEqual(correct[x][y].IsAlive, board.Cells[x, y].IsAlive);
     }
 
     [TestMethod]
-    public void TestMethod3()
+    public void CellDiedFromLoneliness()
     {
+        //####
+        //####
+        //##*#
+        //####
+        Cell[][] cells = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        //####
+        //####
+        //####
+        //####
+        Cell[][] correct = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        Board board = new Board(cells, 1);
+        board.Advance();
+        for (int x = 0; x < board.Columns; x++)
+            for (int y = 0; y < board.Rows; y++)
+                Assert.AreEqual(correct[x][y].IsAlive, board.Cells[x, y].IsAlive);
     }
 
     [TestMethod]
-    public void TestMethod4()
+    public void CellDiedFromOverpopulating()
     {
+        //#####
+        //##*##
+        //#***#
+        //##*##
+        //#####
+        Cell[][] cells = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        //#####
+        //#***#
+        //#*#*#
+        //#***#
+        //#####
+        Cell[][] correct = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        Board board = new Board(cells, 1);
+        board.Advance();
+        for (int x = 0; x < board.Columns; x++)
+            for (int y = 0; y < board.Rows; y++)
+                Assert.AreEqual(correct[x][y].IsAlive, board.Cells[x, y].IsAlive);
     }
 
     [TestMethod]
-    public void TestMethod5()
+    public void CellsLiveStable()
     {
+        //#####
+        //#**##
+        //#**##
+        //#####
+        //#####
+        Cell[][] cells = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        //#####
+        //#**##
+        //#**##
+        //#####
+        //#####
+        Cell[][] correct = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        Board board = new Board(cells, 1);
+        for (int i = 0; i < 10; i++)
+            board.Advance();
+        for (int x = 0; x < board.Columns; x++)
+            for (int y = 0; y < board.Rows; y++)
+                Assert.AreEqual(correct[x][y].IsAlive, board.Cells[x, y].IsAlive);
     }
 
     [TestMethod]
-    public void TestMethod6()
+    public void CellsLivePeriodic()
     {
+        //#####
+        //#*###
+        //#*###
+        //#*###
+        //#####
+        Cell[][] cells = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        //#####
+        //#*###
+        //#*###
+        //#*###
+        //#####
+        Cell[][] correct = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        Board board = new Board(cells, 1);
+        for (int i = 0; i < 10; i++)
+            board.Advance();
+        for (int x = 0; x < board.Columns; x++)
+            for (int y = 0; y < board.Rows; y++)
+                Assert.AreEqual(correct[x][y].IsAlive, board.Cells[x, y].IsAlive);
     }
 
     [TestMethod]
-    public void TestMethod7()
+    public void CellsGlider()
     {
+        //#####
+        //##*##
+        //###*#
+        //#***#
+        //#####
+        Cell[][] cells = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        //#####
+        //##*##
+        //###*#
+        //#***#
+        //#####
+        Cell[][] correct = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        Board board = new Board(cells, 1);
+        for (int i = 0; i < 20; i++)
+            board.Advance();
+        for (int x = 0; x < board.Columns; x++)
+            for (int y = 0; y < board.Rows; y++)
+                Assert.AreEqual(correct[x][y].IsAlive, board.Cells[x, y].IsAlive);
+    }
+
+
+    [TestMethod]
+    public void CountAll()
+    {
+        //#####
+        //##*##
+        //###*#
+        //#***#
+        //#####
+        Cell[][] cells = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        Board board = new Board(cells, 1);
+        Assert.AreEqual(5, board.countAlive());
     }
 
     [TestMethod]
-    public void TestMethod8()
+    public void CountAllInEntities()
     {
+        //#####
+        //#**##
+        //#**##
+        //#####
+        //#####
+        Cell[][] cells = new Cell[][] 
+        {
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = true}, new Cell(){IsAlive = true}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false} },
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+            new Cell[] {new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}, new Cell(){IsAlive = false}},
+        };
+        
+        Board board = new Board(cells, 1);
+        Dictionary<string, int> entities = board.countEntities();
+        Assert.AreEqual(4, entities["cells at all"]);
     }
 
     [TestMethod]
-    public void TestMethod9()
+    public void CountBlock()
     {
+        string[] raw = File.ReadAllLines("Tests.Data/test.txt");
+        Board board = new Board(60, 30, 1, raw);
+        Dictionary<string, int> entities = board.countEntities();
+        Assert.AreEqual(3, entities["block"]);
     }
 
     [TestMethod]
-    public void TestMethod10()
+    public void CountSpinner()
     {
+        string[] raw = File.ReadAllLines("Tests.Data/test.txt");
+        Board board = new Board(60, 30, 1, raw);
+        Dictionary<string, int> entities = board.countEntities();
+        Assert.AreEqual(2, entities["spinner"]);
     }
 
     [TestMethod]
-    public void TestMethod11()
+    public void CountLoaf()
     {
+        string[] raw = File.ReadAllLines("Tests.Data/test.txt");
+        Board board = new Board(60, 30, 1, raw);
+        Dictionary<string, int> entities = board.countEntities();
+        Assert.AreEqual(4, entities["loaf"]);
     }
 
     [TestMethod]
-    public void TestMethod12()
+    public void CountPond()
     {
+        string[] raw = File.ReadAllLines("Tests.Data/test.txt");
+        Board board = new Board(60, 30, 1, raw);
+        Dictionary<string, int> entities = board.countEntities();
+        Assert.AreEqual(1, entities["pond"]);
     }
 
     [TestMethod]
-    public void TestMethod13()
+    public void CountTub()
     {
+        string[] raw = File.ReadAllLines("Tests.Data/test.txt");
+        Board board = new Board(60, 30, 1, raw);
+        Dictionary<string, int> entities = board.countEntities();
+        Assert.AreEqual(1, entities["tub"]);
     }
 
     [TestMethod]
-    public void TestMethod14()
+    public void CountBoat()
     {
+        string[] raw = File.ReadAllLines("Tests.Data/test.txt");
+        Board board = new Board(60, 30, 1, raw);
+        Dictionary<string, int> entities = board.countEntities();
+        Assert.AreEqual(4, entities["boat"]);
     }
 
     [TestMethod]
-    public void TestMethod15()
+    public void CountShip()
     {
+        string[] raw = File.ReadAllLines("Tests.Data/test.txt");
+        Board board = new Board(60, 30, 1, raw);
+        Dictionary<string, int> entities = board.countEntities();
+        Assert.AreEqual(2, entities["ship"]);
+    }
+
+    [TestMethod]
+    public void CountHive()
+    {
+        string[] raw = File.ReadAllLines("Tests.Data/test.txt");
+        Board board = new Board(60, 30, 1, raw);
+        Dictionary<string, int> entities = board.countEntities();
+        Assert.AreEqual(2, entities["hive"]);
+    }
+
+    [TestMethod]
+    public void LongLife()
+    {
+        Board board = new Board(60, 30, 1, 0.2);
+        while(!board.isStable()){
+            board.Advance();
+        }
+        Assert.IsTrue(board.isStable());
+    }
+
+    [TestMethod]
+    public void EmptyLife()
+    {
+        Board board = new Board(60, 30, 1, 0);
+        while(!board.isStable()){
+            board.Advance();
+        }
+        Assert.IsTrue(board.isStable());
     }
 }
