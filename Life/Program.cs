@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using SkiaSharp;
+using System.Text.Json;
+using System.IO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace cli_life
 {
@@ -24,6 +28,13 @@ namespace cli_life
         {
             IsAlive = IsAliveNext;
         }
+    }
+    public class Settings
+    {
+        public int Height { get; set; }
+        public int Width { get; set; }
+        public int CellSize { get; set; }
+        public double LiveDensity { get; set; }
     }
     public class Board
     {
@@ -93,10 +104,24 @@ namespace cli_life
         {
             board = new Board(
                 width: 50,
-                height: 20,
+                height: 30,
                 cellSize: 1,
                 liveDensity: 0.5);
         }
+        static private Board ResetFromFile()
+        {
+            using (FileStream fs = File.OpenRead("settings.json"))
+            {
+                Settings s = JsonSerializer.Deserialize<Settings>(fs);
+                board = new Board(
+                    width: s.Width,
+                    height: s.Height,
+                    cellSize: s.CellSize,
+                    liveDensity: s.LiveDensity);
+            }
+            return board;
+        }
+        
         static void Render()
         {
             for (int row = 0; row < board.Rows; row++)
@@ -118,13 +143,20 @@ namespace cli_life
         }
         static void Main(string[] args)
         {
-            Reset();
-            while(true)
+            ResetFromFile();
+            Render();
+            while (true)
             {
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKeyInfo act = Console.ReadKey();
+                    if (act.KeyChar == 'a')
+                    break;
+                }
                 Console.Clear();
-                Render();
                 board.Advance();
-                Thread.Sleep(1000);
+                Render();
+                Thread.Sleep(300);
             }
         }
     }
