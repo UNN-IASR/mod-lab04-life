@@ -1,0 +1,25 @@
+10 10
+__________
+     00   |
+          |
+          |
+     00   |
+     000  |
+     00   |
+          |
+          |
+          |
+     00   |
+‾‾‾‾‾‾‾‾‾‾
+Gen num = 13
+Alive celles: 11
+
+Width = 10
+Height = 10
+liveDensity = 0,3
+
+Block : 1
+Hive : 0
+Caravay : 0
+Box : 0
+Flashing : 0
