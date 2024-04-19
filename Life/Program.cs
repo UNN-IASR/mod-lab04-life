@@ -173,7 +173,7 @@ namespace cli_life
         }
 
         public static Board Load(string name) {
-            StreamReader reader = new StreamReader("Data\\" + name , true);
+            StreamReader reader = new StreamReader("Data/" + name , true);
             string[] s = reader.ReadLine().Split();
             reader.ReadLine();
             int w = Convert.ToInt32(s[0]), h = Convert.ToInt32(s[1]);
