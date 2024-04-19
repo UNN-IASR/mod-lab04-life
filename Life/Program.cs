@@ -72,7 +72,7 @@ namespace cli_life
         }
         private void ConnectNeighbors()
         {
-            for (int row = 0; row < Height; row++)
+            for (int row = 0; row < Height; row++) 
             {
                 for (int col = 0; col < Width; col++)
                 {
