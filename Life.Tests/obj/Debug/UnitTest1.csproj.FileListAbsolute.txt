@@ -1,0 +1,85 @@
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\ru\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.resources.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\ru\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.resources.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\ru\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\UnitTest1.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\UnitTest1.pdb
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\lab2.exe
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\lab2.pdb
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\lab2.exe.config
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\obj\Debug\UnitTest1.csproj.AssemblyReference.cache
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\obj\Debug\UnitTest1.csproj.CoreCompileInputs.cache
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\obj\Debug\UnitTest1.csproj.CopyComplete
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\obj\Debug\UnitTest1.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab2\UnitTest1\obj\Debug\UnitTest1.pdb
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\ru\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.resources.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\ru\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.resources.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\ru\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\UnitTest1.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\UnitTest1.pdb
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\lab2.exe
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\lab2.pdb
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\lab2.exe.config
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\obj\Debug\UnitTest1.csproj.AssemblyReference.cache
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\obj\Debug\UnitTest1.csproj.CoreCompileInputs.cache
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\obj\Debug\UnitTest1.csproj.CopyComplete
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\obj\Debug\UnitTest1.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5\UnitTest1\obj\Debug\UnitTest1.pdb
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\ru\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.resources.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\ru\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.resources.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\ru\Microsoft.VisualStudio.TestPlatform.TestFramework.resources.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\libSkiaSharp.dylib
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\x86\libSkiaSharp.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\x64\libSkiaSharp.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\arm64\libSkiaSharp.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\x64\libSkiaSharp.so
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\arm\libSkiaSharp.so
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\arm64\libSkiaSharp.so
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\musl-x64\libSkiaSharp.so
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\UnitTest1.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\UnitTest1.pdb
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\lab2.exe
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\Newtonsoft.Json.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\ScottPlot.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\SkiaSharp.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\System.Buffers.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\System.Memory.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\System.ValueTuple.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\lab2.pdb
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\lab2.exe.config
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\Newtonsoft.Json.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\ScottPlot.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\SkiaSharp.pdb
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\SkiaSharp.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\System.Buffers.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\System.Memory.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\bin\Debug\System.ValueTuple.xml
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\obj\Debug\UnitTest1.csproj.AssemblyReference.cache
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\obj\Debug\UnitTest1.csproj.CoreCompileInputs.cache
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\obj\Debug\UnitTest1.csproj.CopyComplete
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\obj\Debug\UnitTest1.dll
+C:\Users\ASUS\Desktop\ННГУ\3 курс\Моделирование информационных процессов и систем\lab5 — копия\UnitTest1\obj\Debug\UnitTest1.pdb
