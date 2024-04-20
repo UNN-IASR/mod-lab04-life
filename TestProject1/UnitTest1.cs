@@ -19,7 +19,7 @@ public class UnitTest1
     [TestMethod]
     public void TestMethod2()
     {   
-        string filename = "test2.json";
+        string filename = "../../../../test2.json";
         string jsonString = File.ReadAllText(filename);
         Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
 
@@ -32,8 +32,8 @@ public class UnitTest1
     public void TestMethod3()
     {
         Board board = new Board(4, 4, 1, 1);
-        board.Upload("test3.txt");
-        Figure[] fig = Figure.GetFigure("figuretest.json");
+        board.Upload("../../../../test3.txt");
+        Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
         Figure block = fig[0];
         int count = Figure.FindFigure(block, board);
         Assert.AreEqual(count, 1);
@@ -43,8 +43,8 @@ public class UnitTest1
     public void TestMethod4()
     {
         Board board = new Board(6, 6, 1, 1);
-        board.Upload("test4.txt");
-        Figure[] fig = Figure.GetFigure("figuretest.json");
+        board.Upload("../../../../test4.txt");
+        Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
         Figure pond = fig[1];
         int count = Figure.FindFigure(pond, board);
         Assert.AreEqual(count, 1);
@@ -53,8 +53,8 @@ public class UnitTest1
     public void TestMethod5()
     {
         Board board = new Board(5, 5, 1, 1);
-        board.Upload("test5.txt");
-        Figure[] fig = Figure.GetFigure("figuretest.json");
+        board.Upload("../../../../test5.txt");
+        Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
         Figure tub = fig[2];
         int count = Figure.FindFigure(tub, board);
         Assert.AreEqual(count, 1);
@@ -63,8 +63,8 @@ public class UnitTest1
     public void TestMethod6()
     {
         Board board = new Board(5, 5, 1, 1);
-        board.Upload("test6.txt");
-        Figure[] fig = Figure.GetFigure("figuretest.json");
+        board.Upload("../../../../test6.txt");
+        Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
         Figure boat = fig[3];
         int count = Figure.FindFigure(boat, board);
         Assert.AreEqual(count, 1);
@@ -73,8 +73,8 @@ public class UnitTest1
     public void TestMethod7()
     {
         Board board = new Board(5, 5, 1, 1);
-        board.Upload("test7.txt");
-        Figure[] fig = Figure.GetFigure("figuretest.json");
+        board.Upload("../../../../test7.txt");
+        Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
         Figure ship = fig[4];
         int count = Figure.FindFigure(ship, board);
         Assert.AreEqual(count, 1);
@@ -83,8 +83,8 @@ public class UnitTest1
     public void TestMethod8()
     {
         Board board = new Board(6, 6, 1, 1);
-        board.Upload("test8.txt");
-        Figure[] fig = Figure.GetFigure("figuretest.json");
+        board.Upload("../../../../test8.txt");
+        Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
         Figure block = fig[0];
         int count = Figure.FindFigure(block, board);
         Assert.AreEqual(count, 4);
@@ -93,8 +93,8 @@ public class UnitTest1
     public void TestMethod9()
     {
         Board board = new Board(4, 4, 1, 1);
-        board.Upload("test9.txt");
-        Figure[] fig = Figure.GetFigure("figuretest.json");
+        board.Upload("../../../../test9.txt");
+        Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
         Figure block = fig[0];
         int count = Figure.FindFigure(block, board);
         Assert.AreEqual(count, 0);
@@ -103,7 +103,7 @@ public class UnitTest1
     public void TestMethod10()
     {
         Board board = new Board(4, 4, 1, 1);
-        board.Upload("test10.txt");
+        board.Upload("../../../../test10.txt");
         int count = board.CellsAliveCount();
         Assert.AreEqual(count,4);
     }
@@ -111,7 +111,7 @@ public class UnitTest1
     public void TestMethod11()
     {
         Board board = new Board(6, 6, 1, 1);
-        board.Upload("test11.txt");
+        board.Upload("../../../../test11.txt");
         int count = board.CellsAliveCount();
         Assert.AreEqual(count,16);
     }
@@ -119,7 +119,7 @@ public class UnitTest1
     public void TestMethod12()
     {
         Board board = new Board(6, 6, 1, 1);
-        board.Upload("test11.txt");
+        board.Upload("../../../../test11.txt");
         int CountPositions = 0;
         bool flag = true;
         while(flag)
@@ -140,7 +140,7 @@ public class UnitTest1
     public void TestMethod13()
     {
         Board board = new Board(6, 6, 1, 1);
-        board.Upload("test11.txt");
+        board.Upload("../../../../test11.txt");
         bool flag = true;
         for (int i = 0; i<2; i++)
         {
@@ -157,7 +157,7 @@ public class UnitTest1
     public void TestMethod14()
     {
         Board board = new Board(6, 6, 1, 1);
-        board.Upload("test14.txt");
+        board.Upload("../../../../test14.txt");
         int count = board.CellsAliveCount();
         Assert.AreEqual(count,2);
     }
@@ -165,7 +165,7 @@ public class UnitTest1
     public void TestMethod15()
     {
         Board board = new Board(6, 6, 1, 1);
-        board.Upload("test14.txt");
+        board.Upload("../../../../test14.txt");
         for (int i = 0; i<2; i++)
         {
             board.Advance();
