@@ -2,10 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
-using System.Threading;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace cli_life
 {
@@ -247,7 +244,7 @@ namespace cli_life
         public static BoardSettings LoadSettings(string filePath)
         {
             string json = File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<BoardSettings>(json);
+            return JsonSerializer.Deserialize<BoardSettings>(json);
         }
 
         public static int CountAliveCells()
