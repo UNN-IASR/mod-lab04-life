@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "Q55rRATj6kfYOSC0ZGMu9/MQAw2yamIuCriKbzUzF/DjF5Psl0015ujYBYuatxO8KcoYFEQgeaSoEvzTMpbQnw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\wizze\\source\\repos\\Life\\Life\\Life.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\wizze\\.nuget\\packages\\scottplot\\5.0.26\\scottplot.5.0.26.nupkg.sha512",
+    "C:\\Users\\wizze\\.nuget\\packages\\skiasharp\\2.88.8\\skiasharp.2.88.8.nupkg.sha512",
+    "C:\\Users\\wizze\\.nuget\\packages\\skiasharp.nativeassets.linux.nodependencies\\2.88.8\\skiasharp.nativeassets.linux.nodependencies.2.88.8.nupkg.sha512",
+    "C:\\Users\\wizze\\.nuget\\packages\\skiasharp.nativeassets.macos\\2.88.8\\skiasharp.nativeassets.macos.2.88.8.nupkg.sha512",
+    "C:\\Users\\wizze\\.nuget\\packages\\skiasharp.nativeassets.win32\\2.88.8\\skiasharp.nativeassets.win32.2.88.8.nupkg.sha512"
+  ],
+  "logs": []
+}
