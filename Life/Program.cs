@@ -1,12 +1,25 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using Newtonsoft.Json;
+
 
 namespace cli_life
 {
+    public class Figure
+    {
+        [JsonProperty("m")]
+        public int m { get; set; }
+        [JsonProperty("n")]
+        public int n { get; set; }
+        [JsonProperty("table")]
+        public bool[,] table { get; set; } 
+
+    }
+
     public class Cell
     {
         public bool IsAlive;
@@ -29,12 +42,13 @@ namespace cli_life
     {
         public readonly Cell[,] Cells;
         public readonly int CellSize;
-
+        public double liveDensity;
         public int Columns { get { return Cells.GetLength(0); } }
         public int Rows { get { return Cells.GetLength(1); } }
         public int Width { get { return Columns * CellSize; } }
         public int Height { get { return Rows * CellSize; } }
-
+        public double LiveDensity { get { return liveDensity; } }
+        
         public Board(int width, int height, int cellSize, double liveDensity = .1)
         {
             CellSize = cellSize;
@@ -47,7 +61,8 @@ namespace cli_life
             ConnectNeighbors();
             Randomize(liveDensity);
         }
-
+        
+    
         readonly Random rand = new Random();
         public void Randomize(double liveDensity)
         {
@@ -62,7 +77,7 @@ namespace cli_life
             foreach (var cell in Cells)
                 cell.Advance();
         }
-        private void ConnectNeighbors()
+        public void ConnectNeighbors()
         {
             for (int x = 0; x < Columns; x++)
             {
@@ -84,21 +99,27 @@ namespace cli_life
                     Cells[x, y].neighbors.Add(Cells[xR, yB]);
                 }
             }
+            Randomize(liveDensity);
         }
     }
-    class Program
+    public class Program
     {
-        static Board board;
-        static private void Reset()
+        public static Board board;
+        static public void Reset()
         {
+            var data = File.ReadAllText("Board.json");
+            var settings = (data);
+            JsonNode forecastNode = JsonNode.Parse(data)!;
+            var options = new JsonSerializerOptions { WriteIndented = true };
             board = new Board(
-                width: 50,
-                height: 20,
+                 width: (int)forecastNode!["Width"]!,
+                 height: (int)forecastNode!["Height"]!,
                 cellSize: 1,
-                liveDensity: 0.5);
+                liveDensity: (double)forecastNode!["LiveDensity"]!);
         }
-        static void Render()
+        public static void Render()
         {
+            double[,] c = new double[board.Columns, board.Rows];
             for (int row = 0; row < board.Rows; row++)
             {
                 for (int col = 0; col < board.Columns; col++)   
@@ -107,25 +128,199 @@ namespace cli_life
                     if (cell.IsAlive)
                     {
                         Console.Write('*');
+                        c[col, row] = 1;
                     }
                     else
                     {
                         Console.Write(' ');
+                        c[col, row] = 0;
                     }
                 }
                 Console.Write('\n');
             }
+            var plt = new ScottPlot.Plot(800,600);
+           plt.AddHeatmap(c);
+           plt.SaveFig("1.png");
+
         }
         static void Main(string[] args)
         {
-            Reset();
-            while(true)
+            read("file2.txt");
+            Render();
+            Console.ReadLine();
+            Console.ReadLine();
+        }
+        public static void add_figure(string name, int y, int x)
+        {
+            var data = File.ReadAllText("exemple.json");
+            var settings = (data);
+            JsonNode forecastNode = JsonNode.Parse(data)!;
+            Figure fig = JsonConvert.DeserializeObject<Figure>(forecastNode![name]!.ToString());
+            int rowIndexStart = x-1;
+            int rowIndexFinish = fig.m+x-1;
+            int colIndexStart = y-1;
+            int colIndexFinish = fig.n+y-1;
+            int i=0, j = 0;
+            for (int row = x - 1; row < rowIndexFinish; row++)
             {
-                Console.Clear();
-                Render();
-                board.Advance();
-                Thread.Sleep(1000);
+                for (int col=y-1; col < colIndexFinish; col++) 
+                {
+                    board.Cells[row, col].IsAlive = fig.table[i, j];
+                    j++;
+                }
+                j = 0;
+                i++;
             }
+            
+        }
+        public static void save()
+        {
+            //if (e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift) && e.Key == Key.B) { 
+
+            string fileName = "SavingFile.txt";
+            string str = "";
+            StreamWriter f = new StreamWriter(fileName, true);
+            f.WriteLine(board.Columns.ToString());
+            f.WriteLine(board.Rows.ToString());
+            for (int row = 0; row < board.Columns; row++)
+            {
+                str = "";
+                for (int col = 0; col < board.Rows; col++)
+                {
+                    //var cell = board.Cells[row, col];
+                    if (board.Cells[row, col].IsAlive == true)
+                    {
+                        str = str + "*";
+                        //Console.Write('*');
+                    }
+                    else
+                    {
+                        str = str + "_";
+                        //Console.Write(' ');
+                    }
+                }
+                f.WriteLine(str);
+            }
+            //Cell cell = board.Cells[col, row];
+            f.Close();
+        //}
+        }
+        public static void read(string str)
+        {
+            bool[,] C;
+           
+            
+                StreamReader f = new StreamReader(str);
+                int m = Int32.Parse(f.ReadLine());
+                int n = Int32.Parse(f.ReadLine());
+                //C = new bool[m, n];
+            board = new Board(
+                width: n,
+                height: m,
+                cellSize: 1,
+             
+                liveDensity: 0.5
+            );
+
+
+            int j = 0;
+                while (!f.EndOfStream)
+                {
+                    string s = f.ReadLine();
+                    for (int i = 0; i < n; i++)
+                    {
+                        if (s[i] == '*')
+                        board.Cells[i,j].IsAlive = true;
+                        else
+                        board.Cells[i, j].IsAlive = false;
+                    }
+                    // что-нибудь делаем с прочитанной строкой s
+                    j++;
+                }
+                f.Close();
+                
+         
+            
+        }
+        public static bool symmetry_horizontally()
+        {
+            
+            bool flag = true;
+            for (int i=0; i<board.Columns; i++)
+            {
+                for (int j = 0; j < board.Rows/2; j++)
+                {
+                    if (board.Cells[i, j].IsAlive != board.Cells[i,board.Rows-1-j].IsAlive)
+                        flag = false;   
+                }
+            }
+            return flag;
+        }
+
+        public static bool symmetry_vertically()
+        {
+            bool flag = true;
+            for (int i = 0; i < board.Rows; i++)
+            {
+                for (int j = 0; j < board.Columns / 2; j++)
+                {
+                    if (board.Cells[j, i].IsAlive != board.Cells[board.Columns - 1 -j,  i].IsAlive)
+                        flag = false;
+                }
+            }
+            return flag;
+        }
+        public static int find(string name)
+        {
+            var data = File.ReadAllText("exemple.json");
+            var settings = (data);
+            JsonNode forecastNode = JsonNode.Parse(data)!;
+
+
+            Figure fig = JsonConvert.DeserializeObject<Figure>(forecastNode![name]!.ToString());
+
+            int j = 0;
+            int rowIndexStart = 0;
+            int rowIndexFinish = fig.m;
+            int colIndexStart = 0;
+            int colIndexFinish = fig.n;
+            bool flag = true;
+            int sum = 0;
+            while (rowIndexFinish < board.Columns)
+            {
+                while (colIndexFinish < board.Rows)
+                {
+                    int i = 0;
+                    j = 0;
+                    for (int row = rowIndexStart; row < rowIndexFinish; row++)
+                    {
+                        for (int col = colIndexStart; col < colIndexFinish; col++)
+                        {
+                            if (board.Cells[row, col].IsAlive != fig.table[i,j])
+                            {
+                                flag = false;
+                                break;
+                            }
+                            j++;
+
+                        }
+                        j = 0;
+                        i++;
+                    }
+                    i = 0;
+
+                    colIndexStart++;
+                    colIndexFinish++;
+                    if (flag) sum++;
+                    flag = true;
+                }
+                colIndexFinish = fig.n;
+                colIndexStart = 0;
+                rowIndexStart++;
+                rowIndexFinish++;
+            }
+
+            return sum;
         }
     }
 }
