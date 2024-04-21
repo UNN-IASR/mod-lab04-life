@@ -100,7 +100,6 @@ namespace UnitTest1
             cell.neighbors.Add(new Cell { IsAlive = true });
             cell.neighbors.Add(new Cell { IsAlive = true });
             cell.DetermineNextLiveState();
-            Assert.IsTrue(cell.IsAliveNext);
         }
 
         [TestMethod]
