@@ -1,0 +1,68 @@
+[
+    {
+      "Name": "Block",
+      "Image": ".....**..**.....",
+      "Width": 4,
+      "Height": 4
+    },
+    {
+      "Name": "HiveHorizontal",
+      "Image": "........**...*..*...**........",
+      "Width": 6,
+      "Height": 5
+    },
+    {
+      "Name": "HiveVertical",
+      "Image": ".......*...*.*..*.*...*.......",
+      "Width": 5,
+      "Height": 6
+    },
+    {
+      "Name": "Loaf",
+      "Image": ".........*....*.*..*..*...**........",
+      "Width": 6,
+      "Height": 6
+    },
+    {
+      "Name": "Tub",
+      "Image": ".......*...*.*...*.......",
+      "Width": 5,
+      "Height": 5
+    },
+    {
+      "Name": "Boat",
+      "Image": "......**...*.*...*.......",
+      "Width": 5,
+      "Height": 5
+    },
+    {
+      "Name": "Ship",
+      "Image": "......**...*.*...**......",
+      "Width": 5,
+      "Height": 5
+    },
+    {
+      "Name": "Pond",
+      "Image": "........**...*..*..*..*...**........",
+      "Width": 6,
+      "Height": 6
+    },
+    {
+      "Name": "Snake",
+      "Image": ".......**.*..*.**.......",
+      "Width": 6,
+      "Height": 4
+    },
+    {
+      "Name": "Canoe",
+      "Image": "...........**......*.....*...*.*....**...........",
+      "Width": 7,
+      "Height": 7
+    },
+    {
+      "Name": "AircraftCarrier",
+      "Image": ".......**....*..*....**.......",
+      "Width": 6,
+      "Height": 5
+    }
+  ]
