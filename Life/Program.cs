@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace cli_life
 {
@@ -11,7 +13,7 @@ namespace cli_life
     {
         public bool IsAlive;
         public readonly List<Cell> neighbors = new List<Cell>();
-        private bool IsAliveNext;
+        public bool IsAliveNext;
         public void DetermineNextLiveState()
         {
             int liveNeighbors = neighbors.Where(x => x.IsAlive).Count();
@@ -29,6 +31,7 @@ namespace cli_life
     {
         public readonly Cell[,] Cells;
         public readonly int CellSize;
+        public readonly double LiveDensity;
 
         public int Columns { get { return Cells.GetLength(0); } }
         public int Rows { get { return Cells.GetLength(1); } }
@@ -38,6 +41,7 @@ namespace cli_life
         public Board(int width, int height, int cellSize, double liveDensity = .1)
         {
             CellSize = cellSize;
+            LiveDensity = liveDensity;
 
             Cells = new Cell[width / cellSize, height / cellSize];
             for (int x = 0; x < Columns; x++)
@@ -86,22 +90,31 @@ namespace cli_life
             }
         }
     }
-    class Program
+    public class BoardSettings
     {
-        static Board board;
-        static private void Reset()
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public int CellSize { get; set; }
+        public double LiveDensity { get; set; }
+    }
+    public class Program
+    {
+        public static Board board;
+        static public void Reset(BoardSettings settings)
         {
             board = new Board(
-                width: 50,
-                height: 20,
-                cellSize: 1,
-                liveDensity: 0.5);
+                settings.Width,
+                settings.Height,
+                settings.CellSize,
+                settings.LiveDensity);
         }
+        static List<string> previousBoardStates = new List<string>();
+        static int MaxPreviousStates = 10;
         static void Render()
         {
             for (int row = 0; row < board.Rows; row++)
             {
-                for (int col = 0; col < board.Columns; col++)   
+                for (int col = 0; col < board.Columns; col++)
                 {
                     var cell = board.Cells[col, row];
                     if (cell.IsAlive)
@@ -116,16 +129,142 @@ namespace cli_life
                 Console.Write('\n');
             }
         }
+        static void SaveBoardState()
+        {
+            string dateTimeString = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            string filePath = $"{dateTimeString}.txt";
+
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                for (int row = 0; row < board.Rows; row++)
+                {
+                    for (int col = 0; col < board.Columns; col++)
+                    {
+                        var cell = board.Cells[col, row];
+                        writer.Write(cell.IsAlive ? '*' : ' ');
+                    }
+                    writer.WriteLine();
+                }
+            }
+            Console.WriteLine("Board state saved to " + filePath);
+        }
+        public static void LoadBoardState(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                string[] lines = File.ReadAllLines(filePath);
+                int height = lines.Length;
+                int width = lines[0].Length;
+
+                if (width != board.Columns || height != board.Rows)
+                {
+                    Console.WriteLine("Cannot load board state. Dimensions do not match.");
+                    return;
+                }
+
+                for (int row = 0; row < height; row++)
+                {
+                    for (int col = 0; col < width; col++)
+                    {
+                        char symbol = lines[row][col];
+                        board.Cells[col, row].IsAlive = (symbol == '*');
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("File not found: " + filePath + "\nPress any key to continue");
+                Console.ReadKey();
+            }
+        }
+        public static bool IsStable()
+        {
+            var currentBoardState = GetCurrentBoardState();
+
+            foreach (var state in previousBoardStates)
+            {
+                if (state == currentBoardState)
+                {
+                    return true;
+                }
+            }
+
+            previousBoardStates.Add(currentBoardState);
+
+            if (previousBoardStates.Count > MaxPreviousStates)
+            {
+                previousBoardStates.RemoveAt(0);
+            }
+
+            return false;
+        }
+
+        static string GetCurrentBoardState()
+        {
+            string boardState = "";
+            for (int row = 0; row < board.Rows; row++)
+            {
+                for (int col = 0; col < board.Columns; col++)
+                {
+                    boardState += board.Cells[col, row].IsAlive ? '*' : ' ';
+                }
+            }
+            return boardState;
+        }
         static void Main(string[] args)
         {
-            Reset();
-            while(true)
+            var settings = LoadSettings("board_settings.json");
+            Reset(settings);
+            int steps = 0;
+            while (true)
             {
+                if (Console.KeyAvailable)
+                {
+                    var key = Console.ReadKey(true).Key;
+                    if (key == ConsoleKey.S)
+                    {
+                        SaveBoardState();
+                    }
+                    else if (key == ConsoleKey.L)
+                    {
+                        LoadBoardState("The R-pentomino.txt");
+                    }
+                }
                 Console.Clear();
                 Render();
                 board.Advance();
-                Thread.Sleep(1000);
+                //Thread.Sleep(100);
+                if (IsStable())
+                {
+                    Console.WriteLine(steps);
+                    steps = 0;
+                    break;
+                }
+                steps++;
             }
+        }
+
+        public static BoardSettings LoadSettings(string filePath)
+        {
+            string json = File.ReadAllText(filePath);
+            return JsonConvert.DeserializeObject<BoardSettings>(json);
+        }
+
+        public static int CountAliveCells()
+        {
+            int count = 0;
+            for (int row = 0; row < board.Rows; row++)
+            {
+                for(int col = 0;  col < board.Columns; col++)
+                {
+                    var cell = board.Cells[col, row];
+                    if (cell.IsAlive)
+                    {
+                        count++;
+                    }
+                }
+            }
+            return count;
         }
     }
 }
