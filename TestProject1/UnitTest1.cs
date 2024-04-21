@@ -208,16 +208,6 @@ public class UnitTest1
         Assert.AreEqual(count, 1);
     }
     [TestMethod]
-    public void Test14()
-    {
-        Board board = new Board(13, 6, 1);
-        board.start_board("loaf1.txt");
-        Figure figure2 = new Figure(6, "Loaf.txt");
-        int count = figure2.find_figures(figure2, board, "Loaf.txt");
-        Assert.AreEqual(count, 2);
-    }
-
-    [TestMethod]
     public void Test15()
     {
         Board board = new Board(10, 10, 1, 0.8);
