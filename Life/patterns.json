@@ -1,0 +1,21 @@
+[
+    {"Name":"Block","Height":4,"Width":4,"Body":"     **  **     "},
+    {"Name":"Beehive","Height":5,"Width":6,"Body":"        **   *  *   **        "},
+    {"Name":"Beehive","Height":6,"Width":5,"Body":"       *   * *  * *   *       "},
+    {"Name":"Loaf","Height":6,"Width":6,"Body":"        **   *  *   * *    *        "},
+    {"Name":"Loaf","Height":6,"Width":6,"Body":"        **   *  *  * *    *         "},
+    {"Name":"Loaf","Height":6,"Width":6,"Body":"         *    * *  *  *   **        "},
+    {"Name":"Loaf","Height":6,"Width":6,"Body":"        *    * *   *  *   **        "},
+    {"Name":"Boat","Height":5,"Width":5,"Body":"       *   * *  **       "},
+    {"Name":"Boat","Height":5,"Width":5,"Body":"      **   * *   *       "},
+    {"Name":"Boat","Height":5,"Width":5,"Body":"       **  * *   *       "},
+    {"Name":"Boat","Height":5,"Width":5,"Body":"       *   * *   **      "},
+    {"Name":"Ship","Height":5,"Width":5,"Body":"       **  * *  **       "},
+    {"Name":"Ship","Height":5,"Width":5,"Body":"      **   * *   **      "},
+    {"Name":"Tub","Height":5,"Width":5,"Body":"       *   * *   *       "},
+    {"Name":"Pond","Height":6,"Width":6,"Body":"        **   *  *  *  *   **        "},
+    {"Name":"Blinker","Height":5,"Width":5,"Body":"       *    *    *       "},
+    {"Name":"Blinker","Height":5,"Width":5,"Body":"           ***           "},
+    {"Name":"Toad","Height":6,"Width":6,"Body":"         *   *  *  *  *   *         "},
+    {"Name":"Toad","Height":6,"Width":6,"Body":"              ***  ***              "}
+]
