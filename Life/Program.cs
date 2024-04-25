@@ -231,9 +231,9 @@ namespace cli_life
                           int x = col + j < board.Columns ? col + j : col + j - board.Columns;
                           int y = row + i < board.Rows ? row + i : row + i - board.Rows;
                           if (board.Cells[x, y].IsAlive)
-                                matrix[i, j] = 1;
+                                matrix[j, i] = 1;
                           else
-                                matrix[i, j] = 0;
+                                matrix[j, i] = 0;
                         }
                     }
                     count += CompareFigure(matrix, fmatrix);
