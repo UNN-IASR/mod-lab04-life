@@ -41,7 +41,7 @@ namespace UnitTests
         [TestMethod]
         public void ResetBoardFrom()
         {
-            Board b = Program.ResetFromFile("../../../settings.json");
+            Board b = Board.ResetFromFile("../../../settings.json");
             Assert.AreEqual(40, b.Width);
             Assert.AreEqual(50, b.Height);
         }
