@@ -148,6 +148,20 @@ namespace cli_life
             return new Board(cellSize, newCells);
         }
 
+        public static Board ResetFromFile(string fileName)
+        {
+            using (StreamReader r = new StreamReader($"{fileName}"))
+            {
+                string json = r.ReadToEnd();
+                Settings settings = JsonConvert.DeserializeObject<Settings>(json);
+                return new Board(
+                    width: settings.Width,
+                    height: settings.Height,
+                    cellSize: settings.CellSize,
+                    liveDensity: settings.LiveDensity);
+            }
+        }
+
         public int living_cells() {
             int count = 0;
             foreach (Cell c in Cells) {
@@ -307,19 +321,7 @@ namespace cli_life
                 cellSize: 1,
                 liveDensity: 0.5);
         }
-        public static Board ResetFromFile(string fileName)
-        {
-            using (StreamReader r = new StreamReader($"{fileName}"))
-            {
-                string json = r.ReadToEnd();
-                Settings settings = JsonConvert.DeserializeObject<Settings>(json);
-                return new Board(
-                    width: settings.Width,
-                    height: settings.Height,
-                    cellSize: settings.CellSize,
-                    liveDensity: settings.LiveDensity);
-            }
-        }
+        
         static void Render()
         {
             for (int row = 0; row < board.Rows; row++)
