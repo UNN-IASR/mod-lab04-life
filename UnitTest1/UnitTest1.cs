@@ -12,14 +12,14 @@ namespace UnitTests
         [TestMethod]
         public void BoardCreate()
         {
-            Board b = new Board(40, 40, 0.5);
+            Board b = new Board(40, 40, 1, 0.5);
             Assert.AreEqual(40, b.Width);
             Assert.AreEqual(40, b.Height);
         }
         [TestMethod]
         public void BoardAdvance()
         {
-            Board b = new Board(40, 40, 0.5);
+            Board b = new Board(40, 40, 1, 0.5);
             b.Advance();
             b.Advance();
             b.Advance();
@@ -28,7 +28,7 @@ namespace UnitTests
         [TestMethod]
         public void BoardSaveTo()
         {
-            Board b = new Board(40, 40, 0.4);
+            Board b = new Board(40, 40, 1, 0.4);
             b.SaveToFile("savetest.txt");
             Assert.IsTrue(File.Exists("savetest.txt"));
         }
@@ -41,7 +41,7 @@ namespace UnitTests
         [TestMethod]
         public void ResetBoardFrom()
         {
-            Board b = Board.ResetFromFile("../../../settings.json");
+            Board b = Program.ResetFromFile("../../../settings.json");
             Assert.AreEqual(40, b.Width);
             Assert.AreEqual(50, b.Height);
         }
@@ -63,7 +63,7 @@ namespace UnitTests
         public void TestCube()
         {
             Board board = new Board(4, 4, 1, 1);
-            board.LoadFromFile("../../../../cube.txt");
+            board = Board.LoadFromFile("../../../../cube.txt");
             Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
             Figure cube = fig[0];
             int count = Figure.FindFigure(cube, board);
@@ -73,7 +73,7 @@ namespace UnitTests
         public void TestRing()
         {
             Board board = new Board(6, 6, 1, 1);
-            board.LoadFromFile("../../../../ring.txt");
+            board = Board.LoadFromFile("../../../../ring.txt");
             Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
             Figure ring = fig[2];
             int count = Figure.FindFigure(ring, board);
@@ -83,7 +83,7 @@ namespace UnitTests
         public void TestShip()
         {
             Board board = new Board(5, 5, 1, 1);
-            board.LoadFromFile("../../../../ship.txt");
+            board = Board.LoadFromFile("../../../../ship.txt");
             Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
             Figure ship = fig[3];
             int count = Figure.FindFigure(ship, board);
@@ -93,7 +93,7 @@ namespace UnitTests
         public void TestRhombe()
         {
             Board board = new Board(5, 5, 1, 1);
-            board.LoadFromFile("../../../../rhombe.txt");
+            board = Board.LoadFromFile("../../../../rhombe.txt");
             Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
             Figure rhomb = fig[1];
             int count = Figure.FindFigure(rhomb, board);
@@ -103,7 +103,7 @@ namespace UnitTests
         public void TestFrigate()
         {
             Board board = new Board(5, 5, 1, 1);
-            board.LoadFromFile("../../../../frigate.txt");
+            board = Board.LoadFromFile("../../../../frigate.txt");
             Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
             Figure frigate = fig[6];
             int count = Figure.FindFigure(frigate, board);
@@ -113,7 +113,7 @@ namespace UnitTests
         public void TestLeaf()
         {
             Board board = new Board(6, 6, 1, 1);
-            board.LoadFromFile("../../../../leaf.txt");
+            board = Board.LoadFromFile("../../../../leaf.txt");
             Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
             Figure leaf = fig[4];
             int count = Figure.FindFigure(leaf, board);
@@ -123,7 +123,7 @@ namespace UnitTests
         public void TestBarge()
         {
             Board board = new Board(6, 6, 1, 1);
-            board.LoadFromFile("../../../../barge.txt");
+            board = Board.LoadFromFile("../../../../barge.txt");
             Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
             Figure barge = fig[5];
             int count = Figure.FindFigure(barge, board);
@@ -133,7 +133,7 @@ namespace UnitTests
         public void TestNoRing()
         {
             Board board = new Board(6, 6, 1, 1);
-            board.LoadFromFile("../../../../no_fig.txt");
+            board = Board.LoadFromFile("../../../../no_fig.txt");
             Figure[] fig = Figure.GetFigure("../../../../figuretest.json");
             Figure notaring = fig[2];
             int count = Figure.FindFigure(notaring, board);
