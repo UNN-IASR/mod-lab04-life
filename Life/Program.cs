@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Text.Json;
 using System.IO;
-using OxyPlot.Wpf;
 using ScottPlot;
+using System.Numerics;
 
 namespace cli_life
 {
