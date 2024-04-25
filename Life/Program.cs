@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.IO;
 using ScottPlot;
 using System.Numerics;
+using System.Drawing.Common;
 
 namespace cli_life
 {
