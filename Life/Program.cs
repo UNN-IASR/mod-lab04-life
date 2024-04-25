@@ -1,9 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Newtonsoft.Json;
+using System.IO;
+using ScottPlot;
+using System.Dynamic;
+using System.Data;
 
 namespace cli_life
 {
@@ -25,9 +30,20 @@ namespace cli_life
             IsAlive = IsAliveNext;
         }
     }
+
+    public class Settings
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public int CellSize { get; set; }
+        public double LiveDensity { get; set; }
+        public int RefreshRate { get; set; }
+    }
+
     public class Board
     {
         public readonly Cell[,] Cells;
+        public List<string> gens = new List<string>();
         public readonly int CellSize;
 
         public int Columns { get { return Cells.GetLength(0); } }
@@ -48,6 +64,13 @@ namespace cli_life
             Randomize(liveDensity);
         }
 
+        public Board(int cellSize, Cell[,] cells)
+        {
+            CellSize = cellSize;
+            Cells = cells;
+            ConnectNeighbors();
+        }
+
         readonly Random rand = new Random();
         public void Randomize(double liveDensity)
         {
@@ -57,6 +80,7 @@ namespace cli_life
 
         public void Advance()
         {
+            gens.Add(this.RecordInGen(this));
             foreach (var cell in Cells)
                 cell.DetermineNextLiveState();
             foreach (var cell in Cells)
@@ -85,9 +109,209 @@ namespace cli_life
                 }
             }
         }
+
+        public void SaveToFile(string fileName)//
+        {
+            using (StreamWriter writer = new StreamWriter($"{fileName}"))
+            {
+                for (int i = 0; i < Rows; i++)
+                {
+                    for (int j = 0; j < Columns; j++)
+                    {
+                        if (Cells[i, j].IsAlive)
+                        {
+                            writer.Write('*');
+                        }
+                        else
+                        {
+                            writer.Write(' ');
+                        }
+                    }
+                    writer.WriteLine();
+                }
+            }
+        }
+
+        public static Board LoadFromFile(string fileName, int cellSize = 1)
+        {
+            string[] lines = File.ReadAllLines($"{fileName}");
+            Cell[,] newCells = new Cell[lines.Length, lines[0].Length];
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                for (int j = 0; j < lines[i].Length; j++)
+                {
+                    newCells[i, j] = new Cell { IsAlive = (lines[i][j] == '*' || lines[i][j] == '1') };
+                }
+            }
+
+            return new Board(cellSize, newCells);
+        }
+
+        public static Board ResetFromFile(string fileName)
+        {
+            using (StreamReader r = new StreamReader($"{fileName}"))
+            {
+                string json = r.ReadToEnd();
+                Settings settings = JsonConvert.DeserializeObject<Settings>(json);
+                return new Board(
+                    width: settings.Width,
+                    height: settings.Height,
+                    cellSize: settings.CellSize,
+                    liveDensity: settings.LiveDensity);
+            }
+        }
+
+        public int living_cells() {
+            int count = 0;
+            foreach (Cell c in Cells) {
+                if (c.IsAlive) count++;
+            }
+            return count;
+        }
+
+        public string RecordInGen(Board board)
+        {
+            string str = "";
+            foreach (Cell cell in board.Cells)
+            {
+                if (cell.IsAlive)
+                    str += '1';
+                else
+                    str += '0';
+            }
+            return str;
+
+        }
+
+
     }
-    class Program
+
+    public class Figure
     {
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public string Name { get; set; }
+        public int[] value { get; set; }
+
+        public int[,] ReadFigure()
+        {
+            int[,] mas = new int[Width, Height];
+            int n = 0;
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    mas[i, j] = value[n];
+                    n++;
+                }
+            }
+            return mas;
+        }
+        public static Figure[] GetFigure(string name)
+        {
+            string filename = name;
+            string jsonString = File.ReadAllText(filename);
+            Figure[] figure = JsonConvert.DeserializeObject<Figure[]>(jsonString);
+            return figure;
+        }
+        public static int FindFigure(Figure figure, Board board)
+        {
+            int count = 0;
+            int[,] matrix = new int[figure.Width, figure.Height];
+            int[,] fmatrix = figure.ReadFigure();
+            for (int row = 0; row < board.Rows; row++)
+            {
+                for (int col = 0; col < board.Columns; col++)
+                {
+                    for (int i = 0; i < figure.Height; i++)
+                    {
+                        for (int j = 0; j < figure.Width; j++)
+                        {
+                          int x = col + j < board.Columns ? col + j : col + j - board.Columns;
+                          int y = row + i < board.Rows ? row + i : row + i - board.Rows;
+                          if (board.Cells[x, y].IsAlive)
+                                matrix[j, i] = 1;
+                          else
+                                matrix[j, i] = 0;
+                        }
+                    }
+                    count += CompareFigure(matrix, fmatrix);
+                }
+            }
+            return count;
+        }
+        static int CompareFigure(int[,] matr1, int[,] matr2)
+        {
+            int result = 1;
+            int rows = matr1.GetUpperBound(0) + 1;
+            int columns = matr1.Length / rows;
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    if (matr1[i, j] != matr2[i, j])
+                        result = 0;
+                }
+            }
+            return result;
+        }
+    }
+
+    public class Graphic
+    {
+        public static Dictionary<int, int> AliveInGeneration(double density)
+        {
+            var res = new Dictionary<int, int>();
+            Board board = new Board(100, 30, 1, density);
+            while (true)
+            {
+                res.Add(board.gens.Count, board.living_cells());
+                if (!board.gens.Contains(board.RecordInGen(board)))
+                {
+                    board.gens.Add(board.RecordInGen(board));
+                }
+                else
+                {
+                    break;
+                }
+                board.Advance();
+            }
+            return res;
+        }
+        public static List<Dictionary<int, int>> CreateList(List<double> density, int count)
+        {
+            var list = new List<Dictionary<int, int>>();
+            for (int i = 0; i < count; i++)
+            {
+                if (density[i] < 0.3 || density[i] > 0.5) break;
+                list.Add(AliveInGeneration(density[i]));
+            }
+            list.Sort((x, y) => x.Count - y.Count);
+            return list;
+        }
+        public static void MakePlot()
+        {
+            var plot = new Plot();
+            plot.XLabel("generation");
+            plot.YLabel("alive cells");
+            plot.ShowLegend();
+            Random rnd = new Random();
+            List<double> density = new List<double>() { 0.3, 0.4, 0.5 };
+            var list = CreateList(density, density.Count);
+            int count = 0;
+            foreach (var item in list)
+            {
+                var scatter = plot.Add.Scatter(item.Keys.ToArray(), item.Values.ToArray());
+                scatter.Label = density[count].ToString();
+                scatter.Color = new ScottPlot.Color(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                count++;
+            }
+            plot.SavePng("plot.png", 1280, 720);
+        }
+    }
+        class Program
+        {
         static Board board;
         static private void Reset()
         {
@@ -97,11 +321,12 @@ namespace cli_life
                 cellSize: 1,
                 liveDensity: 0.5);
         }
+        
         static void Render()
         {
             for (int row = 0; row < board.Rows; row++)
             {
-                for (int col = 0; col < board.Columns; col++)   
+                for (int col = 0; col < board.Columns; col++)
                 {
                     var cell = board.Cells[col, row];
                     if (cell.IsAlive)
@@ -116,13 +341,28 @@ namespace cli_life
                 Console.Write('\n');
             }
         }
+
+        
         static void Main(string[] args)
         {
+
+            int cells_alive, gen=0;
+            bool in_process = true;
+            Graphic.MakePlot();
             Reset();
-            while(true)
+            //boards to load and check ==>
+            //board = Board.LoadFromFile("loadboard.txt"); 
+            //board = Board.LoadFromFile("loadboard-2.txt");
+            //board = Board.LoadFromFile("loadboard-3.txt");
+            board = Board.LoadFromFile("research_board.txt");
+            while (in_process)
             {
                 Console.Clear();
                 Render();
+                gen++;
+                cells_alive = board.living_cells();
+                Console.WriteLine("Количество живых клеток: " + cells_alive);
+                Console.WriteLine("Поколение: " + gen);
                 board.Advance();
                 Thread.Sleep(1000);
             }
