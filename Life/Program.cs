@@ -141,7 +141,7 @@ namespace cli_life
             {
                 for (int j = 0; j < lines[i].Length; j++)
                 {
-                    newCells[i, j] = new Cell { IsAlive = lines[i][j] == '*' };
+                    newCells[i, j] = new Cell { IsAlive = (lines[i][j] == '*' || lines[i][j] == '1') };
                 }
             }
 
