@@ -1,0 +1,6 @@
+﻿{
+  "Name": "cub",
+  "Colums": 4,
+  "Rows": 4,
+  "BoardStr": "0000\n0110\n0110\n0000\n"
+}
