@@ -1,8 +1,7 @@
 using cli_life;
 using System.Text.Json;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using System.Net;
-using NuGet.Frameworks;
+
 namespace Tests1
 {
     [TestClass]
