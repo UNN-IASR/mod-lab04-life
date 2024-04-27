@@ -1,12 +1,9 @@
-global using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using cli_life;
 using System.Text.Json;
 using System.Net;
-using NuGet.Frameworks;
 
-namespace UnitTest;
-
+namespace UnitTest
+{
     [TestClass]
     public class UnitTest1
     {
@@ -122,4 +119,4 @@ namespace UnitTest;
             Assert.AreEqual(count, 1);
         }
     }
-
+}
