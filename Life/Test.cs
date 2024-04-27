@@ -1,4 +1,3 @@
-using cli_life;
 using System.Text.Json;
 using System.Net;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
