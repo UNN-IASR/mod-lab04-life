@@ -1,7 +1,8 @@
 using cli_life;
 using System.Text.Json;
-using System;
+using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NuGet.Frameworks;
 
 namespace Tests1
 {
