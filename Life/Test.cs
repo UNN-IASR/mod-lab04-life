@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Net;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NuGet.Frameworks;
 
 namespace Tests1
