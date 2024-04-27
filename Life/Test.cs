@@ -1,10 +1,11 @@
+using cli_life;
 using System.Text.Json;
 using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NuGet.Frameworks;
 
-namespace Tests1
-{
+namespace UnitTest;
+
     [TestClass]
     public class UnitTest1
     {
@@ -120,4 +121,4 @@ namespace Tests1
             Assert.AreEqual(count, 1);
         }
     }
-}
+
