@@ -1,7 +1,8 @@
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using cli_life;
 using System.Text.Json;
 using System.Net;
-global using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NuGet.Frameworks;
 
 namespace UnitTest;
