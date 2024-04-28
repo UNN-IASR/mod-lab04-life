@@ -35,6 +35,22 @@ namespace cli_life
         /// Плотность жизни.
         /// </summary>
         public double LiveDensity { get; set; }
+
+        /// <summary>
+        /// Загрузить настройки доски из JSON-файла.
+        /// </summary>
+        /// <param name="filePath">Путь к файлу.</param>
+        public void LoadBoardSettings(string filePath)
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory;
+            string json = File.ReadAllText(filePath);
+            var settings = JsonSerializer.Deserialize<BoardSettings>(json);
+
+            Width = settings.Width; 
+            Height = settings.Height; 
+            CellSize = settings.CellSize; 
+            LiveDensity = settings.LiveDensity; 
+        }
     }
 
     /// <summary>
@@ -50,7 +66,7 @@ namespace cli_life
         /// <summary>
         /// Соседи клетки.
         /// </summary>
-        public readonly List<Cell> neighbors = new();
+        public readonly List<Cell> neighbours = new();
 
         /// <summary>
         /// Будет ли клетка жива в следующем поколении.
@@ -60,14 +76,20 @@ namespace cli_life
         /// <summary>
         /// Определяет следующее состояние клетки.
         /// </summary>
-        public void DetermineNextLiveState()
+        public bool DetermineNextLiveState()
         {
-            int liveNeighbors = neighbors.Where(x => x.IsAlive).Count();
+            int liveNeighbors = neighbours.Where(x => x.IsAlive).Count();
 
             if (IsAlive)
+            {
                 IsAliveNext = liveNeighbors == 2 || liveNeighbors == 3;
+            }
             else
+            {
                 IsAliveNext = liveNeighbors == 3;
+            }
+
+            return IsAliveNext;
         }
 
         /// <summary>
@@ -168,7 +190,7 @@ namespace cli_life
                 }
             }
 
-            ConnectNeighbors();
+            ConnectNeighbours();
             Randomize(liveDensity);
         }
 
@@ -212,7 +234,7 @@ namespace cli_life
         /// <summary>
         /// Соединяет соседей клеток.
         /// </summary>
-        private void ConnectNeighbors()
+        private void ConnectNeighbours()
         {
             for (var row = 0; row < Rows; row++)
             {
@@ -232,14 +254,14 @@ namespace cli_life
                         ? col + 1
                         : 0;
 
-                    Cells[row, col].neighbors.Add(Cells[rowTop, colLeft]);
-                    Cells[row, col].neighbors.Add(Cells[rowTop, col]);
-                    Cells[row, col].neighbors.Add(Cells[rowTop, colRight]);
-                    Cells[row, col].neighbors.Add(Cells[row, colLeft]);
-                    Cells[row, col].neighbors.Add(Cells[row, colRight]);
-                    Cells[row, col].neighbors.Add(Cells[rowBottom, colLeft]);
-                    Cells[row, col].neighbors.Add(Cells[rowBottom, col]);
-                    Cells[row, col].neighbors.Add(Cells[rowBottom, colRight]);
+                    Cells[row, col].neighbours.Add(Cells[rowTop, colLeft]);
+                    Cells[row, col].neighbours.Add(Cells[rowTop, col]);
+                    Cells[row, col].neighbours.Add(Cells[rowTop, colRight]);
+                    Cells[row, col].neighbours.Add(Cells[row, colLeft]);
+                    Cells[row, col].neighbours.Add(Cells[row, colRight]);
+                    Cells[row, col].neighbours.Add(Cells[rowBottom, colLeft]);
+                    Cells[row, col].neighbours.Add(Cells[rowBottom, col]);
+                    Cells[row, col].neighbours.Add(Cells[rowBottom, colRight]);
                 }
             }
         }
@@ -303,7 +325,7 @@ namespace cli_life
                 }
             }
 
-            ConnectNeighbors();
+            ConnectNeighbours();
         }
     }
 
@@ -315,12 +337,12 @@ namespace cli_life
         /// <summary>
         /// Путь к файлу с настройками.
         /// </summary>
-        const string JsonPath = "boardSettings.json";
+        const string JsonPath = "../../../boardSettings.json";
 
         /// <summary>
         /// Файл с состоянием доски.
         /// </summary>
-        const string BoardStateFilePath = "gameOfLife_sf1.txt";
+        const string BoardStateFilePath = "../../../gameOfLife_sf1.txt";
 
         /// <summary>
         /// Число итераций симуляции.
@@ -340,18 +362,7 @@ namespace cli_life
         /// <summary>
         /// Доска с симуляцией жизни.
         /// </summary>
-        static Board SimulationBoard;
-
-        /// <summary>
-        /// Загрузить настройки доски из JSON-файла.
-        /// </summary>
-        /// <returns>Настройки доски.</returns>
-        static private BoardSettings LoadBoardSettings()
-        {
-            var path = AppDomain.CurrentDomain.BaseDirectory;
-            string json = File.ReadAllText(JsonPath);
-            return JsonSerializer.Deserialize<BoardSettings>(json);
-        }
+        public static Board SimulationBoard;
 
         /// <summary>
         /// Сбрасывает настройки доски.
@@ -360,7 +371,8 @@ namespace cli_life
         {
             try
             {
-                var settings = LoadBoardSettings();
+                var settings = new BoardSettings();
+                settings.LoadBoardSettings(JsonPath);
 
                 SimulationBoard = new Board(
                     width: settings.Width,
