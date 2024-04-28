@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Жизнь\Жизнь.csproj" />
+    <ProjectReference Include="..\Life\Life.csproj" />
   </ItemGroup>
 
   <ItemGroup>
