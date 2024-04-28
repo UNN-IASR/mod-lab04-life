@@ -305,7 +305,7 @@ namespace cli_life
             plot.ShowLegend();
             Random rnd = new Random();
             List<double> density = new List<double>() { 0.3, 0.4, 0.5 };
-            var list = CreateList(density, density.Count);
+            var list = createList(density, density.Count);
             int count = 0;
             foreach (var item in list)
             {
