@@ -16,7 +16,7 @@ namespace TestProject1
         [TestMethod]
         public void TestMethod2()
         {
-            string fileName = "../../../../Settings.json";
+            string fileName = "../../../../settings.json";
             string jsonString = File.ReadAllText(fileName);
             Setting setting = JsonSerializer.Deserialize<Setting>(jsonString);
             Assert.AreEqual(100, setting.Width);
@@ -25,7 +25,7 @@ namespace TestProject1
         [TestMethod]
         public void TestMethod3()
         {
-            string fileName = "../../../../Settings.json";
+            string fileName = "../../../../settings.json";
             string jsonString = File.ReadAllText(fileName);
             Setting setting = JsonSerializer.Deserialize<Setting>(jsonString);
             Assert.AreEqual(0.5, setting.LiveDensity);
