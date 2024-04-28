@@ -35,7 +35,7 @@ namespace Client
             string[] nameFigures = File.ReadAllLines("../../../../NameFigure.txt");
             foreach (string name in nameFigures)
             {
-                string[] prefab = File.ReadAllLines(name + ".txt");
+                string[] prefab = File.ReadAllLines("../../../../"+name + ".txt");
                 int[,] matrix = GetMatrix(prefab);
                 prefabs.Add(new Prefab(prefab[0].Length, prefab.Length, matrix, name));
             }
