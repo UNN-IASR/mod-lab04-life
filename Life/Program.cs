@@ -20,7 +20,7 @@ namespace Client
         public Templates(out string str)
         {
             prefabs = new List<Prefab>();
-            string[] namePrefab = File.ReadAllLines("NameFigure.txt");
+            string[] namePrefab = File.ReadAllLines("../../../../NameFigure.txt");
             foreach (string name in namePrefab)
             {
                 string[] prefab = File.ReadAllLines(name + ".txt");
@@ -32,7 +32,7 @@ namespace Client
         public Templates()
         {
             prefabs = new List<Prefab>();
-            string[] nameFigures = File.ReadAllLines("NameFigure.txt");
+            string[] nameFigures = File.ReadAllLines("../../../../NameFigure.txt");
             foreach (string name in nameFigures)
             {
                 string[] prefab = File.ReadAllLines(name + ".txt");
@@ -270,7 +270,7 @@ namespace Client
             {
                 Setting += item.IsAlive == true ? 1:0;
             }
-            File.WriteAllText("OldBoard.txt", Setting);
+            File.WriteAllText("../../../../OldBoard.txt", Setting);
             return "Сохранено";        
         }
         public bool CheckActive()
@@ -289,7 +289,7 @@ namespace Client
         }
         public string Discharge()
         {
-            string[] Data = File.ReadAllLines("OldBoard.txt");
+            string[] Data = File.ReadAllLines("../../../../OldBoard.txt");
             string[] setting = Data[0].Split(" ");
             NumberGenerations = int.Parse(setting[2]);
             Cells = new Cell[int.Parse(setting[1]),int.Parse(setting[0])];
@@ -310,7 +310,7 @@ namespace Client
         }
         static public Board Loading()
         {
-            string filename = "config.json";
+            string filename = "../../../../config.json";
             string jsonString = File.ReadAllText(filename);
             Settings settings = JsonSerializer.Deserialize<Settings>(jsonString);
             return new Board(width: settings.Width, height: settings.Height, cellSize: settings.cellSize, liveDensity: settings.liveDensity);
