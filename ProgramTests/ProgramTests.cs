@@ -6,7 +6,7 @@ namespace ProgramTests;
 public class ProgramTests
 {
     /// <summary>
-    /// Клетка умирает при числе соседей большем трёх.
+    /// РљР»РµС‚РєР° СѓРјРёСЂР°РµС‚ РїСЂРё С‡РёСЃР»Рµ СЃРѕСЃРµРґРµР№ Р±РѕР»СЊС€РµРј С‚СЂС‘С….
     /// </summary>
     [TestMethod]
     public void DetermineNextLiveState_AliveCellMoreThanThreeNeighbours_CellDies()
@@ -27,7 +27,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Клетка остается живой при числе соседей равном двум или трём.
+    /// РљР»РµС‚РєР° РѕСЃС‚Р°РµС‚СЃСЏ Р¶РёРІРѕР№ РїСЂРё С‡РёСЃР»Рµ СЃРѕСЃРµРґРµР№ СЂР°РІРЅРѕРј РґРІСѓРј РёР»Рё С‚СЂС‘Рј.
     /// </summary>
     [TestMethod]
     public void DetermineNextLiveState_AliveCellThreeNeighbours_CellLives()
@@ -48,7 +48,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// При числе соседей равном трём появляется новая клетка.
+    /// РџСЂРё С‡РёСЃР»Рµ СЃРѕСЃРµРґРµР№ СЂР°РІРЅРѕРј С‚СЂС‘Рј РїРѕСЏРІР»СЏРµС‚СЃСЏ РЅРѕРІР°СЏ РєР»РµС‚РєР°.
     /// </summary>
     [TestMethod]
     public void DetermineNextLiveState_TwoOrThreeNeighbours_NewAliveCell()
@@ -69,7 +69,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// При числе соседей меньшем трёх новая клетка не появляется.
+    /// РџСЂРё С‡РёСЃР»Рµ СЃРѕСЃРµРґРµР№ РјРµРЅСЊС€РµРј С‚СЂС‘С… РЅРѕРІР°СЏ РєР»РµС‚РєР° РЅРµ РїРѕСЏРІР»СЏРµС‚СЃСЏ.
     /// </summary>
     [TestMethod]
     public void DetermineNextLiveState_LessThanThreeNeighbours_NoNewCell()
@@ -90,7 +90,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// При следующем состоянии живой клетки "жива" клетка остаётся живой.
+    /// РџСЂРё СЃР»РµРґСѓСЋС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё Р¶РёРІРѕР№ РєР»РµС‚РєРё "Р¶РёРІР°" РєР»РµС‚РєР° РѕСЃС‚Р°С‘С‚СЃСЏ Р¶РёРІРѕР№.
     /// </summary>
     [TestMethod]
     public void Advance_IsAliveCellIsAliveNext_CellIsAlive()
@@ -114,7 +114,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// При следующем состоянии живой клетки "мертва" клетка умирает.
+    /// РџСЂРё СЃР»РµРґСѓСЋС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё Р¶РёРІРѕР№ РєР»РµС‚РєРё "РјРµСЂС‚РІР°" РєР»РµС‚РєР° СѓРјРёСЂР°РµС‚.
     /// </summary>
     [TestMethod]
     public void Advance_IsAliveCellIsNotAliveNext_CellIsNotAlive()
@@ -138,8 +138,8 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// При передаче параметра размера клетки больше единицы 
-    /// корректно высчитывается число строк и столбцов массива клеток.
+    /// РџСЂРё РїРµСЂРµРґР°С‡Рµ РїР°СЂР°РјРµС‚СЂР° СЂР°Р·РјРµСЂР° РєР»РµС‚РєРё Р±РѕР»СЊС€Рµ РµРґРёРЅРёС†С‹ 
+    /// РєРѕСЂСЂРµРєС‚РЅРѕ РІС‹СЃС‡РёС‚С‹РІР°РµС‚СЃСЏ С‡РёСЃР»Рѕ СЃС‚СЂРѕРє Рё СЃС‚РѕР»Р±С†РѕРІ РјР°СЃСЃРёРІР° РєР»РµС‚РѕРє.
     /// </summary>
     [TestMethod]
     public void BoardConstructor_CellSizeGreaterThanOne_CorrectNumberRowsColumns()
@@ -154,7 +154,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Соединяет каждую клетку с её соседями, число соседей равно восьми.
+    /// РЎРѕРµРґРёРЅСЏРµС‚ РєР°Р¶РґСѓСЋ РєР»РµС‚РєСѓ СЃ РµС‘ СЃРѕСЃРµРґСЏРјРё, С‡РёСЃР»Рѕ СЃРѕСЃРµРґРµР№ СЂР°РІРЅРѕ РІРѕСЃСЊРјРё.
     /// </summary>
     [TestMethod]
     public void ConnectNeighbours_Board_ConnectsCellNeighbours()
@@ -175,7 +175,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Загружает настройки доски из JSON-файла при его наличии.
+    /// Р—Р°РіСЂСѓР¶Р°РµС‚ РЅР°СЃС‚СЂРѕР№РєРё РґРѕСЃРєРё РёР· JSON-С„Р°Р№Р»Р° РїСЂРё РµРіРѕ РЅР°Р»РёС‡РёРё.
     /// </summary>
     [TestMethod]
     public void LoadBoardSettings_JsonFileExists_LoadsBoardSettings()
@@ -190,7 +190,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Выбрасывает исключение ArgumentException при пустом пути файла.
+    /// Р’С‹Р±СЂР°СЃС‹РІР°РµС‚ РёСЃРєР»СЋС‡РµРЅРёРµ ArgumentException РїСЂРё РїСѓСЃС‚РѕРј РїСѓС‚Рё С„Р°Р№Р»Р°.
     /// </summary>
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
@@ -200,7 +200,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Заполняет настройки доски нулевыми значениями при неудачной попытке десериализации JSON-файла.
+    /// Р—Р°РїРѕР»РЅСЏРµС‚ РЅР°СЃС‚СЂРѕР№РєРё РґРѕСЃРєРё РЅСѓР»РµРІС‹РјРё Р·РЅР°С‡РµРЅРёСЏРјРё РїСЂРё РЅРµСѓРґР°С‡РЅРѕР№ РїРѕРїС‹С‚РєРµ РґРµСЃРµСЂРёР°Р»РёР·Р°С†РёРё JSON-С„Р°Р№Р»Р°.
     /// </summary>
     [TestMethod]
     public void LoadBoardSettings_IncorrectJsonFile_SetsZeroValues()
@@ -215,7 +215,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Сохраняет результат в файл.
+    /// РЎРѕС…СЂР°РЅСЏРµС‚ СЂРµР·СѓР»СЊС‚Р°С‚ РІ С„Р°Р№Р».
     /// </summary>
     [TestMethod]
     public void SaveBoardState_CorrectFilePath_CreatesFile()
@@ -226,7 +226,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Выбрасывает исключение ArgumentException при пустом пути файла.
+    /// Р’С‹Р±СЂР°СЃС‹РІР°РµС‚ РёСЃРєР»СЋС‡РµРЅРёРµ ArgumentException РїСЂРё РїСѓСЃС‚РѕРј РїСѓС‚Рё С„Р°Р№Р»Р°.
     /// </summary>
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
@@ -236,7 +236,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Загружает корректные параметры доски из файла.
+    /// Р—Р°РіСЂСѓР¶Р°РµС‚ РєРѕСЂСЂРµРєС‚РЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РґРѕСЃРєРё РёР· С„Р°Р№Р»Р°.
     /// </summary>
     [TestMethod]
     public void LoadBoardState_FileExists_LoadsCorrectParameters()
@@ -256,7 +256,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Выбрасывает исключение ArgumentException при пустом пути файла.
+    /// Р’С‹Р±СЂР°СЃС‹РІР°РµС‚ РёСЃРєР»СЋС‡РµРЅРёРµ ArgumentException РїСЂРё РїСѓСЃС‚РѕРј РїСѓС‚Рё С„Р°Р№Р»Р°.
     /// </summary>
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
