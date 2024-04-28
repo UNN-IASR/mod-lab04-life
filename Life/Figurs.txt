@@ -1,0 +1,26 @@
+[
+  {
+    "Name": "cube",
+    "Colums": 4,
+    "Rows": 4,
+    "BoardStr": "0000\n0110\n0110\n0000\n"
+  },
+  {
+    "Name": "stick",
+    "Colums": 5,
+    "Rows": 3,
+    "BoardStr": "00000\n01110\n00000\n"
+  },
+  {
+    "Name": "stick",
+    "Colums": 3,
+    "Rows": 5,
+    "BoardStr": "000\n010\n010\n010\n000\n"
+  },
+  {
+    "Name": "box",
+    "Colums": 5,
+    "Rows": 5,
+    "BoardStr": "00000\n00100\n01010\n00100\n00000\n"
+  }
+]
