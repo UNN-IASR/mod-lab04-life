@@ -1,0 +1,6 @@
+{
+  "Name": "cub",
+  "Colums": 2,
+  "Rows": 2,
+  "BoardStr": "11\n11\n"
+}

@@ -1,0 +1,6 @@
+{
+  "Name": "Stick",
+  "Colums": 5,
+  "Rows": 3,
+  "BoardStr": "00000\n01110\n00000\n"
+}
