@@ -7,6 +7,7 @@ using System.Threading;
 using System.Text.Json;
 using System.IO;
 using System.Numerics;
+using ScottPlot;
 
 namespace cli_life
 {
@@ -296,6 +297,25 @@ namespace cli_life
             list.Sort((x, y) => x.Count - y.Count);
             return list;
         }
+        public static void graf()
+        {
+            var plot = new Plot();
+            plot.XLabel("generation");
+            plot.YLabel("alive cells");
+            plot.ShowLegend();
+            Random rnd = new Random();
+            List<double> density = new List<double>() { 0.3, 0.4, 0.5 };
+            var list = CreateList(density, density.Count);
+            int count = 0;
+            foreach (var item in list)
+            {
+                var scatter = plot.Add.Scatter(item.Keys.ToArray(), item.Values.ToArray());
+                scatter.Label = density[count].ToString();
+                scatter.Color = new ScottPlot.Color(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                count++;
+            }
+            plot.SavePng("plot.png", 1920, 1080);
+        }
     }
     class Program
     {
@@ -358,6 +378,7 @@ namespace cli_life
         }
         static void Main(string[] args)
         {
+            Grafic.graf();
             Reset();
             Figure[] figure = Figure.getFig("fig.json");
             string name;
