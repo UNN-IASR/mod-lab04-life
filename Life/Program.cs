@@ -12,8 +12,6 @@ using ScottPlot.Palettes;
 using System.Xml.Linq;
 using System.Reflection.Metadata;
 using System.Net;
-
-
 namespace Client
 {
     public class Templates
