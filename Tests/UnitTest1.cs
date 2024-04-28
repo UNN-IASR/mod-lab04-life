@@ -1,6 +1,7 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using cli_life;
 using System.Text.Json;
-namespace TestProject5
+namespace TestProject1
 {
     [TestClass]
     public class UnitTest1
