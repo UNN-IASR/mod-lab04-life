@@ -46,10 +46,10 @@ namespace cli_life
             string json = File.ReadAllText(filePath);
             var settings = JsonSerializer.Deserialize<BoardSettings>(json);
 
-            Width = settings.Width; 
-            Height = settings.Height; 
-            CellSize = settings.CellSize; 
-            LiveDensity = settings.LiveDensity; 
+            Width = settings.Width;
+            Height = settings.Height;
+            CellSize = settings.CellSize;
+            LiveDensity = settings.LiveDensity;
         }
     }
 
@@ -167,6 +167,11 @@ namespace cli_life
         }
 
         /// <summary>
+        /// Поколение.
+        /// </summary>
+        public int Generation { get; set; }
+
+        /// <summary>
         /// Создает экземпляр доски.
         /// </summary>
         /// <param name="width">Ширина доски.</param>
@@ -175,6 +180,8 @@ namespace cli_life
         /// <param name="liveDensity">Плотность жизни.</param>
         public Board(int width, int height, int cellSize, double liveDensity = .1)
         {
+            Generation = 0;
+
             CellSize = cellSize;
 
             Cells = new Cell[height / cellSize, width / cellSize];
@@ -216,7 +223,7 @@ namespace cli_life
         }
 
         /// <summary>
-        /// Определяет состояние доски на следующем шаге симуляции.
+        /// Определяет состояние доски на следующем шаге симуляции, меняе состояние доски.
         /// </summary>
         public void Advance()
         {
@@ -229,6 +236,8 @@ namespace cli_life
             {
                 cell.Advance();
             }
+
+            Generation++;
         }
 
         /// <summary>
@@ -285,7 +294,8 @@ namespace cli_life
                 }
                 boardStringRepr += '\n';
             }
-            boardStringRepr += $"cellSize={CellSize}";
+            boardStringRepr += $"cellSize={CellSize}\n";
+            boardStringRepr += $"generation={Generation}";
 
             File.WriteAllText(filePath, boardStringRepr);
         }
@@ -299,17 +309,28 @@ namespace cli_life
             var boardStringArrayRepr = File.ReadAllLines(filePath);
 
             int.TryParse(
+                boardStringArrayRepr[boardStringArrayRepr.Length - 2]
+                    .Substring(
+                        boardStringArrayRepr[boardStringArrayRepr.Length - 2]
+                        .IndexOf('=') + 1),
+                out int cellSize);
+
+            int.TryParse(
                 boardStringArrayRepr[boardStringArrayRepr.Length - 1]
                     .Substring(
                         boardStringArrayRepr[boardStringArrayRepr.Length - 1]
                         .IndexOf('=') + 1),
-                out int cellSize);
+                out int generation);
 
             CellSize = cellSize > 1
                 ? cellSize
                 : 1;
 
-            Height = boardStringArrayRepr.Length - 1;
+            Generation = generation > 0
+                ? generation
+                : 0;
+
+            Height = boardStringArrayRepr.Length - 2;
             Width = boardStringArrayRepr[0].Length;
 
             Cells = new Cell[Height / CellSize, Width / CellSize];
@@ -326,6 +347,36 @@ namespace cli_life
             }
 
             ConnectNeighbours();
+        }
+    }
+
+    /// <summary>
+    /// Анализ доски.
+    /// </summary>
+    class BoardAnalysis
+    {
+        /// <summary>
+        /// Доска для анализа.
+        /// </summary>
+        public static Board board;
+
+        /// <summary>
+        /// Возвращает число живых клеток на доске.
+        /// </summary>
+        /// <returns>Число живых клеток.</returns>
+        public static int GetAliveCellsCount()
+        {
+            var result = 0;
+
+            foreach (var cell in board.Cells)
+            {
+                if (cell.IsAlive)
+                {
+                    result++;
+                }
+            }
+
+            return result;
         }
     }
 
@@ -384,6 +435,8 @@ namespace cli_life
             {
                 SimulationBoard = new Board();
             }
+
+            BoardAnalysis.board = SimulationBoard;
         }
 
         /// <summary>
@@ -454,8 +507,10 @@ namespace cli_life
             {
                 Console.Clear();
                 Render();
+                Console.WriteLine($"Текущее поколение: {SimulationBoard.Generation}");
+                Console.WriteLine($"Число живых клеток: {BoardAnalysis.GetAliveCellsCount()}");
                 SimulationBoard.Advance();
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
             }
 
             if (SaveToFile)
