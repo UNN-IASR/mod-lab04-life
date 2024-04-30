@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleApp46\ConsoleApp46.csproj" />
+    <ProjectReference Include="..\Life\Life.csproj" />
   </ItemGroup>
 
 </Project>
