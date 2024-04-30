@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Text.Json;
+using Newtonsoft.Json;
 using System.IO;
 
 namespace cli_life
@@ -27,6 +27,14 @@ namespace cli_life
             IsAlive = IsAliveNext;
         }
     }
+    public class Figure
+    {
+        public string Name { get; set; }
+        public List<bool> Cells { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
+
     public class Board
     {
         public readonly Cell[,] Cells;
@@ -55,6 +63,21 @@ namespace cli_life
         {
             foreach (var cell in Cells)
                 cell.IsAlive = rand.NextDouble() < liveDensity;
+        }
+        public void LoadFigure(string filePath)
+        {
+            string json = System.IO.File.ReadAllText(filePath);
+            Figure figure = JsonConvert.DeserializeObject<Figure>(json);
+
+            int x = (Columns - figure.Width) / 2;
+            int y = (Rows - figure.Height) / 2;
+
+            for (int i = 0; i < figure.Cells.Count; i++)
+            {
+                int col = x + i % figure.Width;
+                int row = y + i / figure.Width;
+                Cells[col, row].IsAlive = figure.Cells[i];
+            }
         }
 
         public void Advance()
@@ -87,31 +110,79 @@ namespace cli_life
                 }
             }
         }
+
+        public void SaveState(string filePath)
+        {
+            List<bool> cellStates = new List<bool>();
+            for (int x = 0; x < Columns; x++)
+            {
+                for (int y = 0; y < Rows; y++)
+                {
+                    cellStates.Add(Cells[x, y].IsAlive);
+                }
+            }
+
+            string json = JsonConvert.SerializeObject(cellStates);
+            System.IO.File.WriteAllText(filePath, json);
+        }
+
+        public void LoadState(string filePath)
+        {
+            string json = System.IO.File.ReadAllText(filePath);
+            List<bool> cellStates = JsonConvert.DeserializeObject<List<bool>>(json);
+
+            int index = 0;
+            for (int x = 0; x < Columns; x++)
+            {
+                for (int y = 0; y < Rows; y++)
+                {
+                    Cells[x, y].IsAlive = cellStates[index];
+                    index++;
+                }
+            }
+        }
     }
+
     public class Settings
     {
         public int Width { get; set; }
         public int Height { get; set; }
         public int CellSize { get; set; }
         public double LiveDensity { get; set; }
+        public int SleepTime { get; set; }
     }
-    class Program
+
+    public class Program
     {
         static Board board;
         static Settings settings;
+        static List<Figure> Figures { get; set; } = new List<Figure>();
+
+        static void LoadFigures()
+        {
+            string[] files = Directory.GetFiles("figures", "*.json");
+            foreach (string file in files)
+            {
+                Figure figure = new Figure();
+                figure.Name = Path.GetFileNameWithoutExtension(file);
+                board.LoadFigure(file);
+                Figures.Add(figure);
+            }
+        }
+
+        static void LoadSettings()
+        {
+            string settingsJson = System.IO.File.ReadAllText("settings.json");
+            settings = JsonConvert.DeserializeObject<Settings>(settingsJson);
+        }
 
         static private void Reset()
         {
-            string json = File.ReadAllText("settings.json");
-            settings = JsonSerializer.Deserialize<Settings>(json);
-
-            board = new Board
-            (
-                settings.Width,
-                settings.Height,
-                settings.CellSize,
-                settings.LiveDensity
-            );
+            board = new Board(
+                width: settings.Width,
+                height: settings.Height,
+                cellSize: settings.CellSize,
+                liveDensity: settings.LiveDensity);
         }
         static void Render()
         {
@@ -132,15 +203,40 @@ namespace cli_life
                 Console.Write('\n');
             }
         }
+        static void Save()
+        {
+            board.SaveState("state.txt");
+            Console.WriteLine("State saved to state.txt");
+        }
+        static void Load()
+        {
+            board.LoadState("state.txt");
+            Console.WriteLine("State loaded from state.txt");
+        }
         static void Main(string[] args)
         {
+            LoadSettings();
             Reset();
+            LoadFigures(); // Загрузка фигур-колоний
             while (true)
             {
                 Console.Clear();
                 Render();
                 board.Advance();
-                Thread.Sleep(1000);
+                Thread.Sleep(settings.SleepTime);
+
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKey key = Console.ReadKey(true).Key;
+                    if (key == ConsoleKey.S)
+                    {
+                        Save();
+                    }
+                    else if (key == ConsoleKey.L)
+                    {
+                        Load();
+                    }
+                }
             }
         }
     }

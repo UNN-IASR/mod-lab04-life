@@ -2,5 +2,6 @@
     "Width": 50,
     "Height": 20,
     "CellSize": 1,
-    "LiveDensity": 0.5
+    "LiveDensity": 0.5,
+    "SleepTime": 1000
 }

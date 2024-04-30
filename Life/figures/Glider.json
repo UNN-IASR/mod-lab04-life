@@ -1,0 +1,6 @@
+{
+    "Name": "Glider",
+    "Width": 3,
+    "Height": 3,
+    "Cells": [true, false, true, false, true, true, false, true, false]
+}
