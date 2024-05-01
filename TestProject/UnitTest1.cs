@@ -127,7 +127,7 @@ namespace TestProject1
         [TestMethod]
         public void TestMethod6()
         {
-            string filePath = "C:\\Users\\ASUS\\OneDrive\\Рабочий стол\\settings.json";
+            string filePath = "C:\\Users\\ASUS\\OneDrive\\ГђГ ГЎГ®Г·ГЁГ© Г±ГІГ®Г«\\settings.json";
 
             setting setting = new setting
             {
@@ -287,9 +287,9 @@ namespace TestProject1
                 }
             }
 
-            //считаем комбинации: 
+            //Г±Г·ГЁГІГ ГҐГ¬ ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ: 
 
-            //комбинация 1 -  блок
+            //ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГї 1 -  ГЎГ«Г®ГЄ
             for (int x = 0; x < board.Columns; x++)
             {
                 for (int y = 0; y < board.Rows; y++)
@@ -302,7 +302,7 @@ namespace TestProject1
                     }
                 }
             }
-            //комбинация 2 - улей 
+            //ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГї 2 - ГіГ«ГҐГ© 
             for (int x = 0; x < board.Columns; x++)
             {
                 for (int y = 0; y < board.Rows; y++)
@@ -317,7 +317,7 @@ namespace TestProject1
                     }
                 }
             }
-            //комбинация 3 - планер
+            //ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГї 3 - ГЇГ«Г Г­ГҐГ°
             for (int x = 0; x < board.Columns - 2; x++)
             {
                 for (int y = 0; y < board.Rows - 2; y++)
@@ -331,7 +331,7 @@ namespace TestProject1
                     }
                 }
             }
-            //комбинация 4 - пруд
+            //ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГї 4 - ГЇГ°ГіГ¤
             for (int x = 1; x < board.Columns - 2; x++)
             {
                 for (int y = 0; y < board.Rows - 3; y++)
