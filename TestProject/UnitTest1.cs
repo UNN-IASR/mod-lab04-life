@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using System.IO;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using System.Text;
-
 namespace NET
 {
     [TestClass]
