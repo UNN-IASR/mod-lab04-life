@@ -9,7 +9,7 @@ using System.IO;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using System.Text;
 
-namespace TestProject1
+namespace NET
 {
     [TestClass]
     public class UnitTest1
