@@ -16,9 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Life\Life.csproj" />
   </ItemGroup>
-<ItemGroup>
-    <ProjectReference Include="..\Test\Test.csproj" />
-  </ItemGroup>
 
 
 </Project>
