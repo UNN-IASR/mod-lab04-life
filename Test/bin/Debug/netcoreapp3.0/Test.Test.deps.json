@@ -6,16 +6,16 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v3.0": {
-      "fa.Tests/1.0.0": {
+      "Test/1.0.0": {
         "dependencies": {
           "MSTest.TestAdapter": "1.4.0",
           "MSTest.TestFramework": "1.4.0",
           "Microsoft.NET.Test.Sdk": "16.2.0",
           "coverlet.collector": "1.0.1",
-          "fa": "1.0.0"
+          "Life": "1.0.0"
         },
         "runtime": {
-          "fa.Tests.dll": {}
+          "Test.dll": {}
         }
       },
       "coverlet.collector/1.0.1": {},
@@ -1325,15 +1325,15 @@
           }
         }
       },
-      "fa/1.0.0": {
+      "Life/1.0.0": {
         "runtime": {
-          "fa.dll": {}
+          "Life.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "fa.Tests/1.0.0": {
+    "Test/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -2073,7 +2073,7 @@
       "path": "system.xml.xpath.xmldocument/4.0.1",
       "hashPath": "system.xml.xpath.xmldocument.4.0.1.nupkg.sha512"
     },
-    "fa/1.0.0": {
+    "Life/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
