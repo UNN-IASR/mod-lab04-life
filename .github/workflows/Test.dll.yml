@@ -1,0 +1,14 @@
+name: Upload Test.dll
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload Test.dll
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test.dll
+          path: /home/runner/work/mod-lab04-life/mod-lab04-life/Test/bin/Debug/net8.0/Test.dll
