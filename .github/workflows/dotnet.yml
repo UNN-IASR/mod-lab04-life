@@ -1,23 +1,23 @@
-name: .NET
+name: Build and Test
 
-
-on: [push, pull_request]
-
+on:
+  push:
+    branches:
+      - main
 
 jobs:
- build:
-
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '8.x'
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+        dotnet-version: '7.0.x' # Specify the desired version
+
+    - name: Build and Test
+      run: |
+        dotnet build YourProject.sln
+        dotnet test YourProject.Tests.csproj
