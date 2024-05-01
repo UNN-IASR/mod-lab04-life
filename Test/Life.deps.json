@@ -12,7 +12,7 @@
           "ScottPlot": "5.0.31"
         },
         "runtime": {
-          "ConsoleApp63.dll": {}
+          "Life.dll": {}
         }
       },
       "Newtonsoft.Json/13.0.3": {
@@ -105,7 +105,7 @@
     }
   },
   "libraries": {
-    "ConsoleApp63/1.0.0": {
+    "Life/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
