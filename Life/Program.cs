@@ -12,6 +12,73 @@ using System.Text.RegularExpressions;
 namespace cli_life
 {
     /// <summary>
+    /// Фигура.
+    /// </summary>
+    public class Figure
+    {
+        /// <summary>
+        /// Имя фигуры.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Ширина фигуры.
+        /// </summary>
+        public int Width { get; set; }
+
+        /// <summary>
+        /// Высота фигуры.
+        /// </summary>
+        public int Height { get; set; }
+
+        /// <summary>
+        /// Строковое представление фигуры.
+        /// </summary>
+        public string FigureString { get; set; }
+
+        /// <summary>
+        /// Создает экземпляр фигуры.
+        /// </summary>
+        /// <param name="name">Имя фигуры.</param>
+        /// <param name="width">Ширина фигуры.</param>
+        /// <param name="height">Высота фигуры.</param>
+        /// <param name="figureString">Строковое представление фигуры.</param>
+        public Figure(string name, int width, int height, string figureString)
+        {
+            Name = name;
+            Width = width;
+            Height = height;
+            FigureString = figureString;
+        }
+
+        public Figure()
+        {
+            Name = default;
+            Width = default;
+            Height = default;
+            FigureString = default;
+        }
+
+        /// <summary>
+        /// Возвращает результат проверки эквивалентности фигуры и другого объекта.
+        /// </summary>
+        /// <param name="obj">Объект для сравнения.</param>
+        /// <returns>Результат проверки эквивалентности.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is not Figure)
+            {
+                return false;
+            }
+
+            var figure = obj as Figure;
+
+            return figure.Width == this.Width && figure.Height == this.Height
+                && figure.FigureString == this.FigureString;
+        }
+    }
+
+    /// <summary>
     /// Настройки доски.
     /// </summary>
     public class BoardSettings
@@ -42,7 +109,6 @@ namespace cli_life
         /// <param name="filePath">Путь к файлу.</param>
         public void LoadBoardSettings(string filePath)
         {
-            var path = AppDomain.CurrentDomain.BaseDirectory;
             string json = File.ReadAllText(filePath);
             var settings = JsonSerializer.Deserialize<BoardSettings>(json);
 
@@ -356,19 +422,29 @@ namespace cli_life
     class BoardAnalysis
     {
         /// <summary>
+        /// Виды фигур.
+        /// </summary>
+        public static Figure[] Figures;
+
+        /// <summary>
         /// Доска для анализа.
         /// </summary>
-        public static Board board;
+        private Board _board;
+
+        public BoardAnalysis(Board board)
+        {
+            _board = board;
+        }
 
         /// <summary>
         /// Возвращает число живых клеток на доске.
         /// </summary>
         /// <returns>Число живых клеток.</returns>
-        public static int GetAliveCellsCount()
+        public int GetAliveCellsCount()
         {
             var result = 0;
 
-            foreach (var cell in board.Cells)
+            foreach (var cell in _board.Cells)
             {
                 if (cell.IsAlive)
                 {
@@ -377,6 +453,73 @@ namespace cli_life
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Возвращает число каждой из фигур на доске.
+        /// </summary>
+        /// <returns>Число каждой из фигур на доске.</returns>
+        public Dictionary<string, int> GetFiguresCount()
+        {
+            var result = new Dictionary<string, int>();
+
+            var rows = _board.Rows;
+            var cols = _board.Columns;
+
+            foreach(var figure in Figures)
+            {
+                result.Add(figure.Name, 0);
+            }
+            
+            for(var row = -1; row < rows; row++)
+            {
+                for (var col = -1; col < cols; col++)
+                {
+                    foreach(var figure in Figures)
+                    {
+                        if (figure.Equals(MakeFigure(row, col, figure.Width, figure.Height)))
+                        {
+                            result[figure.Name]++;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Создает фигуру с требуемыми параметрами.
+        /// </summary>
+        /// <param name="row">Индекс строки.</param>
+        /// <param name="col">Индекс столбца.</param>
+        /// <param name="width">Ширина фигуры.</param>
+        /// <param name="height">Высота фигуры.</param>
+        /// <returns>Фигуру.</returns>
+        private Figure MakeFigure(int row, int col, int width, int height)
+        {
+            var figureString = new StringBuilder();
+
+            for (var rowIndex = row; rowIndex < row + height; rowIndex++)
+            {
+                for (var colIndex = col; colIndex < col + width; colIndex++)
+                {
+                    // Если выходит за пределы доски - заполнять пустыми значениями.
+                    if (rowIndex < 0 || rowIndex >= _board.Rows 
+                        || colIndex < 0 ||  colIndex >= _board.Columns)
+                    {
+                        figureString.Append(' ');
+                        continue;
+                    }
+
+
+                    figureString.Append(_board.Cells[rowIndex, colIndex].IsAlive
+                        ? '*'
+                        : ' ');
+                }
+            }
+
+            return new Figure("figure", width, height, figureString.ToString());
         }
     }
 
@@ -388,12 +531,17 @@ namespace cli_life
         /// <summary>
         /// Путь к файлу с настройками.
         /// </summary>
-        const string JsonPath = "../../../boardSettings.json";
+        const string SettingsJsonPath = "../../../boardSettings.json";
 
         /// <summary>
-        /// Файл с состоянием доски.
+        /// Путь к файлу с состоянием доски.
         /// </summary>
         const string BoardStateFilePath = "../../../gameOfLife_sf1.txt";
+
+        /// <summary>
+        /// Путь к файлу с фигурами.
+        /// </summary>
+        const string FiguresJsonPath = "../../../figures.json";
 
         /// <summary>
         /// Число итераций симуляции.
@@ -416,6 +564,20 @@ namespace cli_life
         public static Board SimulationBoard;
 
         /// <summary>
+        /// Анализ состояния доски.
+        /// </summary>
+        public static BoardAnalysis BoardAnalysis;
+
+        /// <summary>
+        /// Загружает список фигур из JSON-файла.
+        /// </summary>
+        static private void LoadFigures()
+        {
+            string json = File.ReadAllText(FiguresJsonPath);
+            BoardAnalysis.Figures = JsonSerializer.Deserialize<Figure[]>(json);
+        }
+
+        /// <summary>
         /// Сбрасывает настройки доски.
         /// </summary>
         static private void Reset()
@@ -423,7 +585,7 @@ namespace cli_life
             try
             {
                 var settings = new BoardSettings();
-                settings.LoadBoardSettings(JsonPath);
+                settings.LoadBoardSettings(SettingsJsonPath);
 
                 SimulationBoard = new Board(
                     width: settings.Width,
@@ -436,7 +598,7 @@ namespace cli_life
                 SimulationBoard = new Board();
             }
 
-            BoardAnalysis.board = SimulationBoard;
+            BoardAnalysis = new(SimulationBoard);
         }
 
         /// <summary>
@@ -487,6 +649,8 @@ namespace cli_life
         /// </summary>
         static void RunSimulation()
         {
+            LoadFigures();
+
             if (LoadFromFile)
             {
                 try
@@ -509,6 +673,11 @@ namespace cli_life
                 Render();
                 Console.WriteLine($"Текущее поколение: {SimulationBoard.Generation}");
                 Console.WriteLine($"Число живых клеток: {BoardAnalysis.GetAliveCellsCount()}");
+                Console.WriteLine("Число каждой из фигур:");
+                foreach(var figure in BoardAnalysis.GetFiguresCount())
+                {
+                    Console.WriteLine($"{figure.Key}: {figure.Value}");
+                }
                 SimulationBoard.Advance();
                 Thread.Sleep(1000);
             }
