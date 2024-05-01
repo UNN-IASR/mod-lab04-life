@@ -1,0 +1,25 @@
+name: .NET Test
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 8.0.100-sdk
+
+    - name: Restore NuGet packages
+      run: dotnet restore
+
+    - name: Run tests
+      run: dotnet test --no-build --verbosity normal
