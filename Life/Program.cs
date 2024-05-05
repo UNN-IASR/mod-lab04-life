@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace cli_life
 {
@@ -11,7 +13,7 @@ namespace cli_life
     {
         public bool IsAlive;
         public readonly List<Cell> neighbors = new List<Cell>();
-        private bool IsAliveNext;
+        public bool IsAliveNext;
         public void DetermineNextLiveState()
         {
             int liveNeighbors = neighbors.Where(x => x.IsAlive).Count();
@@ -35,7 +37,7 @@ namespace cli_life
         public int Width { get { return Columns * CellSize; } }
         public int Height { get { return Rows * CellSize; } }
 
-        public Board(int width, int height, int cellSize, double liveDensity = .1)
+        public Board(int width, int height, int cellSize, double liveDensity = .1, bool useState = false)
         {
             CellSize = cellSize;
 
@@ -43,9 +45,15 @@ namespace cli_life
             for (int x = 0; x < Columns; x++)
                 for (int y = 0; y < Rows; y++)
                     Cells[x, y] = new Cell();
-
             ConnectNeighbors();
-            Randomize(liveDensity);
+
+            if (useState)
+            {
+                ReadFromFile("../../../state.txt");
+            } else
+            {
+                Randomize(liveDensity);
+            }  
         }
 
         readonly Random rand = new Random();
@@ -85,17 +93,28 @@ namespace cli_life
                 }
             }
         }
+        public void ReadFromFile(string filePath)
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+            for (int row = 0; row < Rows; row++)
+            {
+                var line = reader.ReadLine();
+                var split = line.ToCharArray();
+                for (int col = 0; col < Columns; col++)
+                {
+                    var cell = Cells[col, row];
+                    cell.IsAlive = split[col].Equals('*');
+                }
+            }
+        }
     }
-    class Program
+    public class Program
     {
         static Board board;
-        static private void Reset()
+        static private void Reset(string filePath)
         {
-            board = new Board(
-                width: 50,
-                height: 20,
-                cellSize: 1,
-                liveDensity: 0.5);
+            var settings = File.ReadAllText(filePath);
+            board = CreateBoardWithSettings(settings);
         }
         static void Render()
         {
@@ -116,14 +135,42 @@ namespace cli_life
                 Console.Write('\n');
             }
         }
+        static void WriteToFile()
+        {
+            using (StreamWriter streamWriter = File.CreateText("../../../state.txt"))
+            {
+                for (int row = 0; row < board.Rows; row++)
+                {
+                    for (int col = 0; col < board.Columns; col++)
+                    {
+                        var cell = board.Cells[col, row];
+                        if (cell.IsAlive)
+                        {
+                            streamWriter.Write('*');
+                        }
+                        else
+                        {
+                            streamWriter.Write(' ');
+                        }
+                    }
+                    streamWriter.WriteLine();
+                }
+            }
+        }
+        public static Board CreateBoardWithSettings(string settings)
+        {
+            Board board = JsonConvert.DeserializeObject<Board>(settings);
+            return board;
+        }
         static void Main(string[] args)
         {
-            Reset();
             while(true)
             {
+                Reset("../../../settings.json");
                 Console.Clear();
                 Render();
                 board.Advance();
+                WriteToFile();
                 Thread.Sleep(1000);
             }
         }
