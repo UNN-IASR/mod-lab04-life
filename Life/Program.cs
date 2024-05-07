@@ -6,10 +6,6 @@ using System.Numerics;
 using System.Text.Json;
 using System.Threading;
 using System.Drawing;
-using System.Drawing.Common;
-using System.Drawing.Common.Blurhash;
-using ScottPlot;
-
 
 namespace cli_life
 {
