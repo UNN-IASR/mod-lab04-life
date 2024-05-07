@@ -278,12 +278,12 @@ namespace cli_life
            ScottPlot.Plot myPlot = new(); 
            double[] positions = { 0.1, 0.2, 0.3, 0.4, 0.5};
            var myScatter = myPlot.Add.Scatter(positions, numGenArray);
-           myScatter.Color = Colors.Green.WithOpacity(.2);
+           //myScatter.Color = Colors.Green.WithOpacity(.2);
            myScatter.LineWidth = 5;
            myScatter.MarkerSize = 15;
            myPlot.Axes.Left.Label.Text = "Number of generations";
            myPlot.Axes.Bottom.Label.Text = "Live density";
-           myPlot.SavePng("demo.png", 400, 300);
+           myPlot.SavePng("plot.png", 400, 300);
            
            
        
