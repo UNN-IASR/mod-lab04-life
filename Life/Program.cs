@@ -239,8 +239,6 @@ namespace cli_life
                     Render();
                 
                     int elementCount = CountElements(board);
-                        
-                    Console.WriteLine($"NumGen: {numGen}");
 
                     Console.WriteLine($"Итерация №: {i+1}");
                     
