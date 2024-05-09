@@ -1,4 +1,6 @@
 using cli_life;
+using System.Numerics;
+using System.Text.Json;
 
 namespace ProgramTests;
 
@@ -144,13 +146,11 @@ public class ProgramTests
     [TestMethod]
     public void BoardConstructor_CellSizeGreaterThanOne_CorrectNumberRowsColumns()
     {
-        var width = 50;
-        var heigth = 20;
-        var cellSize = 2;
-        var board = new Board(width, heigth, cellSize);
+        var settings = new BoardSettings(50, 20, 2);
+        var board = new Board(settings);
 
-        Assert.AreEqual(board.Columns, width / cellSize);
-        Assert.AreEqual(board.Rows, heigth / cellSize);
+        Assert.AreEqual(board.Columns, settings.Width / settings.CellSize);
+        Assert.AreEqual(board.Rows, settings.Height / settings.CellSize);
     }
 
     /// <summary>
@@ -159,15 +159,13 @@ public class ProgramTests
     [TestMethod]
     public void ConnectNeighbours_Board_ConnectsCellNeighbours()
     {
-        var width = 3;
-        var heigth = 3;
-        var cellSize = 1;
+        var settings = new BoardSettings(3, 3, 1);
 
-        var board = new Board(width, heigth, cellSize);
+        var board = new Board(settings);
 
-        for (var row = 0; row < heigth; row++)
+        for (var row = 0; row < settings.Height; row++)
         {
-            for (var col = 0; col < width; col++)
+            for (var col = 0; col < settings.Width; col++)
             {
                 Assert.AreEqual(8, board.Cells[row, col].neighbours.Count);
             }
@@ -180,38 +178,15 @@ public class ProgramTests
     [TestMethod]
     public void LoadBoardSettings_JsonFileExists_LoadsBoardSettings()
     {
-        var boardSettings = new BoardSettings();
-        boardSettings.LoadBoardSettings("../../../boardSettings.json");
+        var originalSettings = new BoardSettings(50, 20, 1, 0.5);
+        FileManager.SaveBoardSettings(originalSettings, "../../../boardSettings.json");
 
-        Assert.AreEqual(50, boardSettings.Width);
-        Assert.AreEqual(20, boardSettings.Height);
-        Assert.AreEqual(1, boardSettings.CellSize);
-        Assert.AreEqual(0.5, boardSettings.LiveDensity);
-    }
+        var jsonSettings = FileManager.LoadBoardSettings("../../../boardSettings.json");
 
-    /// <summary>
-    /// Выбрасывает исключение ArgumentException при пустом пути файла.
-    /// </summary>
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void LoadBoardSettings_EmptyFilePath_ThrowsArgumentException()
-    {
-        new BoardSettings().LoadBoardSettings(string.Empty);
-    }
-
-    /// <summary>
-    /// Заполняет настройки доски нулевыми значениями при неудачной попытке десериализации JSON-файла.
-    /// </summary>
-    [TestMethod]
-    public void LoadBoardSettings_IncorrectJsonFile_SetsZeroValues()
-    {
-        var boardSettings = new BoardSettings();
-        boardSettings.LoadBoardSettings("../../../incorrectJson.json");
-
-        Assert.AreEqual(0, boardSettings.Width);
-        Assert.AreEqual(0, boardSettings.Height);
-        Assert.AreEqual(0, boardSettings.CellSize);
-        Assert.AreEqual(0, boardSettings.LiveDensity);
+        Assert.AreEqual(originalSettings.Width, jsonSettings.Width);
+        Assert.AreEqual(originalSettings.Height, jsonSettings.Height);
+        Assert.AreEqual(originalSettings.CellSize, jsonSettings.CellSize);
+        Assert.AreEqual(originalSettings.LiveDensity, jsonSettings.LiveDensity);
     }
 
     /// <summary>
@@ -220,19 +195,11 @@ public class ProgramTests
     [TestMethod]
     public void SaveBoardState_CorrectFilePath_CreatesFile()
     {
-        new Board().SaveBoardState("../../../gameOfLife_sf1.txt");
+        var filePath = "../../../gameOfLife_sf1.txt";
 
-        Assert.IsTrue(File.Exists("../../../gameOfLife_sf1.txt"));
-    }
+        FileManager.SaveBoardState(new Board(), filePath);
 
-    /// <summary>
-    /// Выбрасывает исключение ArgumentException при пустом пути файла.
-    /// </summary>
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void SaveBoardState_EmptyFilePath_ThrowsArgumentException()
-    {
-        new Board().SaveBoardState(string.Empty);
+        Assert.IsTrue(File.Exists(filePath));
     }
 
     /// <summary>
@@ -241,27 +208,75 @@ public class ProgramTests
     [TestMethod]
     public void LoadBoardState_FileExists_LoadsCorrectParameters()
     {
-        var width = 50;
-        var heigth = 20;
-        var cellSize = 1;
+        var firstBoardSettings = new BoardSettings(50, 20, 1);
+        var filePath = "../../../gameOfLife_sf2.txt";
+        var board = new Board(firstBoardSettings);
 
-        var board = new Board(width, heigth, cellSize);
-        board.SaveBoardState("../../../gameOfLife_sf2.txt");
-        board = new(1, 1, 1, 1);
-        board.LoadBoardState("../../../gameOfLife_sf2.txt");
+        FileManager.SaveBoardState(board, filePath);
+        board = FileManager.LoadBoardState(filePath);
 
-        Assert.AreEqual(width, board.Width);
-        Assert.AreEqual(heigth, board.Height);
-        Assert.AreEqual(cellSize, board.CellSize);
+        Assert.AreEqual(firstBoardSettings.Width, board.Width);
+        Assert.AreEqual(firstBoardSettings.Height, board.Height);
+        Assert.AreEqual(firstBoardSettings.CellSize, board.CellSize);
     }
 
     /// <summary>
-    /// Выбрасывает исключение ArgumentException при пустом пути файла.
+    /// Возвращает корректное число живых клеток на доске.
     /// </summary>
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void LoadBoardState_EmptyFilePath_ThrowsArgumentException()
+    public void GetAliveCellsCount_BoardWithAliveCells_ReturnsCorrectAmount()
     {
-        new Board().LoadBoardState(string.Empty);
+        var board = new Board(new BoardSettings(3, 3, 1, 1));
+
+        Assert.AreEqual(9, BoardAnalysis.GetAliveCellsCount(board));
+    }
+
+    /// <summary>
+    /// Возвращает true, если фигуры эквивалентны.
+    /// </summary>
+    [TestMethod]
+    public void FigureEquals_EqualFigures_ReturnsTrue()
+    {
+        var firstFigure =
+            new Figure("FigureOne", 4, 4, "      **    **      ");
+        var secondFigure =
+            new Figure("FigureTwo", 4, 4, "      **    **      ");
+
+        Assert.IsTrue(firstFigure.Equals(secondFigure));
+    }
+
+    /// <summary>
+    /// Сохраняет список фигур в JSON-файл.
+    /// </summary>
+    [TestMethod]
+    public void SaveFigures_CorrentParameters_SavesFigures()
+    {
+        var figures = new Figure[]
+        {
+            new Figure("Block", 4, 4, "      **    **      ")
+        };
+        var filePath = "../../../figures.json";
+
+        FileManager.SaveFigures(figures, filePath);
+
+        Assert.IsTrue(File.Exists(filePath));
+    }
+
+    /// <summary>
+    /// Загружает список фигур из JSON-файла.
+    /// </summary>
+    [TestMethod]
+    public void LoadFigures_CorrentPath_LoadsFigures()
+    {
+        var figures = new Figure[]
+        {
+            new Figure("Block", 4, 4, "      **    **      ")
+        };
+        var filePath = "../../../figures.json";
+        FileManager.SaveFigures(figures, filePath);
+
+        var loadedFigures = FileManager.LoadFigures(filePath);
+
+        Assert.IsTrue(figures[0].Equals(loadedFigures[0]));
     }
 }

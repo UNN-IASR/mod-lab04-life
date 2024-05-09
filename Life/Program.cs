@@ -8,6 +8,9 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.IO;
 using System.Text.RegularExpressions;
+using ScottPlot.Plottables;
+using System.Runtime.CompilerServices;
+using ScottPlot;
 
 namespace cli_life
 {
@@ -51,12 +54,11 @@ namespace cli_life
             FigureString = figureString;
         }
 
-        public Figure()
+        /// <summary>
+        /// Создает экземпляр фигуры.
+        /// </summary>
+        public Figure() : this(string.Empty, 0, 0, string.Empty)
         {
-            Name = default;
-            Width = default;
-            Height = default;
-            FigureString = default;
         }
 
         /// <summary>
@@ -104,18 +106,172 @@ namespace cli_life
         public double LiveDensity { get; set; }
 
         /// <summary>
-        /// Загрузить настройки доски из JSON-файла.
+        /// Создает экземпляр настроек доски.
+        /// </summary>
+        /// <param name="width">Ширина доски.</param>
+        /// <param name="height">Высота доски.</param>
+        /// <param name="cellSize">Размер клетки.</param>
+        /// <param name="liveDensity">Плотность жизни.</param>
+        public BoardSettings(int width, int height, int cellSize, double liveDensity = 0.5)
+        {
+            Width = width;
+            Height = height;
+            CellSize = cellSize;
+            LiveDensity = liveDensity;
+        }
+
+        /// <summary>
+        /// Создает экземпляр настроек доски.
+        /// </summary>
+        public BoardSettings() : this(0, 0, 0, 0)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Работа с файлами.
+    /// </summary>
+    public class FileManager
+    {
+        /// <summary>
+        /// Загружает настройки доски из JSON-файла.
         /// </summary>
         /// <param name="filePath">Путь к файлу.</param>
-        public void LoadBoardSettings(string filePath)
+        public static BoardSettings LoadBoardSettings(string filePath)
         {
-            string json = File.ReadAllText(filePath);
+            var json = File.ReadAllText(filePath);
             var settings = JsonSerializer.Deserialize<BoardSettings>(json);
 
-            Width = settings.Width;
-            Height = settings.Height;
-            CellSize = settings.CellSize;
-            LiveDensity = settings.LiveDensity;
+            return settings;
+        }
+
+        /// <summary>
+        /// Сохраняет настройки доски в JSON-файл.
+        /// </summary>
+        /// <param name="settings">Настройки доски.</param>
+        /// <param name="filePath">Путь к файлу.</param>
+        public static void SaveBoardSettings(BoardSettings settings, string filePath)
+        {
+            var json = JsonSerializer.Serialize(settings);
+            File.WriteAllText(filePath, json);
+        }
+
+        /// <summary>
+        /// Записывает состояние доски в указанный файл.
+        /// </summary>
+        /// <param name="board">Доска.</param>
+        /// <param name="filePath">Путь к файлу.</param>
+        public static void SaveBoardState(Board board, string filePath)
+        {
+            var boardStringRepr = string.Empty;
+
+            for (var row = 0; row < board.Height; row++)
+            {
+                for (var col = 0; col < board.Width; col++)
+                {
+                    boardStringRepr +=
+                        (board.Cells[row, col].IsAlive)
+                            ? '*'
+                            : ' ';
+                }
+                boardStringRepr += '\n';
+            }
+            boardStringRepr += $"cellSize={board.CellSize}\n";
+            boardStringRepr += $"generation={board.Generation}";
+
+            File.WriteAllText(filePath, boardStringRepr);
+        }
+
+        /// <summary>
+        /// Загружает состояние доски из файла.
+        /// </summary>
+        /// <param name="filePath">Путь к файлу.</param>
+        /// <returns>Загруженную доску.</returns>
+        public static Board LoadBoardState(string filePath)
+        {
+            var boardStringArrayRepr = File.ReadAllLines(filePath);
+
+            int.TryParse(
+                boardStringArrayRepr[boardStringArrayRepr.Length - 2]
+                    .Substring(
+                        boardStringArrayRepr[boardStringArrayRepr.Length - 2]
+                        .IndexOf('=') + 1),
+                out int cellSize);
+
+            int.TryParse(
+                boardStringArrayRepr[boardStringArrayRepr.Length - 1]
+                    .Substring(
+                        boardStringArrayRepr[boardStringArrayRepr.Length - 1]
+                        .IndexOf('=') + 1),
+                out int generation);
+
+            cellSize = cellSize > 1 
+                ? cellSize
+                : 1;
+
+            generation = generation > 0
+                ? generation
+                : 0;
+
+            var height = boardStringArrayRepr.Length - 2;
+            var width = boardStringArrayRepr[0].Length;
+
+            var settings = new BoardSettings(width, height, cellSize);
+
+            var cells = new Cell[height / cellSize, width / cellSize];
+
+            for (var row = 0; row < height; row += cellSize)
+            {
+                for (var col = 0; col < width; col += cellSize)
+                {
+                    cells[row / cellSize, col / cellSize] = new Cell
+                    {
+                        IsAlive = (boardStringArrayRepr[row][col] == '*')
+                    };
+                }
+            }
+
+            return new Board(settings, generation, cells);
+        }
+
+        /// <summary>
+        /// Загружает список фигур из JSON-файла.
+        /// </summary>
+        /// <param name="filePath">Путь к файлу.</param>
+        /// <returns>Список фигур.</returns>
+        public static Figure[] LoadFigures(string filePath)
+        {
+            var json = File.ReadAllText(filePath);
+
+            return JsonSerializer.Deserialize<Figure[]>(json);
+        }
+
+        /// <summary>
+        /// Сохраняет список фигур в JSON-файл.
+        /// </summary>
+        /// <param name="figures">Фигуры.</param>
+        /// <param name="filePath">Путь к файлу.</param>
+        public static void SaveFigures(Figure[] figures, string filePath)
+        {
+            var json = JsonSerializer.Serialize(figures, new
+                JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+
+            File.WriteAllText(filePath, json);
+        }
+
+        /// <summary>
+        /// Сохраняет график в формате png.
+        /// </summary>
+        /// <param name="plot">График.</param>
+        /// <param name="filePath">Путь к файлу.</param>
+        /// <param name="width">Ширина изображения.</param>
+        /// <param name="heigth">Высота изображения.</param>
+        public static void SavePlotPng(Plot plot, string filePath, int width = 1920, int heigth = 1080)
+        {
+            plot.SavePng(filePath, 1920, 1080);
         }
     }
 
@@ -240,17 +396,14 @@ namespace cli_life
         /// <summary>
         /// Создает экземпляр доски.
         /// </summary>
-        /// <param name="width">Ширина доски.</param>
-        /// <param name="height">Высота доски.</param>
-        /// <param name="cellSize">Размер клетки.</param>
-        /// <param name="liveDensity">Плотность жизни.</param>
-        public Board(int width, int height, int cellSize, double liveDensity = .1)
+        /// <param name="settings">Настройки доски.</param>
+        public Board(BoardSettings settings)
         {
             Generation = 0;
 
-            CellSize = cellSize;
+            CellSize = settings.CellSize;
 
-            Cells = new Cell[height / cellSize, width / cellSize];
+            Cells = new Cell[settings.Height / CellSize, settings.Width / CellSize];
 
             Width = Columns * CellSize;
             Height = Rows * CellSize;
@@ -264,13 +417,34 @@ namespace cli_life
             }
 
             ConnectNeighbours();
-            Randomize(liveDensity);
+            Randomize(settings.LiveDensity);
         }
 
         /// <summary>
-        /// Создает экземпляр доски с параметрами по умолчанию.
+        /// Создает экземпляр доски.
         /// </summary>
-        public Board() : this(50, 20, 1, 0.5)
+        /// <param name="settings">Настройки доски.</param>
+        /// <param name="generation">Поколение.</param>
+        /// <param name="cells">Заполненная доска.</param>
+        public Board(BoardSettings settings, int generation, Cell[,] cells)
+        {
+            Generation = generation;
+
+            CellSize = settings.CellSize;
+
+            Cells = cells;
+
+            Width = settings.Width;
+            Height = settings.Height;
+
+            ConnectNeighbours();
+        }
+
+        /// <summary>
+        /// Создает экземпляр доски.
+        /// </summary>
+        /// <param name="density">Плотность жизни.</param>
+        public Board(double density = 0.5) : this(new BoardSettings(50, 20, 1, density))
         {
         }
 
@@ -340,86 +514,12 @@ namespace cli_life
                 }
             }
         }
-
-        /// <summary>
-        /// Записывает состояние доски в указанный файл.
-        /// </summary>
-        /// <param name="filePath">Путь к файлу.</param>
-        public void SaveBoardState(string filePath)
-        {
-            var boardStringRepr = string.Empty;
-
-            for (var row = 0; row < Height; row++)
-            {
-                for (var col = 0; col < Width; col++)
-                {
-                    boardStringRepr +=
-                        (Cells[row, col].IsAlive)
-                            ? '*'
-                            : ' ';
-                }
-                boardStringRepr += '\n';
-            }
-            boardStringRepr += $"cellSize={CellSize}\n";
-            boardStringRepr += $"generation={Generation}";
-
-            File.WriteAllText(filePath, boardStringRepr);
-        }
-
-        /// <summary>
-        /// Загружает состояние доски из файла.
-        /// </summary>
-        /// <param name="filePath">Путь к файлу.</param>
-        public void LoadBoardState(string filePath)
-        {
-            var boardStringArrayRepr = File.ReadAllLines(filePath);
-
-            int.TryParse(
-                boardStringArrayRepr[boardStringArrayRepr.Length - 2]
-                    .Substring(
-                        boardStringArrayRepr[boardStringArrayRepr.Length - 2]
-                        .IndexOf('=') + 1),
-                out int cellSize);
-
-            int.TryParse(
-                boardStringArrayRepr[boardStringArrayRepr.Length - 1]
-                    .Substring(
-                        boardStringArrayRepr[boardStringArrayRepr.Length - 1]
-                        .IndexOf('=') + 1),
-                out int generation);
-
-            CellSize = cellSize > 1
-                ? cellSize
-                : 1;
-
-            Generation = generation > 0
-                ? generation
-                : 0;
-
-            Height = boardStringArrayRepr.Length - 2;
-            Width = boardStringArrayRepr[0].Length;
-
-            Cells = new Cell[Height / CellSize, Width / CellSize];
-
-            for (var row = 0; row < Height; row += CellSize)
-            {
-                for (var col = 0; col < Width; col += CellSize)
-                {
-                    Cells[row / CellSize, col / CellSize] = new Cell
-                    {
-                        IsAlive = (boardStringArrayRepr[row][col] == '*')
-                    };
-                }
-            }
-
-            ConnectNeighbours();
-        }
     }
 
     /// <summary>
     /// Анализ доски.
     /// </summary>
-    class BoardAnalysis
+    public class BoardAnalysis
     {
         /// <summary>
         /// Виды фигур.
@@ -442,9 +542,19 @@ namespace cli_life
         /// <returns>Число живых клеток.</returns>
         public int GetAliveCellsCount()
         {
+            return GetAliveCellsCount(_board);
+        }
+
+        /// <summary>
+        /// Возвращает число живых клеток на доске.
+        /// </summary>
+        /// <param name="board">Доска для анализа.</param>
+        /// <returns>Число живых клеток.</returns>
+        public static int GetAliveCellsCount(Board board)
+        {
             var result = 0;
 
-            foreach (var cell in _board.Cells)
+            foreach (var cell in board.Cells)
             {
                 if (cell.IsAlive)
                 {
@@ -466,16 +576,16 @@ namespace cli_life
             var rows = _board.Rows;
             var cols = _board.Columns;
 
-            foreach(var figure in Figures)
+            foreach (var figure in Figures)
             {
                 result.Add(figure.Name, 0);
             }
-            
-            for(var row = -1; row < rows; row++)
+
+            for (var row = -1; row < rows; row++)
             {
                 for (var col = -1; col < cols; col++)
                 {
-                    foreach(var figure in Figures)
+                    foreach (var figure in Figures)
                     {
                         if (figure.Equals(MakeFigure(row, col, figure.Width, figure.Height)))
                         {
@@ -505,8 +615,8 @@ namespace cli_life
                 for (var colIndex = col; colIndex < col + width; colIndex++)
                 {
                     // Если выходит за пределы доски - заполнять пустыми значениями.
-                    if (rowIndex < 0 || rowIndex >= _board.Rows 
-                        || colIndex < 0 ||  colIndex >= _board.Columns)
+                    if (rowIndex < 0 || rowIndex >= _board.Rows
+                        || colIndex < 0 || colIndex >= _board.Columns)
                     {
                         figureString.Append(' ');
                         continue;
@@ -544,9 +654,14 @@ namespace cli_life
         const string FiguresJsonPath = "../../../figures.json";
 
         /// <summary>
+        /// Путь к изображению с графиком.
+        /// </summary>
+        const string PlotPngPath = "../../../plot.png";
+
+        /// <summary>
         /// Число итераций симуляции.
         /// </summary>
-        static int IterationsNum = 0;
+        static int IterationsNum = 100;
 
         /// <summary>
         /// Выполнять загрузку из файла.
@@ -569,13 +684,9 @@ namespace cli_life
         public static BoardAnalysis BoardAnalysis;
 
         /// <summary>
-        /// Загружает список фигур из JSON-файла.
+        /// Настройки доски.
         /// </summary>
-        static private void LoadFigures()
-        {
-            string json = File.ReadAllText(FiguresJsonPath);
-            BoardAnalysis.Figures = JsonSerializer.Deserialize<Figure[]>(json);
-        }
+        public static BoardSettings Settings = new BoardSettings(100, 40, 1, 0.5);
 
         /// <summary>
         /// Сбрасывает настройки доски.
@@ -584,18 +695,13 @@ namespace cli_life
         {
             try
             {
-                var settings = new BoardSettings();
-                settings.LoadBoardSettings(SettingsJsonPath);
+                var settings = FileManager.LoadBoardSettings(SettingsJsonPath);
 
-                SimulationBoard = new Board(
-                    width: settings.Width,
-                    height: settings.Height,
-                    cellSize: settings.CellSize,
-                    liveDensity: settings.LiveDensity);
+                SimulationBoard = new Board(settings);
             }
             catch
             {
-                SimulationBoard = new Board();
+                SimulationBoard = new Board(Settings);
             }
 
             BoardAnalysis = new(SimulationBoard);
@@ -645,23 +751,27 @@ namespace cli_life
         }
 
         /// <summary>
-        /// Запускает симуляцию в соответствии с настроенной конфигурацией.
+        /// Запускает обычную симуляцию в соответствии с настроенной конфигурацией.
         /// </summary>
-        static void RunSimulation()
+        static void RunRegularSimulation()
         {
-            LoadFigures();
+            ConfigureSimulationStart();
+            Reset();
+
+            BoardAnalysis.Figures = FileManager.LoadFigures(FiguresJsonPath);
 
             if (LoadFromFile)
             {
                 try
                 {
-                    SimulationBoard.LoadBoardState(BoardStateFilePath);
+                    SimulationBoard = FileManager.LoadBoardState(BoardStateFilePath);
+                    BoardAnalysis = new(SimulationBoard);
                     Console.WriteLine("Успешное чтение данных из файла.");
                 }
                 catch
                 {
-                    Reset();
                     Console.WriteLine("Ошибка при чтении данных из файла.");
+                    Reset();
                 }
 
                 Thread.Sleep(2000);
@@ -674,7 +784,7 @@ namespace cli_life
                 Console.WriteLine($"Текущее поколение: {SimulationBoard.Generation}");
                 Console.WriteLine($"Число живых клеток: {BoardAnalysis.GetAliveCellsCount()}");
                 Console.WriteLine("Число каждой из фигур:");
-                foreach(var figure in BoardAnalysis.GetFiguresCount())
+                foreach (var figure in BoardAnalysis.GetFiguresCount())
                 {
                     Console.WriteLine($"{figure.Key}: {figure.Value}");
                 }
@@ -686,7 +796,7 @@ namespace cli_life
             {
                 try
                 {
-                    SimulationBoard.SaveBoardState(BoardStateFilePath);
+                    FileManager.SaveBoardState(SimulationBoard, BoardStateFilePath);
                     Console.WriteLine("Успешное сохранение результата в файл.");
                 }
                 catch
@@ -698,15 +808,92 @@ namespace cli_life
         }
 
         /// <summary>
+        /// Запускает исследовательскую симуляцию с выводом результатов в виде графика.
+        /// </summary>
+        static void RunResearchSimulation()
+        {
+            var rand = new Random();
+
+            var plot = new Plot();
+            plot.XLabel("Поколение");
+            plot.YLabel("Живые клетки");
+            plot.ShowLegend();
+
+            var density = new double[]
+            {
+                0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9
+            };
+
+            var generations = Enumerable
+                .Repeat(0, IterationsNum)
+                .Select((index, generation) => generation + index)
+                .ToList();
+            List<int> aliveCells;
+
+            int generation;
+            Board board;
+            BoardAnalysis boardAnalysis;
+            var boardsCount = density.Count();
+            var settings = new BoardSettings(Settings.Width, Settings.Height, Settings.CellSize);
+
+            Scatter scatter;
+
+            for (int boardIndex = 0; boardIndex < boardsCount; boardIndex++)
+            {
+                aliveCells = new();
+                generation = 0;
+
+                settings.LiveDensity = density[boardIndex];
+                board = new(density[boardIndex]);
+                boardAnalysis = new BoardAnalysis(board);
+
+                while (generation < IterationsNum)
+                {
+                    aliveCells.Add(boardAnalysis.GetAliveCellsCount());
+                    board.Advance();
+                    generation++;
+                }
+
+                scatter = plot.Add.Scatter(generations, aliveCells);
+                scatter.LegendText = density[boardIndex].ToString();
+                scatter.LineWidth = 3;
+                scatter.Color = new(rand.Next(0, 256), rand.Next(0, 256), rand.Next(0, 256));
+            }
+
+            FileManager.SavePlotPng(plot, PlotPngPath);
+        }
+
+        /// <summary>
+        /// Получает от пользователя выбор типа симуляции, который нужно запустить.
+        /// </summary>
+        static void GetSimulationType()
+        {
+            Console.Write("Выберите тип симуляции для запуска: \n1. Обычная\n2. Исследовательская\nВыбор: ");
+            if (!int.TryParse(Console.ReadLine(), out int userChoice))
+            {
+                throw new ArgumentException("Ответ не является числом", nameof(userChoice));
+            }
+
+            switch (userChoice)
+            {
+                case 1:
+                    RunRegularSimulation();
+                    break;
+                case 2:
+                    RunResearchSimulation();
+                    break;
+                default:
+                    throw new ArgumentException("Выбран несуществующий вариант", nameof(userChoice));
+            }
+        }
+
+        /// <summary>
         /// Точка входа программы.
         /// </summary>
         /// <param name="args">Передаваемые аргументы.</param>
         static void Main(string[] args)
         {
-            ConfigureSimulationStart();
-            Reset();
-
-            RunSimulation();
+            GetSimulationType();
         }
     }
 }
