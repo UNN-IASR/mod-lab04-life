@@ -1,0 +1,6 @@
+{
+    "gridWidth": 60,
+    "gridHeight": 20,
+    "cellDimension": 1,
+    "livingCellsRatio": 0.8
+}
