@@ -3,72 +3,72 @@
     "Name": "Hive",
     "Width": 5,
     "Height": 6,
-    "FigureString": "       *   * *  * *   *       "
+    "StableFigure": "       *   * *  * *   *       "
   },
   {
     "Name": "Korovai",
     "Width": 6,
     "Height": 6,
-    "FigureString": "        **   *  *   * *    *        "
+    "StableFigure": "        **   *  *   * *    *        "
   },
   {
     "Name": "Pond",
     "Width": 6,
     "Height": 6,
-    "FigureString": "        **   *  *  *  *   **        "
+    "StableFigure": "        **   *  *  *  *   **        "
   },
   {
     "Name": "Box",
     "Width": 5,
     "Height": 5,
-    "FigureString": "       *   * *   *       "
+    "StableFigure": "       *   * *   *       "
   },
   {
     "Name": "Block",
     "Width": 4,
     "Height": 4,
-    "FigureString": "     **  **     "
+    "StableFigure": "     **  **     "
   },
   {
     "Name": "Snake",
     "Width": 6,
     "Height": 4,
-    "FigureString": "       * **  ** *       "
+    "StableFigure": "       * **  ** *       "
   },
   {
     "Name": "Barge",
     "Width": 6,
     "Height": 6,
-    "FigureString": "        *    * *    * *    *        "
+    "StableFigure": "        *    * *    * *    *        "
   },
   {
     "Name": "Boat",
     "Width": 5,
     "Height": 5,
-    "FigureString": "       *   * *   **      "
+    "StableFigure": "       *   * *   **      "
   },
   {
     "Name": "Ship",
     "Width": 5,
     "Height": 5,
-    "FigureString": "      **   * *   **      "
+    "StableFigure": "      **   * *   **      "
   },
   {
     "Name": "LongBarge",
     "Width": 7,
     "Height": 7,
-    "FigureString": "         *     * *     * *     * *     *         "
+    "StableFigure": "         *     * *     * *     * *     *         "
   },
   {
     "Name": "LongBoat",
     "Width": 6,
     "Height": 6,
-    "FigureString": "        *    * *    * *    **       "
+    "StableFigure": "        *    * *    * *    **       "
   },
   {
     "Name": "LongShip",
     "Width": 6,
     "Height": 6,
-    "FigureString": "       **    * *    * *    **       "
+    "StableFigure": "       **    * *    * *    **       "
   }
 ]
