@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "fMOBQMt+yLQ4r6b5AywP5jRB0snl/e1QieQ46ROGB0cRknWBr1N6FmuCxj0e/ATM2fMA2sCWB1xLGNv1g+aQxQ==",
+  "dgSpecHash": "unYjvXgq+jrFGK2gargb0V1YLtMoF3dFarlsR06CqDC8QG4kNxN3qXficUYwrFKeAqgp/kGJugY0jTluMmEYkQ==",
   "success": true,
   "projectFilePath": "/Users/egorlogutov/Desktop/Github/mod-lab04-life/cli_life_tests/cli_life_tests.csproj",
   "expectedPackageFiles": [
@@ -11,7 +11,7 @@
     "/Users/egorlogutov/.nuget/packages/microsoft.testplatform.objectmodel/17.8.0/microsoft.testplatform.objectmodel.17.8.0.nupkg.sha512",
     "/Users/egorlogutov/.nuget/packages/microsoft.testplatform.testhost/17.8.0/microsoft.testplatform.testhost.17.8.0.nupkg.sha512",
     "/Users/egorlogutov/.nuget/packages/netstandard.library/2.0.0/netstandard.library.2.0.0.nupkg.sha512",
-    "/Users/egorlogutov/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
+    "/Users/egorlogutov/.nuget/packages/newtonsoft.json/13.0.1/newtonsoft.json.13.0.1.nupkg.sha512",
     "/Users/egorlogutov/.nuget/packages/nuget.frameworks/6.5.0/nuget.frameworks.6.5.0.nupkg.sha512",
     "/Users/egorlogutov/.nuget/packages/nunit/3.14.0/nunit.3.14.0.nupkg.sha512",
     "/Users/egorlogutov/.nuget/packages/nunit.analyzers/3.9.0/nunit.analyzers.3.9.0.nupkg.sha512",

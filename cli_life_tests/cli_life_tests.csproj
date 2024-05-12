@@ -21,8 +21,4 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Life\Life.csproj" />
-  </ItemGroup>
-
 </Project>

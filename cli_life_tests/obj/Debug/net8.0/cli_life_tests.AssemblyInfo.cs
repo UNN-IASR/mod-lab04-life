@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("cli_life_tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe9d235b66a66919f2627f4e3f835aca3c0c9078")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5616a43f2bffa8bdc75af4edf6dbe6f8758c245c")]
 [assembly: System.Reflection.AssemblyProductAttribute("cli_life_tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("cli_life_tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
