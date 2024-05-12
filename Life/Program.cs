@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using Newtonsoft.Json;
 using System.IO;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace cli_life
 {
@@ -218,6 +220,35 @@ namespace cli_life
             LoadSettings();
             Reset();
             LoadFigures(); // Загрузка фигур-колоний
+            // Задача №2
+            // Исследовать среднее время (число поколений) перехода в стабильную фазу
+            int totalGenerationsToStable = 0;
+            int numTrials = 100; // Количество попыток
+            for (int i = 0; i < numTrials; i++)
+            {
+                Reset();
+                int generationsToStable = RunToStable();
+                totalGenerationsToStable += generationsToStable;
+                Console.WriteLine($"Trial {i + 1}: Generations to stable = {generationsToStable}");
+            }
+            double averageGenerationsToStable = (double)totalGenerationsToStable / numTrials;
+            Console.WriteLine($"\nAverage generations to stable = {averageGenerationsToStable}");
+
+            // Построить график перехода в стабильное состояние (числа поколений) от попыток случайного распределения с разной плотностью заполнения поля
+            List<Tuple<double, double>> densityToGenerations = new List<Tuple<double, double>>();
+            for (double density = 0.1; density <= 0.9; density += 0.1)
+            {
+                totalGenerationsToStable = 0;
+                for (int i = 0; i < numTrials; i++)
+                {
+                    board = new Board(settings.Width, settings.Height, settings.CellSize, density);
+                    totalGenerationsToStable += RunToStable();
+                }
+                double average = (double)totalGenerationsToStable / numTrials;
+                densityToGenerations.Add(new Tuple<double, double>(density, average));
+            }
+
+            CreateDensityToGenerationsPlot(densityToGenerations, "plot.png");
             while (true)
             {
                 Console.Clear();
@@ -238,6 +269,68 @@ namespace cli_life
                     }
                 }
             }
+        }
+        static int RunToStable()
+        {
+            int maxGenerations = 1000; // Максимальное число поколений
+            HashSet<string> pastStates = new HashSet<string>();
+            for (int generation = 0; generation < maxGenerations; generation++)
+            {
+                board.Advance();
+                string state = GetBoardState();
+                if (pastStates.Contains(state))
+                {
+                    // Достигнуто стабильное состояние (повторение)
+                    return generation;
+                }
+                pastStates.Add(state);
+            }
+            return maxGenerations; // Не достигнуто стабильное состояние
+        }
+        static string GetBoardState()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int row = 0; row < board.Rows; row++)
+            {
+                for (int col = 0; col < board.Columns; col++)
+                {
+                    sb.Append(board.Cells[col, row].IsAlive ? '1' : '0');
+                }
+            }
+            return sb.ToString();
+        }
+        static void CreateDensityToGenerationsPlot(List<Tuple<double, double>> data, string filePath)
+        {
+            int width = 800;
+            int height = 600;
+
+            Bitmap bmp = new Bitmap(width, height);
+            Graphics g = Graphics.FromImage(bmp);
+
+            g.Clear(Color.White);
+
+            // Нарисуйте оси
+            g.DrawLine(Pens.Black, 50, height - 50, width - 50, height - 50); // X-axis
+            g.DrawLine(Pens.Black, 50, height - 50, 50, 50); // Y-axis
+
+            // Найдите максимальное значение Y для масштабирования
+            double maxY = data.Max(t => t.Item2);
+
+            // Нарисуйте точки данных
+            for (int i = 0; i < data.Count; i++)
+            {
+                float x = (float)(i + 1) * (width - 100) / (data.Count + 1) + 50;
+                float y = height - 50 - (float)(data[i].Item2 / maxY * (height - 100));
+                g.FillEllipse(Brushes.Blue, x - 5, y - 5, 10, 10);
+            }
+
+            // Добавьте метки
+            g.DrawString("Плотность", new Font("Arial", 12), Brushes.Black, width / 2 - 50, height - 30);
+            g.DrawString("Поколения", new Font("Arial", 12), Brushes.Black, 10, 50);
+
+            bmp.Save(filePath, ImageFormat.Png);
+
+            Console.WriteLine($"График сохранен в {filePath}");
         }
     }
 }
