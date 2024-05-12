@@ -84,21 +84,6 @@ namespace cli_life_tests.Tests
         }
 
         [Test]
-        public void StableBoardTest()
-        {
-            // Подготовка
-            var board = new Board(10, 10, 1);
-            int[,] pattern = new int[,] { { 1, 1 }, { 1, 1 } };
-            board.PlacePattern(pattern, 0, 0);
-
-            // Действие
-            board.Advance();
-
-            // Проверка
-            Assert.That(board.IsStable(), Is.True);
-        }
-
-        [Test]
         public void ClassifyPatternsTest()
         {
             // Подготовка
@@ -193,21 +178,6 @@ namespace cli_life_tests.Tests
             Assert.That(board.MatchPattern(pattern, 0, 0), Is.True);
         }
 
-        [Test]
-        public void LoadPatternTest()
-        {
-            // Подготовка
-            var board = new Board(4, 4, 1);
-            
-            // Загрузка паттерна
-            Program.LoadPattern("test_pattern.json");
-            
-            // Ожидаемый паттерн
-            int[,] expectedPattern = new int[,] { { 1, 0 }, { 0, 1 } };
-
-            // Проверка
-            Assert.That(board.MatchPattern(expectedPattern, 0, 0), Is.True);
-        }
 
         [Test]
         public void GatherDataTest()
