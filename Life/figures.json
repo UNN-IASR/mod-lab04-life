@@ -1,0 +1,74 @@
+[
+  {
+    "Name": "Hive",
+    "Width": 5,
+    "Height": 6,
+    "FigureRepresentation": "       *   * *  * *   *       "
+  },
+  {
+    "Name": "Loaf",
+    "Width": 6,
+    "Height": 6,
+    "FigureRepresentation": "        **   *  *   * *    *        "
+  },
+  {
+    "Name": "Pond",
+    "Width": 6,
+    "Height": 6,
+    "FigureRepresentation": "        **   *  *  *  *   **        "
+  },
+  {
+    "Name": "Box",
+    "Width": 5,
+    "Height": 5,
+    "FigureRepresentation": "       *   * *   *       "
+  },
+  {
+    "Name": "Block",
+    "Width": 4,
+    "Height": 4,
+    "FigureRepresentation": "     **  **     "
+  },
+  {
+    "Name": "Snake",
+    "Width": 6,
+    "Height": 4,
+    "FigureRepresentation": "       * **  ** *       "
+  },
+  {
+    "Name": "Barge",
+    "Width": 6,
+    "Height": 6,
+    "FigureRepresentation": "        *    * *    * *    *        "
+  },
+  {
+    "Name": "Boat",
+    "Width": 5,
+    "Height": 5,
+    "FigureRepresentation": "       *   * *   **      "
+  },
+  {
+    "Name": "Ship",
+    "Width": 5,
+    "Height": 5,
+    "FigureRepresentation": "      **   * *   **      "
+  },
+  {
+    "Name": "LongBarge",
+    "Width": 7,
+    "Height": 7,
+    "FigureRepresentation": "         *     * *     * *     * *     *         "
+  },
+  {
+    "Name": "LongBoat",
+    "Width": 6,
+    "Height": 6,
+    "FigureRepresentation": "        *    * *    * *    **       "
+  },
+  {
+    "Name": "LongShip",
+    "Width": 6,
+    "Height": 6,
+    "FigureRepresentation": "       **    * *    * *    **       "
+  }
+]
