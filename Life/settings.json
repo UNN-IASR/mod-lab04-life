@@ -1,0 +1,7 @@
+{
+  "BoardWidth": 50,
+  "BoardHeight": 20,
+  "CellSize": 1,
+  "LiveDensity": 0.5,
+  "SimulationDelay": 1000
+}
