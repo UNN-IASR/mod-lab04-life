@@ -1,0 +1,74 @@
+[
+  {
+    "Name": "Hive",
+    "Width": 5,
+    "Height": 6,
+    "FormatFigure": "       *   * *  * *   *       "
+  },
+  {
+    "Name": "Korovai",
+    "Width": 6,
+    "Height": 6,
+    "FormatFigure": "        **   *  *   * *    *        "
+  },
+  {
+    "Name": "Pond",
+    "Width": 6,
+    "Height": 6,
+    "FormatFigure": "        **   *  *  *  *   **        "
+  },
+  {
+    "Name": "Box",
+    "Width": 5,
+    "Height": 5,
+    "FormatFigure": "       *   * *   *       "
+  },
+  {
+    "Name": "Block",
+    "Width": 4,
+    "Height": 4,
+    "FormatFigure": "     **  **     "
+  },
+  {
+    "Name": "Snake",
+    "Width": 6,
+    "Height": 4,
+    "FormatFigure": "       * **  ** *       "
+  },
+  {
+    "Name": "Barge",
+    "Width": 6,
+    "Height": 6,
+    "FormatFigure": "        *    * *    * *    *        "
+  },
+  {
+    "Name": "Boat",
+    "Width": 5,
+    "Height": 5,
+    "FormatFigure": "       *   * *   **      "
+  },
+  {
+    "Name": "Ship",
+    "Width": 5,
+    "Height": 5,
+    "FormatFigure": "      **   * *   **      "
+  },
+  {
+    "Name": "LongBarge",
+    "Width": 7,
+    "Height": 7,
+    "FormatFigure": "         *     * *     * *     * *     *         "
+  },
+  {
+    "Name": "LongBoat",
+    "Width": 6,
+    "Height": 6,
+    "FormatFigure": "        *    * *    * *    **       "
+  },
+  {
+    "Name": "LongShip",
+    "Width": 6,
+    "Height": 6,
+    "FormatFigure": "       **    * *    * *    **       "
+  }
+]
