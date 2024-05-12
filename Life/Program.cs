@@ -256,8 +256,8 @@ namespace cli_life
             }
 
             // Сохраняем сетку в файл
-            File.Create("User settings chd/result4.txt").Close();
-            using (StreamWriter writer = new StreamWriter("User settings chd/result4.txt", true))
+            File.Create("User settings chd/result1.txt").Close();
+            using (StreamWriter writer = new StreamWriter("User settings chd/result1.txt", true))
             {
                 foreach (var line in gridLines)
                 {
@@ -305,7 +305,7 @@ namespace cli_life
             Directory.SetCurrentDirectory(@"C:\1\Lab4");
 
             LifeSimulation simulation = new LifeSimulation();
-            var cells = simulation.Run("User settings chd/example4.txt", @"User settings chd\User settings chd.json");
+            var cells = simulation.Run("User settings chd/example1.txt", @"User settings chd\User settings chd.json");
 
             Console.Write("\n\tКоличество живых клеток: " + cells.aliveCells);
             Console.Write("\n\tКоличество мертвых клеток: " + (cells.allCells - cells.aliveCells));
