@@ -1,0 +1,6 @@
+{
+    "Name": "Block",
+    "Width": 2,
+    "Height": 2,
+    "Cells": [true, true, true, true]
+}
