@@ -18,8 +18,8 @@ namespace UnitTest
         public void TestMethod2()
         {
             GameOfLife life = new GameOfLife();
-            var cells = life.Run("../../../../example3.txt", "../../../../settings.json");
-            Assert.AreEqual(cells.aliveCells, 6);
+            var cells = life.Run("../../../../example2.txt", "../../../../settings.json");
+            Assert.AreEqual(cells.aliveCells, 24);
         }
 
         [TestMethod]

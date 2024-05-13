@@ -343,7 +343,7 @@ namespace cli_life
         static void Main(string[] args)
         {
             GameOfLife life = new GameOfLife();
-            var cells = life.Run("../../../../example1.txt", "../../../../settings.json");
+            var cells = life.Run("../../../../example2.txt", "../../../../settings.json");
 
             Console.Write("\n\tКоличество живых клеток: " + cells.aliveCells);
             Console.Write("\n\tКоличество мертвых клеток: " + (cells.allCells - cells.aliveCells));
