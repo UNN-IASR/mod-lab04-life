@@ -248,7 +248,7 @@ namespace cli_life
                 densityToGenerations.Add(new Tuple<double, double>(density, average));
             }
 
-            CreateDensityToGenerationsPlot(densityToGenerations, "plot.png");
+            
             while (true)
             {
                 Console.Clear();
@@ -269,6 +269,8 @@ namespace cli_life
                     }
                 }
             }
+
+            CreateDensityToGenerationsPlot(densityToGenerations, "plot.png");
         }
         static int RunToStable()
         {
