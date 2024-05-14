@@ -9,6 +9,7 @@ namespace TestsForProgram;
 [TestClass]
 public class UnitTestsForProgram
 {
+    // 义耱 1
     [TestMethod]
     public void TestLivingCellWithThreeNeighbors_Survives()
     {
@@ -21,9 +22,9 @@ public class UnitTestsForProgram
             testCell.neighbours.Add(adjacent);
         }
 
-        Assert.IsTrue(testCell.DetermineNextLiveState());
+        Assert.IsTrue(testCell.DelNextGameState());
     }
-
+    // 义耱 2
     [TestMethod]
     public void VerifyCellSurvivesWithThreeNeighbors()
     {
@@ -36,11 +37,11 @@ public class UnitTestsForProgram
             testCell.neighbours.Add(adjacent);
         }
 
-        testCell.DetermineNextLiveState();      
+        testCell.DelNextGameState();      
 
         Assert.IsTrue(testCell.IsAlive);
     }
-
+    // 义耱 3
     [TestMethod]
     public void TestWithoutEnoughNeighbors_DeathOccurs()
     {
@@ -52,10 +53,10 @@ public class UnitTestsForProgram
             adjacent = new Cell { IsAlive = true };
             testCell.neighbours.Add(adjacent);
         }
-
-        Assert.IsFalse(testCell.DetermineNextLiveState());
+        Assert.AreEqual(testCell.DelNextGameState(), false);
+        Assert.IsFalse(testCell.DelNextGameState());
     }
-
+    // 义耱 4
     [TestMethod]
     public void VerifySavingOfGeometry_CorrectParams_DataPreserved()
     {
@@ -66,7 +67,7 @@ public class UnitTestsForProgram
 
         Assert.IsTrue(File.Exists(path));
     }
-
+    // 义耱 5
     [TestMethod]
     public void ValidateCellPerishes()
     {
@@ -78,22 +79,20 @@ public class UnitTestsForProgram
             adjacent = new Cell { IsAlive = true };
             testCell.neighbours.Add(adjacent);
         }
-
-        testCell.DetermineNextLiveState();        
-
-        Assert.IsFalse(testCell.IsAlive);
+                
+        Assert.AreEqual(testCell.DelNextGameState(), false);        
     }
-
+    // 义耱 6
     [TestMethod]
     public void AssertBoardDimensionsCorrect()
     {
         var uiSettings = new ConfigurationPanel(50, 20, 2);
-        var grid = new Board(uiSettings);
+        var grid = new GameBoard(uiSettings);
 
         Assert.AreEqual(grid.Columns, uiSettings.PanelWidth / uiSettings.UnitBlockSize);
         Assert.AreEqual(grid.Rows, uiSettings.PanelHeight / uiSettings.UnitBlockSize);
     }
-
+    // 义耱 7
     [TestMethod]
     public void LivingCellWithOverpopulation_Perishes()
     {
@@ -106,37 +105,37 @@ public class UnitTestsForProgram
             testCell.neighbours.Add(adjacent);
         }
 
-        Assert.IsFalse(testCell.DetermineNextLiveState());
+        Assert.IsFalse(testCell.DelNextGameState());
     }
-
+    // 义耱 8
     [TestMethod]
     public void ValidateSettingsRetrieval()
     {
         var expectedSettings = new ConfigurationPanel(50, 20, 1, 0.5);
         DataHandler.SaveBoardSettings(expectedSettings, "../../../Settings_board.json");
-        var retrievedSettings = DataHandler.LoadPanelConfig("../../../Config_panel.json");
+        var retrievedSettings = DataHandler.LoadPanelConfig("../../../Settings_board.json");
 
         Assert.AreEqual(expectedSettings.PanelWidth, retrievedSettings.PanelWidth);
         Assert.AreEqual(expectedSettings.PanelHeight, retrievedSettings.PanelHeight);
         Assert.AreEqual(expectedSettings.UnitBlockSize, retrievedSettings.UnitBlockSize);
         Assert.AreEqual(expectedSettings.PopulationDensity, retrievedSettings.PopulationDensity);
     }
-
+    // 义耱 9
     [TestMethod]
     public void CheckGameStateSaving_ProperPath_FileGenerated()
     {
-        string path = "../../../Live_save1.txt";
-        DataHandler.SaveGridState(new Board(), path);
+        string path = "../../../Life_save1.txt";
+        DataHandler.SaveGridState(new GameBoard(), path);
 
         Assert.IsTrue(File.Exists(path));
     }
-
+    // 义耱 10
     [TestMethod]
     public void ConfirmStateLoading_FilePresent_CorrectDataFetched()
     {
         var initialSettings = new ConfigurationPanel(45, 25, 1);
-        string path = "../../../Live_save1.txt";
-        var gameBoard = new Board(initialSettings);
+        string path = "../../../Life_save1.txt";
+        var gameBoard = new GameBoard(initialSettings);
 
         DataHandler.SaveGridState(gameBoard, path);
         gameBoard = DataHandler.LoadGridState(path);
@@ -145,21 +144,19 @@ public class UnitTestsForProgram
         Assert.AreEqual(initialSettings.PanelHeight, gameBoard.Height);
         Assert.AreEqual(initialSettings.UnitBlockSize, gameBoard.CellSize);
     }
-
-    
-
+    // 义耱 11    
     [TestMethod]
     public void EnsureNeighbourConnections_CorrectCount()
     {
         var settings = new ConfigurationPanel(3, 3, 1);
-        var gameBoard = new Board(settings);
+        var gameBoard = new GameBoard(settings);
 
         foreach (var cell in gameBoard.Cells)
         {
             Assert.AreEqual(8, cell.neighbours.Count);
         }
     }
-
+    // 义耱 12
     [TestMethod]
     public void ValidateGeometryLoading_CorrectPath_CorrectData()
     {
@@ -171,7 +168,7 @@ public class UnitTestsForProgram
 
         Assert.IsTrue(geometries[0].Equals(retrievedGeometries[0]));
     }
-
+    // 义耱 13
     [TestMethod]
     public void ReviveCellWithTwoOrThreeNeighbors_BecomesAlive()
     {
@@ -184,21 +181,21 @@ public class UnitTestsForProgram
             testCell.neighbours.Add(adjacent);
         }
 
-        Assert.IsTrue(testCell.DetermineNextLiveState());
+        Assert.IsTrue(testCell.DelNextGameState());
     }
-
+    // 义耱 14
     [TestMethod]
     public void CountLivingCells_OnPopulatedBoard_AccurateCount()
     {
-        var gameBoard = new Board(new ConfigurationPanel(3, 3, 1, 1));
-        Assert.AreEqual(9, Analys.GetAlive(gameBoard));
+        var gameBoard = new GameBoard(new ConfigurationPanel(3, 3, 1, 1));
+        Assert.AreEqual(9, Analys.CountAliveCells(gameBoard));
     }
-
+    // 义耱 15
     [TestMethod]
     public void CompareFigures_Identical_ReturnTrue()
     {
-        var first = new Figure("ShapeOne", 4, 4, "    **    **    ");
-        var second = new Figure("ShapeTwo", 4, 4, "    **    **    ");
+        var first = new Figure("Pond", 6, 6, "        **   *  *  *  *   **        ");
+        var second = new Figure("Pond", 6, 6, "        **   *  *  *  *   **        ");
 
         Assert.IsTrue(first.Equals(second));
     }

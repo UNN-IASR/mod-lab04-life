@@ -11,9 +11,12 @@ using System.Text.RegularExpressions;
 using ScottPlot.Plottables;
 using System.Runtime.CompilerServices;
 using ScottPlot;
+using ScottPlot.Palettes;
 
+//  Мулыкин Артем 382007-3
 namespace cli_life
 {
+    //  Класс Фигуры
     public class Figure
     {
         public string Name { get; set; }
@@ -47,6 +50,12 @@ namespace cli_life
     }
     public class DataHandler
     {
+        public static void SaveBoardSettings(ConfigurationPanel settings, string filePath)
+        {
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(settings);
+            System.IO.File.WriteAllText(filePath, jsonString);
+        }
+
         public static ConfigurationPanel LoadPanelConfig(string filePath)
         {
             string jsonContent = System.IO.File.ReadAllText(filePath);
@@ -54,58 +63,56 @@ namespace cli_life
             return configPanel;
         }
 
-        public static void SaveBoardSettings(ConfigurationPanel settings, string filePath)
+        public static void SaveGridState(GameBoard board, string filePath)
         {
-            string jsonString = System.Text.Json.JsonSerializer.Serialize(settings);
-            System.IO.File.WriteAllText(filePath, jsonString);
-        }
+            StringBuilder boardResert = new StringBuilder();
 
-        public static void SaveGridState(Board board, string filePath)
-        {
-            StringBuilder boardRepresentation = new StringBuilder();
-
-            for (int rowIndex = 0; rowIndex < board.Height; rowIndex++)
+            for (int Index_row = 0; Index_row < board.Height; Index_row++)
             {
                 for (int columnIndex = 0; columnIndex < board.Width; columnIndex++)
                 {
-                    char cellIndicator = board.Cells[rowIndex, columnIndex].IsAlive ? '*' : ' ';
-                    boardRepresentation.Append(cellIndicator);
+                    char Indic_cell = board.Cells[Index_row, columnIndex].IsAlive ? '*' : ' ';
+                    boardResert.Append(Indic_cell);
                 }
-                boardRepresentation.AppendLine();
+                boardResert.AppendLine();
             }
 
-            boardRepresentation.AppendLine($"unitBlockSize={board.CellSize}");
-            boardRepresentation.AppendLine($"generation={board.Generation}");
+            boardResert.AppendLine($"{board.CellSize}");
+            boardResert.AppendLine($"{board.Generation}");
 
-            System.IO.File.WriteAllText(filePath, boardRepresentation.ToString());
+            System.IO.File.WriteAllText(filePath, boardResert.ToString());
         }
-
-        public static Board LoadGridState(string filePath)
+        // Метод для загрузки состояния игровой доски из файла
+        public static GameBoard LoadGridState(string filePath)
         {
+            // Чтение всех строк из файла
             string[] boardDataLines = System.IO.File.ReadAllLines(filePath);
-            int.TryParse(boardDataLines[^2].Split('=').Last(), out int cellSize);
-            int.TryParse(boardDataLines[^1].Split('=').Last(), out int generation);
+            int.TryParse(boardDataLines[^2].Split('=').Last(), out int sizeCell);
+            int.TryParse(boardDataLines[^1].Split('=').Last(), out int gen);
 
-            cellSize = Math.Max(1, cellSize);
-            generation = Math.Max(0, generation);
+            sizeCell = Math.Max(1, sizeCell);
+            gen = Math.Max(0, gen);
 
             int boardHeight = boardDataLines.Length - 2;
             int boardWidth = boardDataLines[0].Length;
 
-            var gridConfig = new ConfigurationPanel(boardWidth, boardHeight, cellSize);
+            // Создание конфигурации сетки
+            var gridSetap = new ConfigurationPanel(boardWidth, boardHeight, sizeCell);
 
-            Cell[,] gridCells = new Cell[boardHeight / cellSize, boardWidth / cellSize];
+            Cell[,] Cellsgrid = new Cell[boardHeight / sizeCell, boardWidth / sizeCell];
 
-            for (int y = 0; y < boardHeight; y += cellSize)
+            // Заполнение сетки ячеек на основе данных файла
+            for (int y = 0; y < boardHeight; y += sizeCell)
             {
-                for (int x = 0; x < boardWidth; x += cellSize)
+                for (int x = 0; x < boardWidth; x += sizeCell)
                 {
+                    // Определение живая ли ячейка
                     bool isCellAlive = boardDataLines[y][x] == '*';
-                    gridCells[y / cellSize, x / cellSize] = new Cell() { IsAlive = isCellAlive };
+                    Cellsgrid[y / sizeCell, x / sizeCell] = new Cell() { IsAlive = isCellAlive };
                 }
             }
-
-            return new Board(gridConfig, generation, gridCells);
+            // Возврат нового экземпляра игровой доски с загруженной конфигурацией и поколением
+            return new GameBoard(gridSetap, gen, Cellsgrid);
         }
 
         public static Figure[] LoadGeometries(string filePath)
@@ -151,11 +158,11 @@ namespace cli_life
         }
     }
     public class Cell
-    {       
-        public bool IsAlive;       
-        public readonly List<Cell> neighbours = new();        
-        private bool IsAliveNext;       
-        public bool DetermineNextLiveState()
+    {
+        public bool IsAlive;
+        public readonly List<Cell> neighbours = new();
+        private bool IsAliveNext;
+        public bool DelNextGameState()
         {
             int liveNeighbors = neighbours.Where(x => x.IsAlive).Count();
 
@@ -169,20 +176,20 @@ namespace cli_life
             }
 
             return IsAliveNext;
-        }       
-        public void Advance()
+        }
+        public void UpdateGeneration()
         {
             IsAlive = IsAliveNext;
         }
-    }  
-    public class Board
-    {       
-        private int _width;       
+    }
+    public class GameBoard
+    {
+        private int _width;
         private int _heigth;
-        public Cell[,] Cells;       
-        public int CellSize;      
-        public int Columns { get { return Cells.GetLength(1); } }       
-        public int Rows { get { return Cells.GetLength(0); } }     
+        public Cell[,] Cells;
+        public int CellSize;
+        public int Columns { get { return Cells.GetLength(1); } }
+        public int Rows { get { return Cells.GetLength(0); } }
         public int Width
         {
             get
@@ -193,7 +200,7 @@ namespace cli_life
             {
                 _width = value;
             }
-        }     
+        }
         public int Height
         {
             get
@@ -204,15 +211,15 @@ namespace cli_life
             {
                 _heigth = value;
             }
-        }     
-        public int Generation { get; set; }        
-        public Board(ConfigurationPanel settings)
+        }
+        public int Generation { get; set; }
+        public GameBoard(ConfigurationPanel settings)
         {
             Generation = 0;
 
             CellSize = settings.UnitBlockSize;
 
-            Cells = new Cell[settings.PanelHeight / CellSize, settings.PanelWidth  / CellSize];
+            Cells = new Cell[settings.PanelHeight / CellSize, settings.PanelWidth / CellSize];
 
             Width = Columns * CellSize;
             Height = Rows * CellSize;
@@ -227,40 +234,18 @@ namespace cli_life
 
             ConnectNeighbours();
             Randomize(settings.PopulationDensity);
-        }      
-        public Board(ConfigurationPanel settings, int generation, Cell[,] cells)
+        }
+        public GameBoard(ConfigurationPanel settings, int generation, Cell[,] cells)
         {
             Generation = generation;
             CellSize = settings.UnitBlockSize;
             Cells = cells;
-            Width = settings.PanelWidth ;
+            Width = settings.PanelWidth;
             Height = settings.PanelHeight;
             ConnectNeighbours();
-        }        
-        public Board(double density = 0.5) : this(new ConfigurationPanel(50, 20, 1, density)){}       
-        public void Randomize(double liveDensity)
-        {
-            var rand = new Random();
-
-            foreach (var cell in Cells)
-            {
-                cell.IsAlive = rand.NextDouble() < liveDensity;
-            }
         }
-        public void Advance()
-        {
-            foreach (var cell in Cells)
-            {
-                cell.DetermineNextLiveState();
-            }
+        public GameBoard(double density = 0.5) : this(new ConfigurationPanel(50, 20, 1, density)) { }
 
-            foreach (var cell in Cells)
-            {
-                cell.Advance();
-            }
-
-            Generation++;
-        }
         private void ConnectNeighbours()
         {
             for (var row = 0; row < Rows; row++)
@@ -292,23 +277,46 @@ namespace cli_life
                 }
             }
         }
+        public void Randomize(double liveDensity)
+        {
+            var rand = new Random();
+
+            foreach (var cell in Cells)
+            {
+                cell.IsAlive = rand.NextDouble() < liveDensity;
+            }
+        }
+        public void UpdateGeneration()
+        {
+            foreach (var cell in Cells)
+            {
+                cell.DelNextGameState();
+            }
+
+            foreach (var cell in Cells)
+            {
+                cell.UpdateGeneration();
+            }
+
+            Generation++;
+        }
     }
     public class Analys
     {
         public static Figure[] Figures;
-        private Board _board;
+        private GameBoard gameboard;
 
-        public Analys(Board board)
+        public Analys(GameBoard board)
         {
-            _board = board;
+            gameboard = board;
         }
 
-        public int GetAlive()
+        public int CountAliveCells()
         {
-            return GetAlive(_board);
+            return CountAliveCells(gameboard);
         }
 
-        public static int GetAlive(Board board)
+        public static int CountAliveCells(GameBoard board)
         {
             int aliveCount = 0;
             foreach (var cell in board.Cells)
@@ -320,87 +328,103 @@ namespace cli_life
 
         public Dictionary<string, int> GetFigures()
         {
-            Dictionary<string, int> figureCounts = new Dictionary<string, int>();
-            int boardRows = _board.Rows;
-            int boardColumns = _board.Columns;
+            // Создание словаря для хранения количества каждой фигуры на доске
+            Dictionary<string, int> Counts_figure = new Dictionary<string, int>();
+            int GameboardR = gameboard.Rows;
+            int GameboardC = gameboard.Columns;
 
+            // Инициализация счетчика для каждого типа фигуры
             foreach (Figure fig in Figures)
             {
-                figureCounts[fig.Name] = 0;
+                Counts_figure[fig.Name] = 0;
             }
 
-            for (int rowIdx = 0; rowIdx < boardRows; rowIdx++) 
+            // Перебор всех ячеек на доске с целью поиска фигур
+            for (int i = 0; i < GameboardR; i++)
             {
-                for (int colIdx = 0; colIdx < boardColumns; colIdx++) 
+                for (int j = 0; j < GameboardC; j++)
                 {
-                    foreach (Figure fig in Figures)
+                    // Проверка каждой фигуры на совпадение с изображением на доске
+                    foreach (Figure figure in Figures)
                     {
-                        Figure tempFigure = ConstructFigure(rowIdx, colIdx, fig.Width, fig.Height);
-                        if (fig.Equals(tempFigure)) 
+                        Figure tempFigure = ConstructFigure(i, j, figure.Width, figure.Height);
+                        // Если найдено совпадение, увеличиваем счетчик
+                        if (figure.Equals(tempFigure))
                         {
-                            figureCounts[fig.Name]++;
+                            Counts_figure[figure.Name]++;
                         }
                     }
                 }
             }
-            return figureCounts;
+
+            // Возврат словаря с подсчитанным количеством каждой фигуры
+            return Counts_figure;
         }
 
-        private Figure ConstructFigure(int startRow, int startCol, int figWidth, int figHeight)
+        // Вспомогательный метод для построения представления фигуры
+        private Figure ConstructFigure(int first_Row, int first_Col, int figW, int figH)
         {
-            StringBuilder figRepresentation = new StringBuilder();
-            for (int row = startRow; row < startRow + figHeight; row++)
+            
+            StringBuilder New_Figure = new StringBuilder();
+
+            // Проходим по каждой строке и колонке, заданным параметрами 
+            for (int row = first_Row; row < first_Row + figH; ++row)
             {
-                for (int col = startCol; col < startCol + figWidth; col++)
-                {
+                for (int col = first_Col; col < first_Col + figW; ++col)
+                {                    
                     char figChar = ' ';
-                    if (row >= 0 && row < _board.Rows && col >= 0 && col < _board.Columns)
+                    // Если координаты находятся в пределах доски
+                    if (row >= 0 && row < gameboard.Rows && col >= 0 && col < gameboard.Columns)
                     {
-                        figChar = _board.Cells[row, col].IsAlive ? '*' : ' ';
+                        // Назначаем символ в зависимости от состояния ячейки
+                        figChar = gameboard.Cells[row, col].IsAlive ? '*' : ' ';
                     }
-                    figRepresentation.Append(figChar);
+                    // Добавляем символ в представление фигуры
+                    New_Figure.Append(figChar);
                 }
             }
-            return new Figure("figure", figWidth, figHeight, figRepresentation.ToString());
+
+            // Созадем и возвращаем новый объект фигуры
+            return new Figure("Figure", figW, figH, New_Figure.ToString());
         }
     }
     class Program
     {
-        static int IterationsNum = 100;
+        static int const_in = 100;
 
-        static bool LoadFromFile = false;
+        static bool LoadF = false;
 
-        static bool SaveToFile = false;
+        static bool SaveF = false;
 
-        public static Board SimulationBoard;
+        public static GameBoard SimulationBoard;
 
         public static Analys BoardAnalysis;
 
-        public static ConfigurationPanel Settings = new ConfigurationPanel(100, 40, 1, 0.5);
+        public static ConfigurationPanel Set = new ConfigurationPanel(100, 40, 1, 0.5);
 
-        const string SettingsJsonPath = "../../../Settings_board.json";
-       
-        const string BoardStateFilePath = "../../../Life_save1.txt";
-        
-        const string FiguresJsonPath = "../../../stableFigure.json";
-   
-        const string PlotPngPath = "../../../picture.png";      
-       
+        const string SetJsPath = "../../../Settings_board.json";
+
+        const string GameBoardFilePath = "../../../Life_save1.txt";
+
+        const string FiJsPath = "../../../stableFigure.json";
+
+        const string PicturePath = "../../../picture.png";
+
         static private void Reset()
         {
             try
             {
-                var settings = DataHandler.LoadPanelConfig(SettingsJsonPath);
+                var settings = DataHandler.LoadPanelConfig(SetJsPath);
 
-                SimulationBoard = new Board(settings);
+                SimulationBoard = new GameBoard(settings);
             }
             catch
             {
-                SimulationBoard = new Board(Settings);
+                SimulationBoard = new GameBoard(Set);
             }
 
             BoardAnalysis = new(SimulationBoard);
-        }     
+        }
         static void Render()
         {
             for (var row = 0; row < SimulationBoard.Rows; row++)
@@ -417,29 +441,38 @@ namespace cli_life
                 Console.Write('\n');
             }
         }
-        static void SimulationStart()
+        // Метод запуска симуляции с пользовательскими настройками
+        static void SimStart()
         {
-            Console.Write("Введите количество итераций для симуляции: ");
-            int.TryParse(Console.ReadLine(), out IterationsNum);
+            Console.Write("Укажите количество итераций для симуляции: ");
+            if (!int.TryParse(Console.ReadLine(), out const_in))
+            {
+                Console.WriteLine("Ошибка: Введено некорректное число. Устанавливаю значение по умолчанию: 100.");
+                const_in = 100;
+            }
 
             Console.Write("Загружать стартовое состояние из файла? (да - 1, нет - 0): ");
-            LoadFromFile = Console.ReadLine().Trim() == "1";
+            string loadInput = Console.ReadLine().Trim().ToLower();
+            LoadF = loadInput == "1" || loadInput == "да";
 
             Console.Write("Сохранять ли конечное состояние в файл? (да - 1, нет - 0): ");
-            SaveToFile = Console.ReadLine().Trim() == "1";
+            string saveInput = Console.ReadLine().Trim().ToLower();
+            SaveF = saveInput == "1" || saveInput == "да";
         }
-        static void RunRegularSimulation()
+        static void ExecuteRegularSim()
         {
-            SimulationStart();
+            SimStart();
             Reset();
 
-            Analys.Figures = DataHandler.LoadGeometries(FiguresJsonPath);
+            // Загрузка начальных фигур
+            Analys.Figures = DataHandler.LoadGeometries(FiJsPath);
 
-            if (LoadFromFile)
+            if (LoadF)
             {
                 try
                 {
-                    SimulationBoard = DataHandler.LoadGridState(BoardStateFilePath);
+                    // Попытка чтения состояния поля из файла
+                    SimulationBoard = DataHandler.LoadGridState(GameBoardFilePath);
                     BoardAnalysis = new(SimulationBoard);
                     Console.WriteLine("Успешное чтение данных из файла.");
                 }
@@ -452,107 +485,102 @@ namespace cli_life
                 Thread.Sleep(2000);
             }
 
-            for (var index = 0; index < IterationsNum; index++)
+            for (var index = 0; index < const_in; index++)
             {
                 Console.Clear();
                 Render();
+                // Вывод информации о текущем состоянии симуляции
                 Console.WriteLine($"Текущая итерация: {SimulationBoard.Generation}");
-                Console.WriteLine($"Число живых клеток: {BoardAnalysis.GetAlive()}");
-                Console.WriteLine("Число каждой из фигур:");
+                Console.WriteLine($"Число живых клеток: {BoardAnalysis.CountAliveCells()}");
+                Console.WriteLine("Статистика по фигурам:");
                 foreach (var figure in BoardAnalysis.GetFigures())
                 {
                     Console.WriteLine($"{figure.Key}: {figure.Value}");
                 }
-                SimulationBoard.Advance();
+                SimulationBoard.UpdateGeneration();
                 Thread.Sleep(2000);
             }
 
-            if (SaveToFile)
+            if (SaveF)
             {
                 try
                 {
-                    DataHandler.SaveGridState(SimulationBoard, BoardStateFilePath);
+                    // Сохранение состояния поля в файл
+                    DataHandler.SaveGridState(SimulationBoard, GameBoardFilePath);
                     Console.WriteLine("Сохранение результата в файл.");
                 }
                 catch
                 {
                     Console.WriteLine("Ошибка при сохранении результата в файл.");
                 }
-
             }
-        }        
-        static void RunResearchSimulation()
+        }
+        static void ExecuteResearchSim()
         {
-            var rand = new Random();
-            var plot = new Plot();
-            plot.XLabel("Итерации");
-            plot.YLabel("Живые клетки");
-            plot.ShowLegend();
+            Random randomGenerator = new Random();
+            Plot simulationPlot = new Plot();
+            simulationPlot.XLabel("Поколение");
+            simulationPlot.YLabel("Количество живых клеток");
+            simulationPlot.ShowLegend();
 
-            var density = new double[]
+            double[] Den = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
+
+            var populationGenerations = Enumerable.Range(0, const_in).ToList();
+            List<int> countOfAliveCells;
+            int currentGeneration;
+            GameBoard currentBoard;
+            Analys simulationAnalys;
+            var totalBoards = Den.Count();
+            ConfigurationPanel settings = new ConfigurationPanel(Set.PanelWidth, Set.PanelHeight, Set.UnitBlockSize);
+
+            Scatter populationChart;
+
+            for (int index = 0; index < totalBoards; index++)
             {
-                0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9
-            };
+                countOfAliveCells = new List<int>();
+                currentGeneration = 0;
 
-            var generations = Enumerable
-                .Repeat(0, IterationsNum)
-                .Select((index, generation) => generation + index)
-                .ToList();
-            List<int> aliveCells;
-            int generation;
-            Board board;
-            Analys boardAnalysis;
-            var boardsCount = density.Count();
-            var settings = new ConfigurationPanel(Settings.PanelWidth , Settings.PanelHeight, Settings.UnitBlockSize);
+                settings.PopulationDensity = Den[index];
+                currentBoard = new(Den[index]);
+                simulationAnalys = new Analys(currentBoard);
 
-            Scatter chart;
-
-            for (int boardIndex = 0; boardIndex < boardsCount; boardIndex++)
-            {
-                aliveCells = new();
-                generation = 0;
-
-                settings.PopulationDensity = density[boardIndex];
-                board = new(density[boardIndex]);
-                boardAnalysis = new Analys(board);
-
-                while (generation < IterationsNum)
+                while (currentGeneration < const_in)
                 {
-                    aliveCells.Add(boardAnalysis.GetAlive());
-                    board.Advance();
-                    generation++;
+                    countOfAliveCells.Add(simulationAnalys.CountAliveCells());
+                    currentBoard.UpdateGeneration();
+                    currentGeneration++;
                 }
 
-                chart = plot.Add.Scatter(generations, aliveCells);
-                chart.LegendText = density[boardIndex].ToString();
-                chart.LineWidth = 3;
-                chart.Color = new(rand.Next(0, 256), rand.Next(0, 256), rand.Next(0, 256));
+                populationChart = simulationPlot.Add.Scatter(populationGenerations, countOfAliveCells);
+                populationChart.LegendText = $"Плотность {Den[index]}";
+                populationChart.LineWidth = 2;
+                populationChart.Color = new(randomGenerator.Next(0, 256), randomGenerator.Next(0, 256), randomGenerator.Next(0, 256));
             }
 
-            DataHandler.SavePlotPng(plot, PlotPngPath);
-        }       
-        static void GetSimulationType()
+            DataHandler.SavePlotPng(simulationPlot, PicturePath);
+        }
+        static void SelectSimType()
         {
-            Console.Write("Выберите тип симуляции для запуска: \n1. Анализ \n2. Построение графика\nВыбор: ");
-            if (!int.TryParse(Console.ReadLine(), out int choice))
+            Console.Write("Выберите тип симуляции, который вы хотите запустить: \n1. Выполнить анализ \n2. Построить график\nВаш выбор: ");
+            if (!int.TryParse(Console.ReadLine(), out int selection))
             {
-                throw new ArgumentException("Ответ не является числом", nameof(choice));
+                throw new ArgumentException("Введенные данные не являются числом", nameof(selection));
             }
-            switch (choice)
+            switch (selection)
             {
                 case 1:
-                    RunRegularSimulation();
+                    ExecuteRegularSim();
                     break;
                 case 2:
-                    RunResearchSimulation();
+                    ExecuteResearchSim();
                     break;
                 default:
-                    throw new ArgumentException("Выберите корректный вариант", nameof(choice));
+                    throw new ArgumentException("Пожалуйста, выберите действительный вариант", nameof(selection));
             }
-        }     
+        }
         static void Main(string[] args)
         {
-            GetSimulationType();
+            SelectSimType();
         }
     }
 }
