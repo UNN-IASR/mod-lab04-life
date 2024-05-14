@@ -1,226 +1,205 @@
 using cli_life;
+using ScottPlot;
 using System.Numerics;
 using System.Text.Json;
 
-namespace ProgramTests;
+namespace TestsForProgram;
 
 [TestClass]
-public class ProgramTests
-{   
-    
+public class UnitTestsForProgram
+{
     [TestMethod]
-    public void AliveCellThreeNeighbours_CellLives()
+    public void TestLivingCellWithThreeNeighbors_Survives()
     {
-        Cell neighbour;
-        var cell = new Cell();
-        cell.IsAlive = true;
+        Cell adjacent;
+        var testCell = new Cell { IsAlive = true };
 
-        for (var index = 0; index < 3; index++)
+        for (int i = 0; i < 3; i++)
         {
-            neighbour = new Cell();
-            neighbour.IsAlive = true;
-
-            cell.neighbours.Add(neighbour);
+            adjacent = new Cell { IsAlive = true };
+            testCell.neighbours.Add(adjacent);
         }
 
-        Assert.AreEqual(cell.DetermineNextLiveState(), true);
+        Assert.IsTrue(testCell.DetermineNextLiveState());
     }
+
     [TestMethod]
-    public void CellIsAlive()
+    public void VerifyCellSurvivesWithThreeNeighbors()
     {
-        Cell neighbour;
-        var cell = new Cell();
-        cell.IsAlive = true;
+        Cell adjacent;
+        var testCell = new Cell { IsAlive = true };
 
-        for (var index = 0; index < 3; index++)
+        for (int counter = 0; counter < 3; counter++)
         {
-            neighbour = new Cell();
-            neighbour.IsAlive = true;
-
-            cell.neighbours.Add(neighbour);
+            adjacent = new Cell { IsAlive = true };
+            testCell.neighbours.Add(adjacent);
         }
 
-        cell.DetermineNextLiveState();
-        cell.Advance();
+        testCell.DetermineNextLiveState();
+        testCell.ProceedToNextState();
 
-        Assert.AreEqual(cell.IsAlive, true);
+        Assert.IsTrue(testCell.IsAlive);
     }
+
     [TestMethod]
-    public void LessThanThreeNeighbours_NoNewCell()
+    public void TestWithoutEnoughNeighbors_DeathOccurs()
     {
-        Cell neighbour;
-        var cell = new Cell();
-        cell.IsAlive = false;
+        Cell adjacent;
+        var testCell = new Cell { IsAlive = false };
 
-        for (var index = 0; index < 2; index++)
+        for (int count = 0; count < 2; count++)
         {
-            neighbour = new Cell();
-            neighbour.IsAlive = true;
-
-            cell.neighbours.Add(neighbour);
+            adjacent = new Cell { IsAlive = true };
+            testCell.neighbours.Add(adjacent);
         }
 
-        Assert.AreEqual(cell.DetermineNextLiveState(), false);
+        Assert.IsFalse(testCell.DetermineNextLiveState());
     }
 
     [TestMethod]
-    public void SaveFigures_CorrentParameters_SavesFigures()
+    public void VerifySavingOfGeometry_CorrectParams_DataPreserved()
     {
-        var figures = new Figure[]
-        {
-            new Figure("Pond", 6, 6, "        **   *  *  *  *   **        ")
-        };
-        var filePath = "../../../figures_pond.json";
+        var geometries = new[] { new Figure("Pond", 6, 6, "        **   *  *  *  *   **        ") };
+        string path = "../../../.json";
 
-        DataHandler.SaveFigures(figures, filePath);
+        DataHandler.StoreGeometries(geometries, path);
 
-        Assert.IsTrue(File.Exists(filePath));
+        Assert.IsTrue(File.Exists(path));
     }
 
-    
     [TestMethod]
-    public void CellIsNotAlive()
+    public void ValidateCellPerishes()
     {
-        Cell neighbour;
-        var cell = new Cell();
-        cell.IsAlive = true;
+        Cell adjacent;
+        var testCell = new Cell { IsAlive = true };
 
-        for (var index = 0; index < 4; index++)
+        for (int idx = 0; idx < 4; idx++)
         {
-            neighbour = new Cell();
-            neighbour.IsAlive = true;
-
-            cell.neighbours.Add(neighbour);
+            adjacent = new Cell { IsAlive = true };
+            testCell.neighbours.Add(adjacent);
         }
 
-        cell.DetermineNextLiveState();
-        cell.Advance();
+        testCell.DetermineNextLiveState();
+        testCell.ProceedToNextState();
 
-        Assert.AreEqual(cell.IsAlive, false);
+        Assert.IsFalse(testCell.IsAlive);
     }
-    [TestMethod]
-    public void CorrectNumberRowsColumns()
-    {
-        var settings = new ConfigurationPanel(50, 20, 2);
-        var board = new Board(settings);
 
-        Assert.AreEqual(board.Columns, settings.PanelWidth  / settings.UnitBlockSize);
-        Assert.AreEqual(board.Rows, settings.PanelHeight / settings.UnitBlockSize);
+    [TestMethod]
+    public void AssertBoardDimensionsCorrect()
+    {
+        var uiSettings = new ConfigurationPanel(50, 20, 2);
+        var grid = new Board(uiSettings);
+
+        Assert.AreEqual(grid.Columns, uiSettings.PanelWidth / uiSettings.UnitBlockSize);
+        Assert.AreEqual(grid.Rows, uiSettings.PanelHeight / uiSettings.UnitBlockSize);
     }
-    [TestMethod]
-    public void AliveCellMoreThanThreeNeighbours_CellDies()
-    {
-        Cell neighbour;
-        var cell = new Cell();
-        cell.IsAlive = true;
 
-        for (var index = 0; index < 4; index++)
+    [TestMethod]
+    public void LivingCellWithOverpopulation_Perishes()
+    {
+        Cell adjacent;
+        var testCell = new Cell { IsAlive = true };
+
+        for (int iter = 0; iter < 4; iter++)
         {
-            neighbour = new Cell();
-            neighbour.IsAlive = true;
-
-            cell.neighbours.Add(neighbour);
+            adjacent = new Cell { IsAlive = true };
+            testCell.neighbours.Add(adjacent);
         }
 
-        Assert.AreEqual(cell.DetermineNextLiveState(), false);
+        Assert.IsFalse(testCell.DetermineNextLiveState());
     }
-    [TestMethod]
-    public void LoadsBoardSettings()
-    {
-        var originalSettings = new ConfigurationPanel(50, 20, 1, 0.5);
-        DataHandler.SaveBoardSettings(originalSettings, "../../../Settings_board.json");
-        var jsonSettings = DataHandler.LoadBoardSettings("../../../Settings_board.json");
-        Assert.AreEqual(originalSettings.PanelWidth , jsonSettings.PanelWidth );
-        Assert.AreEqual(originalSettings.PanelHeight, jsonSettings.PanelHeight);
-        Assert.AreEqual(originalSettings.UnitBlockSize, jsonSettings.UnitBlockSize);
-        Assert.AreEqual(originalSettings.PopulationDensity, jsonSettings.PopulationDensity);
-    }    
-    [TestMethod]
-    public void SaveBoardState_CorrectFilePath_CreatesFile()
-    {
-        var filePath = "../../../Life_save1.txt";
 
-        DataHandler.SaveBoardState(new Board(), filePath);
+    [TestMethod]
+    public void ValidateSettingsRetrieval()
+    {
+        var expectedSettings = new ConfigurationPanel(50, 20, 1, 0.5);
+        DataHandler.SaveBoardSettings(expectedSettings, "../../../Settings_board.json");
+        var retrievedSettings = DataHandler.LoadPanelConfig("../../../Settings_board.json");
 
-        Assert.IsTrue(File.Exists(filePath));
+        Assert.AreEqual(expectedSettings.PanelWidth, retrievedSettings.PanelWidth);
+        Assert.AreEqual(expectedSettings.PanelHeight, retrievedSettings.PanelHeight);
+        Assert.AreEqual(expectedSettings.UnitBlockSize, retrievedSettings.UnitBlockSize);
+        Assert.AreEqual(expectedSettings.PopulationDensity, retrievedSettings.PopulationDensity);
     }
+
     [TestMethod]
-    public void LoadBoardState_FileExists_LoadsCorrectParameters()
+    public void CheckGameStateSaving_ProperPath_FileGenerated()
     {
-        var firstBoardSettings = new ConfigurationPanel(45, 25, 1);
-        var filePath = "../../../Life_save1.txt";
-        var board = new Board(firstBoardSettings);
+        string path = "../../../Live_save1.txt";
+        DataHandler.SaveGridState(new Board(), path);
 
-        DataHandler.SaveBoardState(board, filePath);
-        board = DataHandler.LoadBoardState(filePath);
-
-        Assert.AreEqual(firstBoardSettings.PanelWidth , board.Width);
-        Assert.AreEqual(firstBoardSettings.PanelHeight, board.Height);
-        Assert.AreEqual(firstBoardSettings.UnitBlockSize, board.CellSize);
+        Assert.IsTrue(File.Exists(path));
     }
-    [TestMethod]
-    public void GetAliveCellsCount_BoardWithAliveCells_ReturnsCorrectAmount()
-    {
-        var board = new Board(new ConfigurationPanel(3, 3, 1, 1));
 
-        Assert.AreEqual(9, Analys.GetAlive(board));
-    }   
     [TestMethod]
-    public void FigureEquals_EqualFigures_ReturnsTrue()
+    public void ConfirmStateLoading_FilePresent_CorrectDataFetched()
     {
-        var firstFigure =
-            new Figure("FigureOne", 4, 4, "      **    **      ");
-        var secondFigure =
-            new Figure("FigureTwo", 4, 4, "      **    **      ");
+        var initialSettings = new ConfigurationPanel(45, 25, 1);
+        string path = "../../../Live_save1.txt";
+        var gameBoard = new Board(initialSettings);
 
-        Assert.IsTrue(firstFigure.Equals(secondFigure));
-    }   
-   
+        DataHandler.SaveGridState(gameBoard, path);
+        gameBoard = DataHandler.LoadGridState(path);
+
+        Assert.AreEqual(initialSettings.PanelWidth, gameBoard.Width);
+        Assert.AreEqual(initialSettings.PanelHeight, gameBoard.Height);
+        Assert.AreEqual(initialSettings.UnitBlockSize, gameBoard.CellSize);
+    }
+
     [TestMethod]
-    public void ConnectsCellNeighbours()
+    public void CountLivingCells_OnPopulatedBoard_AccurateCount()
+    {
+        var gameBoard = new Board(new ConfigurationPanel(3, 3, 1, 1));
+        Assert.AreEqual(9, gameBoard.CountLivingCells());
+    }
+
+    [TestMethod]
+    public void CompareFigures_Identical_ReturnTrue()
+    {
+        var first = new Figure("ShapeOne", 4, 4, "    **    **    ");
+        var second = new Figure("ShapeTwo", 4, 4, "    **    **    ");
+
+        Assert.IsTrue(first.Equals(second));
+    }
+
+    [TestMethod]
+    public void EnsureNeighbourConnections_CorrectCount()
     {
         var settings = new ConfigurationPanel(3, 3, 1);
+        var gameBoard = new Board(settings);
 
-        var board = new Board(settings);
-
-        for (var row = 0; row < settings.PanelHeight; row++)
+        foreach (var cell in gameBoard.Cells)
         {
-            for (var col = 0; col < settings.PanelWidth; col++)
-            {
-                Assert.AreEqual(8, board.Cells[row, col].neighbours.Count);
-            }
+            Assert.AreEqual(8, cell.neighbours.Count);
         }
     }
 
     [TestMethod]
-    public void LoadFigures_CorrentPath_LoadsFigures()
+    public void ValidateGeometryLoading_CorrectPath_CorrectData()
     {
-        var figures = new Figure[]
-        {
-            new Figure("Pond", 6, 6, "        **   *  *  *  *   **        ")
-        };
-        var filePath = "../../../figures_pond.json";
-        DataHandler.SaveFigures(figures, filePath);
+        var geometries = new[] { new Figure("Pond", 6, 6, "        **   *  *  *  *   **        ") };
+        string path = "../../../Settings_board.json";
+        DataHandler.StoreGeometries(geometries, path);
 
-        var loadedFigures = DataHandler.LoadFigures(filePath);
+        var retrievedGeometries = DataHandler.LoadGeometries(path);
 
-        Assert.IsTrue(figures[0].Equals(loadedFigures[0]));
+        Assert.IsTrue(geometries[0].Equals(retrievedGeometries[0]));
     }
+
     [TestMethod]
-    public void TwoOrThreeNeighbours_NewAliveCell()
+    public void ReviveCellWithTwoOrThreeNeighbors_BecomesAlive()
     {
-        Cell neighbour;
-        var cell = new Cell();
-        cell.IsAlive = false;
+        Cell adjacent;
+        var testCell = new Cell { IsAlive = false };
 
-        for (var index = 0; index < 3; index++)
+        for (int i = 0; i < 3; i++)
         {
-            neighbour = new Cell();
-            neighbour.IsAlive = true;
-
-            cell.neighbours.Add(neighbour);
+            adjacent = new Cell { IsAlive = true };
+            testCell.neighbours.Add(adjacent);
         }
 
-        Assert.AreEqual(cell.DetermineNextLiveState(), true);
+        Assert.IsTrue(testCell.DetermineNextLiveState());
     }
 }
+     
