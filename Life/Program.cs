@@ -83,13 +83,13 @@ namespace cli_life
 
         public int Generation { get; set; }
 
-        public Board(BoardSettings settings)
+        public Board(BoardConfigurations configurations)
         {
             Generation = 0;
 
-            CellSize = settings.CellSize;
+            CellSize = configurations.CellSize;
 
-            Cells = new Cell[settings.Height / CellSize, settings.Width / CellSize];
+            Cells = new Cell[configurations.Height / CellSize, configurations.Width / CellSize];
 
             Width = Columns * CellSize;
             Height = Rows * CellSize;
@@ -103,24 +103,24 @@ namespace cli_life
             }
 
             ConnectNeighbours();
-            Randomize(settings.LiveDensity);
+            Randomize(configurations.LiveDensity);
         }
 
-        public Board(BoardSettings settings, int generation, Cell[,] cells)
+        public Board(BoardConfigurations configurations, int generation, Cell[,] cells)
         {
             Generation = generation;
 
-            CellSize = settings.CellSize;
+            CellSize = configurations.CellSize;
 
             Cells = cells;
 
-            Width = settings.Width;
-            Height = settings.Height;
+            Width = configurations.Width;
+            Height = configurations.Height;
 
             ConnectNeighbours();
         }
 
-        public Board(double density = 0.5) : this(new BoardSettings(100, 50, 1, density))
+        public Board(double density = 0.5) : this(new BoardConfigurations(100, 50, 1, density))
         {
         }
 
@@ -182,43 +182,43 @@ namespace cli_life
         }
     }
 
-    public class Figure
+    public class Entity
     {
-        public string Name { get; set; }
+        public string Identifier { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
-        public string FigureRepresentation { get; set; }
+        public string EntityDesign { get; set; }
 
-        public Figure(string name, int width, int height, string figureRepresentation)
+        public Entity(string identifier, int width, int height, string entityDesign)
         {
-            Name = name;
+            Identifier = identifier;
             Width = width;
             Height = height;
-            FigureRepresentation = figureRepresentation;
+            EntityDesign = entityDesign;
         }
 
-        public Figure() : this(string.Empty, 0, 0, string.Empty) { }
+        public Entity() : this(string.Empty, 0, 0, string.Empty) { }
 
         public override bool Equals(object obj)
         {
-            if (obj is Figure figure)
+            if (obj is Entity entity)
             {
-                return figure.Width == Width
-                && figure.Height == Height
-                && figure.FigureRepresentation == FigureRepresentation;
+                return entity.Width == Width
+                && entity.Height == Height
+                && entity.EntityDesign == EntityDesign;
             }
             return false;
         }
     }
 
-    public class BoardSettings
+    public class BoardConfigurations
     {
         public int Width { get; set; }
         public int Height { get; set; }
         public int CellSize { get; set; }
         public double LiveDensity { get; set; }
 
-        public BoardSettings(int width, int height, int cellSize, double liveDensity = 0.5)
+        public BoardConfigurations(int width, int height, int cellSize, double liveDensity = 0.5)
         {
             Width = width;
             Height = height;
@@ -226,52 +226,52 @@ namespace cli_life
             LiveDensity = liveDensity;
         }
 
-        public BoardSettings() : this(0, 0, 0, 0) { }
+        public BoardConfigurations() : this(0, 0, 0, 0) { }
     }
 
-    public class FileManager
+    public class DocumentHandler
     {
-        private static T LoadJson<T>(string filePath)
+        private static T LoadJsonFormat<T>(string pathToFile)
         {
-            var json = File.ReadAllText(filePath);
-            return JsonSerializer.Deserialize<T>(json);
+            var jsonFormat = File.ReadAllText(pathToFile);
+            return JsonSerializer.Deserialize<T>(jsonFormat);
         }
 
-        public static BoardSettings LoadBoardSettings(string filePath)
-            => LoadJson<BoardSettings>(filePath);
+        public static BoardConfigurations LoadBoardConfiguration(string pathToFile)
+            => LoadJsonFormat<BoardConfigurations>(pathToFile);
 
-        public static void SaveToJson<T>(T data, string filePath, bool writeIndented = false)
+        public static void SaveToJsonFormat<T>(T data, string pathToFile, bool writeIndented = false)
         {
-            var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = writeIndented });
-            File.WriteAllText(filePath, json);
+            var jsonFormat = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = writeIndented });
+            File.WriteAllText(pathToFile, jsonFormat);
         }
 
-        public static void SaveBoardSettings(BoardSettings settings, string filePath)
-            => SaveToJson(settings, filePath);
+        public static void SaveBoardConfiguration(BoardConfigurations configurations, string pathToFile)
+            => SaveToJsonFormat(configurations, pathToFile);
 
-        public static void SaveBoardState(Board board, string filePath)
+        public static void SaveBoardCondition(Board board, string pathToFile)
         {
-            StringBuilder boardState = new StringBuilder();
+            StringBuilder boardCondition = new StringBuilder();
             for (var row = 0; row < board.Height; row++)
             {
                 for (var col = 0; col < board.Width; col++)
                 {
-                    boardState.Append(
+                    boardCondition.Append(
                        board.Cells[row, col].IsAlive
                        ? '*'
                        : ' ');
                 }
-                boardState.Append('\n');
+                boardCondition.Append('\n');
             }
-            boardState.AppendLine($"cellSize={board.CellSize}")
+            boardCondition.AppendLine($"cellSize={board.CellSize}")
                        .AppendLine($"generation={board.Generation}");
 
-            File.WriteAllText(filePath, boardState.ToString());
+            File.WriteAllText(pathToFile, boardCondition.ToString());
         }
 
-        public static Board LoadBoardState(string filePath)
+        public static Board LoadBoardCondition(string pathToFile)
         {
-            var boardStringArrayRepr = File.ReadAllLines(filePath);
+            var boardStringArrayRepr = File.ReadAllLines(pathToFile);
 
             int.TryParse(
                 boardStringArrayRepr[boardStringArrayRepr.Length - 2]
@@ -298,7 +298,7 @@ namespace cli_life
             var height = boardStringArrayRepr.Length - 2;
             var width = boardStringArrayRepr[0].Length;
 
-            var settings = new BoardSettings(width, height, cellSize);
+            var configurations = new BoardConfigurations(width, height, cellSize);
 
             var cells = new Cell[height / cellSize, width / cellSize];
 
@@ -313,25 +313,25 @@ namespace cli_life
                 }
             }
 
-            return new Board(settings, generation, cells);
+            return new Board(configurations, generation, cells);
         }
 
-        public static Figure[] LoadFigures(string filePath)
-            => LoadJson<Figure[]>(filePath);
+        public static Entity[] LoadEntities(string pathToFile)
+            => LoadJsonFormat<Entity[]>(pathToFile);
 
-        public static void SaveFigures(Figure[] figures, string filePath)
-            => SaveToJson(figures, filePath, true);
+        public static void SaveEntities(Entity[] entities, string pathToFile)
+            => SaveToJsonFormat(entities, pathToFile, true);
 
-        public static void SavePlotPng(Plot plot, string filePath, int width = 1920, int heigth = 1080)
-            => plot.SavePng(filePath, 1920, 1080);
+        public static void SavePlotPng(Plot plot, string pathToFile, int width = 1920, int heigth = 1080)
+            => plot.SavePng(pathToFile, 1920, 1080);
     }
-    public class BoardAnalysis
+    public class TableEvaluationStrategy
     {
-        public static Figure[] Figures;
+        public static Entity[] Entities;
 
         private Board _board;
 
-        public BoardAnalysis(Board board)
+        public TableEvaluationStrategy(Board board)
         {
             _board = board;
         }
@@ -356,22 +356,22 @@ namespace cli_life
             return result;
         }
 
-        private Figure CreateFigure(int row, int col, int width, int height)
+        private Entity CreateEntity(int row, int col, int width, int height)
         {
-            string figureString = GenerateFigureString(row, col, width, height);
+            string entityDesign = GenerateEntityDesign(row, col, width, height);
 
-            return new Figure("figure", width, height, figureString);
+            return new Entity("entity", width, height, entityDesign);
         }
 
-        private string GenerateFigureString(int row, int col, int width, int height)
+        private string GenerateEntityDesign(int row, int col, int width, int height)
         {
             return string.Join("",
                 from rowIndex in Enumerable.Range(row, height)
                 from colIndex in Enumerable.Range(col, width)
-                select GetFigureCell(rowIndex, colIndex));
+                select GetEntityCell(rowIndex, colIndex));
         }
 
-        private char GetFigureCell(int rowIndex, int colIndex)
+        private char GetEntityCell(int rowIndex, int colIndex)
         {
             return IsInsideBoard(rowIndex, colIndex)
                 ? (_board.Cells[rowIndex, colIndex].IsAlive ? '*' : ' ')
@@ -384,34 +384,34 @@ namespace cli_life
                 && colIndex >= 0 && colIndex < _board.Columns;
         }
 
-        public Dictionary<string, int> GetFiguresCount()
+        public Dictionary<string, int> GetEntitiesCount()
         {
-            Dictionary<string, int> figuresCount = InstantiateFiguresDictionary();
+            Dictionary<string, int> entitiesCount = InstantiateEntitiesDictionary();
 
             for (int row = 0; row < _board.Rows; row++)
             {
                 for (int col = 0; col < _board.Columns; col++)
                 {
-                    UpdateFiguresCount(figuresCount, row, col);
+                    UpdateEntitiesCount(entitiesCount, row, col);
                 }
             }
 
-            return figuresCount;
+            return entitiesCount;
         }
 
-        private Dictionary<string, int> InstantiateFiguresDictionary()
+        private Dictionary<string, int> InstantiateEntitiesDictionary()
         {
-            return Figures.ToDictionary(figure => figure.Name, _ => 0);
+            return Entities.ToDictionary(entity => entity.Identifier, _ => 0);
         }
 
-        private void UpdateFiguresCount(Dictionary<string, int> figuresCount, int row, int col)
+        private void UpdateEntitiesCount(Dictionary<string, int> entitiesCount, int row, int col)
         {
-            var figureToIncrement = Figures
-                .FirstOrDefault(figure => figure.Equals(CreateFigure(row, col, figure.Width, figure.Height)));
+            var entityToIncrement = Entities
+                .FirstOrDefault(entity => entity.Equals(CreateEntity(row, col, entity.Width, entity.Height)));
 
-            if (figureToIncrement != null)
+            if (entityToIncrement != null)
             {
-                figuresCount[figureToIncrement.Name]++;
+                entitiesCount[entityToIncrement.Identifier]++;
             }
         }
     }
@@ -419,11 +419,11 @@ namespace cli_life
     class Program
     {
 
-        const string SettingsJsonPath = "../../../boardSettings.json";
+        const string ConfigurationsJsonPath = "../../../boardConfigurations.json";
 
-        const string BoardStateFilePath = "../../../resultGameOfLife.txt";
+        const string BoardConditionPathToFile = "../../../resultGameOfLife.txt";
 
-        const string FiguresJsonPath = "../../../figures.json";
+        const string EntitiesJsonPath = "../../../entities.json";
 
         const string PlotPngPath = "../../../plot.png";
 
@@ -434,8 +434,8 @@ namespace cli_life
         static bool SaveToFile = false;
 
         static Board SimulationBoard;
-        static BoardAnalysis BoardAnalysis;
-        static BoardSettings Settings = new BoardSettings(50, 20, 1, 0.5);
+        static TableEvaluationStrategy TableEvaluationStrategy;
+        static BoardConfigurations Configurations = new BoardConfigurations(50, 20, 1, 0.5);
 
 
 
@@ -463,28 +463,28 @@ namespace cli_life
             return userResponse != 0;
         }
 
-        static void RegularSimulation()
+        static void StandardSimulationProcedure()
         {
             ConfigureSimulationStart();
             Reset();
 
-            BoardAnalysis.Figures = FileManager.LoadFigures(FiguresJsonPath);
+            TableEvaluationStrategy.Entities = DocumentHandler.LoadEntities(EntitiesJsonPath);
 
-            LoadBoardState();
+            LoadBoardCondition();
 
-            RunGameLoop();
+            ExecuteGameCycle();
 
-            SaveBoardState();
+            SaveBoardCondition();
         }
 
-        private static void LoadBoardState()
+        private static void LoadBoardCondition()
         {
             if (!LoadFromFile) return;
 
             try
             {
-                SimulationBoard = FileManager.LoadBoardState(BoardStateFilePath);
-                BoardAnalysis = new(SimulationBoard);
+                SimulationBoard = DocumentHandler.LoadBoardCondition(BoardConditionPathToFile);
+                TableEvaluationStrategy = new(SimulationBoard);
                 Console.WriteLine("Successfully reading data from a file.");
             }
             catch
@@ -496,36 +496,36 @@ namespace cli_life
             Thread.Sleep(2000);
         }
 
-        private static void RunGameLoop()
+        private static void ExecuteGameCycle()
         {
             for (var index = 0; index < IterationsNum; index++)
             {
                 Console.Clear();
                 Render();
-                DisplayGameStats();
+                ShowGameStatistics();
                 SimulationBoard.Advance();
                 Thread.Sleep(1000);
             }
         }
 
-        private static void DisplayGameStats()
+        private static void ShowGameStatistics()
         {
             Console.WriteLine($"Current generation: {SimulationBoard.Generation}");
-            Console.WriteLine($"The number of living cells: {BoardAnalysis.FindAliveCellsCount()}");
-            Console.WriteLine("The number of each of the figures:");
-            foreach (var figure in BoardAnalysis.GetFiguresCount())
+            Console.WriteLine($"The number of living cells: {TableEvaluationStrategy.FindAliveCellsCount()}");
+            Console.WriteLine("The number of each of the entities:");
+            foreach (var entity in TableEvaluationStrategy.GetEntitiesCount())
             {
-                Console.WriteLine($"{figure.Key}: {figure.Value}");
+                Console.WriteLine($"Entity {entity.Key}: Count {entity.Value}");
             }
         }
 
-        private static void SaveBoardState()
+        private static void SaveBoardCondition()
         {
             if (!SaveToFile) return;
 
             try
             {
-                FileManager.SaveBoardState(SimulationBoard, BoardStateFilePath);
+                DocumentHandler.SaveBoardCondition(SimulationBoard, BoardConditionPathToFile);
                 Console.WriteLine("Successfully saving the result to a file.");
             }
             catch
@@ -534,29 +534,29 @@ namespace cli_life
             }
         }
 
-        static void ResearchSimulation()
+        static void AnalysisSimulation()
         {
-            var plot = InitializePlot();
+            var plot = SetupGraph();
 
-            double[] density = GenerateDensityArray();
+            double[] density = CreateVitalityDensitySequence();
 
-            var generations = GenerateGenerationsList();
-            var settings = new BoardSettings(Settings.Width, Settings.Height, Settings.CellSize);
+            var generations = CreateGenerationsCollection();
+            var configurations = new BoardConfigurations(Configurations.Width, Configurations.Height, Configurations.CellSize);
 
             for (int boardIndex = 0; boardIndex < density.Length; boardIndex++)
             {
-                Board board = CreateNewBoard(density, boardIndex, settings);
-                BoardAnalysis boardAnalysis = new BoardAnalysis(board);
+                Board board = CreateNewBoard(density, boardIndex, configurations);
+                TableEvaluationStrategy tableEvaluationStrategy = new TableEvaluationStrategy(board);
 
-                List<int> aliveCells = CalculateAliveCells(board, boardAnalysis);
+                List<int> aliveCells = CalculateAliveCells(board, tableEvaluationStrategy);
 
                 AddScatterToPlot(plot, generations, aliveCells, density, boardIndex);
             }
 
-            FileManager.SavePlotPng(plot, PlotPngPath);
+            DocumentHandler.SavePlotPng(plot, PlotPngPath);
         }
 
-        private static Plot InitializePlot()
+        private static Plot SetupGraph()
         {
             var plot = new Plot();
             plot.XLabel("Generation");
@@ -565,24 +565,24 @@ namespace cli_life
             return plot;
         }
 
-        private static double[] GenerateDensityArray() => new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
+        private static double[] CreateVitalityDensitySequence() => new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
 
-        private static List<int> GenerateGenerationsList() => Enumerable.Repeat(0, IterationsNum).Select((index, generation) => generation + index).ToList();
+        private static List<int> CreateGenerationsCollection() => Enumerable.Repeat(0, IterationsNum).Select((index, generation) => generation + index).ToList();
 
-        private static Board CreateNewBoard(double[] density, int boardIndex, BoardSettings settings)
+        private static Board CreateNewBoard(double[] density, int boardIndex, BoardConfigurations configurations)
         {
-            settings.LiveDensity = density[boardIndex];
-            return new Board(settings);
+            configurations.LiveDensity = density[boardIndex];
+            return new Board(configurations);
         }
 
-        private static List<int> CalculateAliveCells(Board board, BoardAnalysis boardAnalysis)
+        private static List<int> CalculateAliveCells(Board board, TableEvaluationStrategy tableEvaluationStrategy)
         {
             List<int> aliveCells = new();
             int generation = 0;
 
             while (generation < IterationsNum)
             {
-                aliveCells.Add(boardAnalysis.FindAliveCellsCount());
+                aliveCells.Add(tableEvaluationStrategy.FindAliveCellsCount());
                 board.Advance();
                 generation++;
             }
@@ -599,7 +599,7 @@ namespace cli_life
             scatter.Color = new(rand.Next(0, 256), rand.Next(0, 256), rand.Next(0, 256));
         }
 
-        static void GetSimulationType()
+        static void RetrieveGameplayMode()
         {
             Console.Write("To run: \n1. Simulation\n2. Plotting\nChoice: ");
             int userChoice = ParseNumericInput();
@@ -607,14 +607,14 @@ namespace cli_life
             switch (userChoice)
             {
                 case 1:
-                    RegularSimulation();
+                    StandardSimulationProcedure();
                     break;
                 case 2:
-                    ResearchSimulation();
+                    AnalysisSimulation();
                     break;
                 default:
                     Console.WriteLine("A non-existent option is selected");
-                    GetSimulationType(); // повторный запрос типа симуляции у пользователя при некорректном вводе
+                    RetrieveGameplayMode(); // повторный запрос типа симуляции у пользователя при некорректном вводе
                     break;
             }
         }
@@ -622,16 +622,16 @@ namespace cli_life
         {
             try
             {
-                var settings = FileManager.LoadBoardSettings(SettingsJsonPath);
+                var configurations = DocumentHandler.LoadBoardConfiguration(ConfigurationsJsonPath);
 
-                SimulationBoard = new Board(settings);
+                SimulationBoard = new Board(configurations);
             }
             catch
             {
-                SimulationBoard = new Board(Settings);
+                SimulationBoard = new Board(Configurations);
             }
 
-            BoardAnalysis = new(SimulationBoard);
+            TableEvaluationStrategy = new(SimulationBoard);
         }
 
         static void Render()
@@ -653,7 +653,7 @@ namespace cli_life
 
         static void Main(string[] args)
         {
-            GetSimulationType();
+            RetrieveGameplayMode();
         }
     }
 }
