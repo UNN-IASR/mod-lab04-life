@@ -1,256 +1,244 @@
 using Life;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestNewOpportunity
+namespace Tests
 {
     [TestClass]
     public class UnitTest1
     {
+        Random rd = new Random(124);
+
         [TestMethod]
-        public void CreateGraphic()
+        public void AdvanceCell1()
         {
-            string pathSave = "EvolutionGraphic1.png";
-            MapCGL board = new MapCGL(50, 50);
-
-            Random rd = new Random();
-            CGL cgl = new CGL(board, new SphereConnect());
-            int maxIteration = 100;
-            double stepDensity = 0.1;
-
-            ScottPlotGraphic graphics = new Life.ScottPlotGraphic(rd, cgl, maxIteration, stepDensity);
-            graphics.GetGraphic(pathSave);
+            Cell cell = new Cell(false);
+            cell.DetermineNextLiveState();
+            cell.Advance();
+            Assert.IsFalse(cell.IsAliveNow);
         }
 
         [TestMethod]
-        public void SaveAndLoad()
+        public void AdvanceCell2()
         {
-            string pathSave = "SaveJson/";
-            MapCGL figCub = SaveJson.LoadFromJSon(pathSave + "FigureCubeWithoutBord.txt");
-
-            MapCGL board = new MapCGL(50, 50);
-            board = FillMap.AddFigure(20, 20, board, figCub);
-            board = FillMap.AddFigure(21, 21, board, figCub);
-            CGL cgl = new CGL(board, new SphereConnect());
-
-            int countAlive = AnalyzerMap.CountAlive(board);
-            Assert.AreEqual(7, countAlive);
-            cgl.Advance();
-            countAlive = AnalyzerMap.CountAlive(board);
-            Assert.AreEqual(4, countAlive);
-
-            SaveJson.SaveToJson(pathSave + "TestSaveAndLoad.txt", "TestSaveAndLoad", board);
-            MapCGL loadBoard = SaveJson.LoadFromJSon(pathSave + "TestSaveAndLoad.txt");
-
-            countAlive = AnalyzerMap.CountAlive(loadBoard);
-            Assert.AreEqual(4, countAlive);
-
-            cgl = new CGL(loadBoard, new SphereConnect());
-            cgl.Advance();
-
-            countAlive = AnalyzerMap.CountAlive(loadBoard);
-            Assert.AreEqual(0, countAlive);
+            Cell cell = new Cell(true);
+            Assert.IsTrue(cell.IsAliveNow);
+            cell.DetermineNextLiveState();
+            cell.Advance();
+            Assert.IsFalse(cell.IsAliveNow);
         }
 
         [TestMethod]
-        public void MapToString()
+        public void AdvanceCell3()
         {
-            string pathSave = "SaveJson/";
-            MapCGL figCub = SaveJson.LoadFromJSon(pathSave + "FigureCub.txt");
-            MapCGL figStick = SaveJson.LoadFromJSon(pathSave + "FigureStick.txt");
+            Cell cell = new Cell(false);
 
-            MapCGL board = new MapCGL(4, 4);
-            board = FillMap.AddFigure(0, 0, board, figCub);
+            cell.neighbors.Add(new Cell(true));
+            cell.neighbors.Add(new Cell(true));
+            cell.neighbors.Add(new Cell(true));
 
-            string str = "0000\n0110\n0110\n0000\n";
-            Assert.AreEqual(str, board.ToString());
+            cell.DetermineNextLiveState();
+            cell.Advance();
+            Assert.IsTrue(cell.IsAliveNext);
         }
 
         [TestMethod]
-        public void LoadFromStr()
+        public void AdvanceCell4()
         {
-            string pathSave = "SaveJson/";
-            MapCGL figCub = SaveJson.LoadFromJSon(pathSave + "FigureCub.txt");
-            MapCGL figStick = SaveJson.LoadFromJSon(pathSave + "FigureStick.txt");
+            Cell cell = new Cell(false);
 
-            string str = "0000\n0110\n0110\n0000\n";
-            MapCGL board = MapCGL.LoadFromStr(str);
+            cell.neighbors.Add(new Cell(true));
+            cell.neighbors.Add(new Cell(true));
+            cell.neighbors.Add(new Cell(true));
+            cell.neighbors.Add(new Cell(true));
 
-            Assert.AreEqual(str, board.ToString());
+            cell.DetermineNextLiveState();
+            cell.Advance();
+
+            Assert.IsFalse(cell.IsAliveNext);
         }
 
         [TestMethod]
-        public void RandomFill1()
+        public void AdvanceCell5()
         {
-            double liveDensity = 0.5;
-            Random rd = new Random(41);
+            Cell cell = new Cell(true);
 
-            MapCGL board = FillMap.FillRandom(new MapCGL(50, 50), liveDensity, rd);
-            int countAlive = AnalyzerMap.CountAlive(board);
-            double alivePercent = countAlive / (board.Rows * board.Columns);
-            Assert.AreEqual(0.4, alivePercent, 0.6);
+            cell.neighbors.Add(new Cell(true));
+            cell.neighbors.Add(new Cell(true));
+            cell.DetermineNextLiveState();
+            cell.Advance();
+            Assert.IsTrue(cell.IsAliveNext);
+
+            cell.neighbors.Add(new Cell(true));
+            cell.DetermineNextLiveState();
+            cell.Advance();
+            Assert.IsTrue(cell.IsAliveNext);
         }
 
         [TestMethod]
-        public void RandomFill2()
+        public void AdvanceCell6()
         {
-            double liveDensity = 0.2;
-            Random rd = new Random(41);
+            Cell cell = new Cell(true);
 
-            MapCGL board = FillMap.FillRandom(new MapCGL(50, 50), liveDensity, rd);
-            int countAlive = AnalyzerMap.CountAlive(board);
-            double alivePercent = countAlive / (board.Rows * board.Columns);
-            Assert.AreEqual(0.1, alivePercent, 0.3);
+            cell.neighbors.Add(new Cell(true));
+            cell.neighbors.Add(new Cell(true));
+            cell.neighbors.Add(new Cell(true));
+            cell.neighbors.Add(new Cell(true));
+
+            cell.DetermineNextLiveState();
+            cell.Advance();
+            Assert.IsFalse(cell.IsAliveNext);
         }
 
         [TestMethod]
-        public void RandomFill3()
+        public void GenerateRandomBoardWithMinDensity()
         {
+            int columns = 20;
+            int rows = 20;
+            double liveDensity = 0;
+
+            Board board = BoardGenerator.GenerateRandom(columns, rows, liveDensity, rd);
+
+            Assert.AreEqual(0, Analyzer.countAliveCell(board));
+        }
+
+        [TestMethod]
+        public void GenerateRandomBoardWithMaxDensity()
+        {
+            int columns = 20;
+            int rows = 20;
             double liveDensity = 1;
-            Random rd = new Random(41);
 
-            MapCGL board = FillMap.FillRandom(new MapCGL(50, 50), liveDensity, rd);
-            int countAlive = AnalyzerMap.CountAlive(board);
-            double alivePercent = countAlive / (board.Rows * board.Columns);
-            Assert.AreEqual(1, alivePercent, 1);
+            Board board = BoardGenerator.GenerateRandom(columns, rows, liveDensity, rd);
+
+            Assert.AreEqual(columns * rows, Analyzer.countAliveCell(board));
         }
 
         [TestMethod]
-        public void Classification1()
+        public void GenerateRandomBoardWithAverageDensity()
         {
-            string pathSave = "SaveJson/";
-            MapCGL figCub = SaveJson.LoadFromJSon(pathSave + "FigureCub.txt");
-            MapCGL figStick = SaveJson.LoadFromJSon(pathSave + "FigureStick.txt");
+            int columns = 20;
+            int rows = 20;
+            double liveDensity = 0.5;
 
-            MapCGL board = new MapCGL(50, 50);
-            board = FillMap.AddFigure(0, 40, board, figCub);
-            board = FillMap.AddFigure(30, 20, board, figCub);
+            Board board = BoardGenerator.GenerateRandom(columns, rows, liveDensity, rd);
 
-            int countFigCub = AnalyzerMap.Classification(board, figCub);
-
-            Assert.AreEqual(2, countFigCub);
+            Assert.AreEqual(columns * rows * liveDensity, Analyzer.countAliveCell(board), 10);
         }
 
         [TestMethod]
-        public void Classification2()
+        public void TestCorrectCreate()
         {
-            string pathSave = "SaveJson/";
-            MapCGL figCub = SaveJson.LoadFromJSon(pathSave + "FigureCub.txt");
-            MapCGL figStick = SaveJson.LoadFromJSon(pathSave + "FigureStick.txt");
+            Cell[,] cells = {
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(true), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(true), new Cell(false) },
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+            };
 
-            MapCGL board = new MapCGL(50, 50);
-            board = FillMap.AddFigure(0, 40, board, figCub);
-            board = FillMap.AddFigure(30, 20, board, figCub);
-            board = FillMap.AddFigure(50, 50, board, figStick);
+            Board board = new Board(cells);
 
-            int countFigCub = AnalyzerMap.Classification(board, figCub);
-            int countFigStick = AnalyzerMap.Classification(board, figStick);
-
-            Assert.AreEqual(2, countFigCub);
-            Assert.AreEqual(1, countFigStick);
+            Assert.AreEqual(5, board.Columns);
+            Assert.AreEqual(4, board.Rows);
         }
 
         [TestMethod]
-        public void CountLive1()
+        public void TestAdvance1()
         {
-            string pathSave = "SaveJson/";
-            MapCGL figCub = SaveJson.LoadFromJSon(pathSave + "FigureCub.txt");
-            MapCGL figStick = SaveJson.LoadFromJSon(pathSave + "FigureStick.txt");
+            Cell[,] cells = {
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(true), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(true), new Cell(false) },
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+            };
 
-            MapCGL board = new MapCGL(50, 50);
-            board = FillMap.AddFigure(50, 50, board, figStick);
-            board = FillMap.AddFigure(19, 23, board, figCub);
-            board = FillMap.AddFigure(11, 23, board, figCub);
+            Board board = new Board(cells);
 
-            int countAlive = AnalyzerMap.CountAlive(board);
-            Assert.AreEqual(11, countAlive);
-
-            CGL cgl = new CGL(board, new SphereConnect());
-            cgl.Advance();
-
-            countAlive = AnalyzerMap.CountAlive(board);
-            Assert.AreEqual(11, countAlive);
+            Assert.AreEqual(4, Analyzer.countAliveCell(board));
+            board.Advance();
+            Assert.AreEqual(4, Analyzer.countAliveCell(board));
         }
 
         [TestMethod]
-        public void CountLive2()
+        public void TestAdvance2()
         {
-            string pathSave = "SaveJson/";
-            MapCGL figCub = SaveJson.LoadFromJSon(pathSave + "FigureCubeWithoutBord.txt");
+            Cell[,] cells = {
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(true), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+            };
 
-            MapCGL board = new MapCGL(50, 50);
-            board = FillMap.AddFigure(20, 20, board, figCub);
-            board = FillMap.AddFigure(21, 21, board, figCub);
-            CGL cgl = new CGL(board, new SphereConnect());
+            Board board = new Board(cells);
 
-            int countAlive = AnalyzerMap.CountAlive(board);
-            Assert.AreEqual(7, countAlive);
-
-            cgl.Advance();
-            countAlive = AnalyzerMap.CountAlive(board);
-            Assert.AreEqual(4, countAlive);
-
-            cgl.Advance();
-            countAlive = AnalyzerMap.CountAlive(board);
-            Assert.AreEqual(0, countAlive);
-        }
-
-
-        [TestMethod]
-        public void Stability1()
-        {
-            string pathSave = "SaveJson/";
-            MapCGL figCub = SaveJson.LoadFromJSon(pathSave + "FigureCub.txt");
-
-            MapCGL board = new MapCGL(50, 50);
-            board = FillMap.AddFigure(15, 23, board, figCub);
-            board = FillMap.AddFigure(19, 23, board, figCub);
-            board = FillMap.AddFigure(11, 23, board, figCub);
-
-            int countInStability = AnalyzerMap.StabilitySystem(new CGL(board, new SphereConnect()), 10);
-
-            Assert.AreEqual(1, countInStability);
+            Assert.AreEqual(3, Analyzer.countAliveCell(board));
+            board.Advance();
+            Assert.AreEqual(4, Analyzer.countAliveCell(board));
+            board.Advance();
+            Assert.AreEqual(4, Analyzer.countAliveCell(board));
         }
 
         [TestMethod]
-        public void Stability2()
+        public void TestAdvance3()
         {
-            string pathSave = "SaveJson/";
-            MapCGL figCub = SaveJson.LoadFromJSon(pathSave + "FigureCub.txt");
+            Cell[,] cells = {
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(true), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(false), new Cell(false) },
+                { new Cell(true), new Cell(true), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+            };
 
-            MapCGL board = new MapCGL(50, 50);
+            Board board = new Board(cells);
 
-            int countInStability = AnalyzerMap.StabilitySystem(new CGL(board, new SphereConnect()), 10);
-
-            Assert.AreEqual(1, countInStability);
+            Assert.AreEqual(5, Analyzer.countAliveCell(board));
+            board.Advance();
+            Assert.AreEqual(4, Analyzer.countAliveCell(board));
+            board.Advance();
+            Assert.AreEqual(2, Analyzer.countAliveCell(board));
+            board.Advance();
+            Assert.AreEqual(0, Analyzer.countAliveCell(board));
         }
 
         [TestMethod]
-        public void Stability3()
+        public void testSaveAndLoadBoard1()
         {
-            string pathSave = "SaveJson/";
-            MapCGL figStick = SaveJson.LoadFromJSon(pathSave + "FigureStick.txt");
+            string path = "TestBoardSave.json";
 
-            MapCGL board = new MapCGL(5, 5);
-            board = FillMap.AddFigure(0, 1, board, figStick);
+            Cell[,] cells = {
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(true), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+            };
 
-            int countInStability = AnalyzerMap.StabilitySystem(new CGL(board, new SphereConnect()), 10);
+            Board board = new Board(cells);
 
-            Assert.AreEqual(2, countInStability);
+            board.Save(path);
         }
 
         [TestMethod]
-        public void Stability4()
+        public void testSaveAndLoadBoard2()
         {
-            string pathSave = "SaveJson/";
-            MapCGL figCub = SaveJson.LoadFromJSon(pathSave + "FigureCubeWithoutBord.txt");
 
-            MapCGL board = new MapCGL(50, 50);
-            board = FillMap.AddFigure(20, 20, board, figCub);
-            board = FillMap.AddFigure(21, 21, board, figCub);
-            CGL cgl = new CGL(board, new SphereConnect());
+            string path = "TestBoardSave.json";
 
-            int countInStability = AnalyzerMap.StabilitySystem(cgl, 100);
-            Assert.AreEqual(-1, countInStability);
+            Cell[,] cells = {
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(true), new Cell(false) },
+                { new Cell(false), new Cell(true), new Cell(false), new Cell(false) },
+                { new Cell(false), new Cell(false), new Cell(false), new Cell(false) },
+            };
+
+            Board board = Board.Load(path);
+
+            for (int column = 0; column < board.Columns; column++)
+                for (int row = 0; row < board.Rows; row++)
+                    Assert.AreEqual(cells[column, row].IsAliveNow, board.isAliveCell(column, row));
         }
     }
 }

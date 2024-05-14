@@ -1,0 +1,12 @@
+{
+  "Columns": 40,
+  "Rows": 20,
+
+  "randomSeed": 124,
+  "LiveDensity": 0.5,
+
+  "SymbolLive": "#",
+  "SymbolDead": " ",
+  "RenderDelayMillisecond": 100,
+  "CountIterations": 100
+}

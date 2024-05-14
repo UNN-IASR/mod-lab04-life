@@ -18,4 +18,10 @@
     <PackageReference Include="ScottPlot" Version="4.1.71" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ProgramSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
