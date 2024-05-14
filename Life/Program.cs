@@ -47,7 +47,7 @@ namespace cli_life
     }
     public class DataHandler
     {
-        public static ConfigurationPanel LoadBoardSettings(string filePath)
+        public static ConfigurationPanel LoadPanelConfig(string filePath)
         {
             string jsonContent = System.IO.File.ReadAllText(filePath);
             ConfigurationPanel configPanel = System.Text.Json.JsonSerializer.Deserialize<ConfigurationPanel>(jsonContent);
@@ -60,7 +60,7 @@ namespace cli_life
             System.IO.File.WriteAllText(filePath, jsonString);
         }
 
-        public static void SaveBoardState(Board board, string filePath)
+        public static void SaveGridState(Board board, string filePath)
         {
             StringBuilder boardRepresentation = new StringBuilder();
 
@@ -80,7 +80,7 @@ namespace cli_life
             System.IO.File.WriteAllText(filePath, boardRepresentation.ToString());
         }
 
-        public static Board LoadBoardState(string filePath)
+        public static Board LoadGridState(string filePath)
         {
             string[] boardDataLines = System.IO.File.ReadAllLines(filePath);
             int.TryParse(boardDataLines[^2].Split('=').Last(), out int cellSize);
@@ -108,14 +108,14 @@ namespace cli_life
             return new Board(gridConfig, generation, gridCells);
         }
 
-        public static Figure[] LoadFigures(string filePath)
+        public static Figure[] LoadGeometries(string filePath)
         {
             string figuresJson = System.IO.File.ReadAllText(filePath);
             Figure[] figures = System.Text.Json.JsonSerializer.Deserialize<Figure[]>(figuresJson);
             return figures;
         }
 
-        public static void SaveFigures(Figure[] figures, string filePath)
+        public static void StoreGeometries(Figure[] figures, string filePath)
         {
             var options = new System.Text.Json.JsonSerializerOptions()
             {
@@ -390,7 +390,7 @@ namespace cli_life
         {
             try
             {
-                var settings = DataHandler.LoadBoardSettings(SettingsJsonPath);
+                var settings = DataHandler.LoadPanelConfig(SettingsJsonPath);
 
                 SimulationBoard = new Board(settings);
             }
@@ -433,13 +433,13 @@ namespace cli_life
             SimulationStart();
             Reset();
 
-            Analys.Figures = DataHandler.LoadFigures(FiguresJsonPath);
+            Analys.Figures = DataHandler.LoadGeometries(FiguresJsonPath);
 
             if (LoadFromFile)
             {
                 try
                 {
-                    SimulationBoard = DataHandler.LoadBoardState(BoardStateFilePath);
+                    SimulationBoard = DataHandler.LoadGridState(BoardStateFilePath);
                     BoardAnalysis = new(SimulationBoard);
                     Console.WriteLine("Успешное чтение данных из файла.");
                 }
@@ -471,7 +471,7 @@ namespace cli_life
             {
                 try
                 {
-                    DataHandler.SaveBoardState(SimulationBoard, BoardStateFilePath);
+                    DataHandler.SaveGridState(SimulationBoard, BoardStateFilePath);
                     Console.WriteLine("Сохранение результата в файл.");
                 }
                 catch

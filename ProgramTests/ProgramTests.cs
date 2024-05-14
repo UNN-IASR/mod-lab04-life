@@ -1,5 +1,6 @@
 using cli_life;
 using ScottPlot;
+using ScottPlot.Palettes;
 using System.Numerics;
 using System.Text.Json;
 
@@ -35,8 +36,7 @@ public class UnitTestsForProgram
             testCell.neighbours.Add(adjacent);
         }
 
-        testCell.DetermineNextLiveState();
-        testCell.ProceedToNextState();
+        testCell.DetermineNextLiveState();      
 
         Assert.IsTrue(testCell.IsAlive);
     }
@@ -79,8 +79,7 @@ public class UnitTestsForProgram
             testCell.neighbours.Add(adjacent);
         }
 
-        testCell.DetermineNextLiveState();
-        testCell.ProceedToNextState();
+        testCell.DetermineNextLiveState();        
 
         Assert.IsFalse(testCell.IsAlive);
     }
@@ -115,7 +114,7 @@ public class UnitTestsForProgram
     {
         var expectedSettings = new ConfigurationPanel(50, 20, 1, 0.5);
         DataHandler.SaveBoardSettings(expectedSettings, "../../../Settings_board.json");
-        var retrievedSettings = DataHandler.LoadPanelConfig("../../../Settings_board.json");
+        var retrievedSettings = DataHandler.LoadPanelConfig("../../../Config_panel.json");
 
         Assert.AreEqual(expectedSettings.PanelWidth, retrievedSettings.PanelWidth);
         Assert.AreEqual(expectedSettings.PanelHeight, retrievedSettings.PanelHeight);
@@ -147,21 +146,7 @@ public class UnitTestsForProgram
         Assert.AreEqual(initialSettings.UnitBlockSize, gameBoard.CellSize);
     }
 
-    [TestMethod]
-    public void CountLivingCells_OnPopulatedBoard_AccurateCount()
-    {
-        var gameBoard = new Board(new ConfigurationPanel(3, 3, 1, 1));
-        Assert.AreEqual(9, gameBoard.CountLivingCells());
-    }
-
-    [TestMethod]
-    public void CompareFigures_Identical_ReturnTrue()
-    {
-        var first = new Figure("ShapeOne", 4, 4, "    **    **    ");
-        var second = new Figure("ShapeTwo", 4, 4, "    **    **    ");
-
-        Assert.IsTrue(first.Equals(second));
-    }
+    
 
     [TestMethod]
     public void EnsureNeighbourConnections_CorrectCount()
@@ -200,6 +185,22 @@ public class UnitTestsForProgram
         }
 
         Assert.IsTrue(testCell.DetermineNextLiveState());
+    }
+
+    [TestMethod]
+    public void CountLivingCells_OnPopulatedBoard_AccurateCount()
+    {
+        var gameBoard = new Board(new ConfigurationPanel(3, 3, 1, 1));
+        Assert.AreEqual(9, Analys.GetAlive(gameBoard));
+    }
+
+    [TestMethod]
+    public void CompareFigures_Identical_ReturnTrue()
+    {
+        var first = new Figure("ShapeOne", 4, 4, "    **    **    ");
+        var second = new Figure("ShapeTwo", 4, 4, "    **    **    ");
+
+        Assert.IsTrue(first.Equals(second));
     }
 }
      
