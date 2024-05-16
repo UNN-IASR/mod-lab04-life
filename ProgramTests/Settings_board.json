@@ -1,1 +1,8 @@
-{"PanelWidth":50,"PanelHeight":20,"UnitBlockSize":1,"PopulationDensity":0.5}
+[
+  {
+    "Name": "Pond",
+    "Width": 6,
+    "Height": 6,
+    "StableFigure": "        **   *  *  *  *   **        "
+  }
+]
