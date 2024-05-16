@@ -8,117 +8,110 @@ public class ProgramTests
     [TestMethod]
     public void CheckCellLife_OvercrowdingLeadsToDeath()
     {
-        var testCell = new Cell { IsAlive = true };
-        var totalAliveNeighbours = 4;
+        var CellTest = new Cell { IsAlive = true };
+        var maxAliveNeighbours = 4;
 
-        for (var index = 0; index < totalAliveNeighbours; index++)
+        for (var index = 0; index < maxAliveNeighbours; index++)
         {
             var livingNeighbour = new Cell { IsAlive = true };
-            testCell.neighbours.Add(livingNeighbour);
+            CellTest.neighbours.Add(livingNeighbour);
         }
 
-        var shouldBeDead = false;
-        var actualNextState = testCell.DetermineNextLiveState();
+        var nextState = CellTest.DetermineNextLiveState();
 
-        Assert.AreEqual(actualNextState, shouldBeDead);
+        Assert.AreEqual(nextState, false);
     }
 
     [TestMethod]
     public void ValidateLifeCycle_AliveWithThreeNeighbors_StaysAlive()
     {
         var initialCell = new Cell { IsAlive = true };
-        var totalAliveNeighbors = 3;
+        var maxAliveNeighbors = 3;
 
-        for (var index = 0; index < totalAliveNeighbors; index++)
+        for (var index = 0; index < maxAliveNeighbors; index++)
         {
             var aliveNeighbor = new Cell { IsAlive = true };
             initialCell.neighbours.Add(aliveNeighbor);
         }
 
-        var expectedState = true;
         var actualState = initialCell.DetermineNextLiveState();
 
-        Assert.AreEqual(expectedState, actualState);
+        Assert.AreEqual(true, actualState);
     }
 
     [TestMethod]
     public void ValidateLifeCycle_DeadCellWithThreeNeighbours_BecomesAlive()
     {
-        var testCell = new Cell { IsAlive = false };
-        var aliveNeighboursCount = 3;
+        var CellTest = new Cell { IsAlive = false };
+        var aliveNeighbours = 3;
 
-        for (var index = 0; index < aliveNeighboursCount; index++)
+        for (var index = 0; index < aliveNeighbours; index++)
         {
             var aliveNeighbour = new Cell { IsAlive = true };
-            testCell.neighbours.Add(aliveNeighbour);
+            CellTest.neighbours.Add(aliveNeighbour);
         }
 
-        bool expectedState = true;
-        bool actualState = testCell.DetermineNextLiveState();
+        bool actualState = CellTest.DetermineNextLiveState();
 
-        Assert.AreEqual(expectedState, actualState);
+        Assert.AreEqual(true, actualState);
     }
 
     [TestMethod]
     public void ValidateLifeCycle_DeadCellWithTwoNeighbours_StaysDead()
     {
-        var testCell = new Cell { IsAlive = false };
-        var numberOfNeighbours = 2;
+        var CellTest = new Cell { IsAlive = false };
+        var numOfNeighbours = 2;
 
-        for (var i = 0; i < numberOfNeighbours; i++)
+        for (var i = 0; i < numOfNeighbours; i++)
         {
             var aliveNeighbour = new Cell { IsAlive = true };
-            testCell.neighbours.Add(aliveNeighbour);
+            CellTest.neighbours.Add(aliveNeighbour);
         }
 
-        var expectedState = false;
-        var actualState = testCell.DetermineNextLiveState();
+        var actualState = CellTest.DetermineNextLiveState();
 
-        Assert.AreEqual(expectedState, actualState);
+        Assert.AreEqual(false, actualState);
     }
 
     [TestMethod]
     public void CheckLifeCycle_AliveCellRemainsAlive_AfterAdvancing()
     {
-        var testCell = new Cell { IsAlive = true };
-        var numberOfNeighbours = 3;
+        var CellTest = new Cell { IsAlive = true };
+        var numOfNeighbours = 3;
 
-        for (var i = 0; i < numberOfNeighbours; i++)
+        for (var i = 0; i < numOfNeighbours; i++)
         {
             var aliveNeighbour = new Cell { IsAlive = true };
-            testCell.neighbours.Add(aliveNeighbour);
+            CellTest.neighbours.Add(aliveNeighbour);
         }
 
-        testCell.DetermineNextLiveState();
-        testCell.Advance();
+        CellTest.DetermineNextLiveState();
+        CellTest.Advance();
 
-        var expectedState = true;
-        Assert.AreEqual(expectedState, testCell.IsAlive);
+        Assert.AreEqual(true, CellTest.IsAlive);
     }
 
     [TestMethod]
     public void CheckLifeCycle_AliveCellDies_AfterAdvancing()
     {
-        var testCell = new Cell { IsAlive = true };
-        var numberOfNeighbours = 4;
+        var CellTest = new Cell { IsAlive = true };
+        var numOfNeighbours = 4;
 
-        for (var i = 0; i < numberOfNeighbours; i++)
+        for (var i = 0; i < numOfNeighbours; i++)
         {
-            var aliveNeighbour = new Cell { IsAlive = true };
-            testCell.neighbours.Add(aliveNeighbour);
+            CellTest.neighbours.Add(new Cell { IsAlive = true });
         }
 
-        testCell.DetermineNextLiveState();
-        testCell.Advance();
+        CellTest.DetermineNextLiveState();
+        CellTest.Advance();
 
-        var expectedState = false;
-        Assert.AreEqual(expectedState, testCell.IsAlive);
+        Assert.AreEqual(false, CellTest.IsAlive);
     }
     
     [TestMethod]
     public void CheckBoardCreation_WithCellSizeGreaterThanOne_ValidatesRowsAndColumns()
     {
-        var boardConfig = new BoardSettings(width: 50, height: 20, cellSize: 2);
+        var boardConfig = new BoardSettings(50, 20, 2);
         var testBoard = new Board(boardConfig);
 
         int expectedColumns = boardConfig.Width / boardConfig.CellSize;
@@ -131,16 +124,14 @@ public class ProgramTests
     [TestMethod]
     public void ValidateCellNeighbourConnections_WithNewBoard_CorrectCountInEachCell()
     {
-        var boardConfig = new BoardSettings(width: 3, height: 3, cellSize: 1);
+        var boardConfig = new BoardSettings(3, 3, 1);
         var testBoard = new Board(boardConfig);
-
-        int expectedNeighbourCount = 8;
 
         for (var row = 0; row < boardConfig.Height; row++)
         {
             for (var col = 0; col < boardConfig.Width; col++)
             {
-                Assert.AreEqual(expectedNeighbourCount, testBoard.Cells[row, col].neighbours.Count);
+                Assert.AreEqual(8, testBoard.Cells[row, col].neighbours.Count);
             }
         }
     }
@@ -148,10 +139,10 @@ public class ProgramTests
     [TestMethod]
     public void ValidateBoardSettingsLoading_FromExistingJsonFile_MatchingSettingsLoaded()
     {
-        var initialSettings = new BoardSettings(width: 50, height: 20, cellSize: 1, liveDensity: 0.5);
-        FileManager.SaveBoardSettings(initialSettings, filePath: "../../../boardSettings.json");
+        var initialSettings = new BoardSettings(50, 20, 1, 0.5);
+        initialSettings.Save("../../../SaveDataGame.txt");
 
-        var loadedSettings = FileManager.LoadBoardSettings(filePath: "../../../boardSettings.json");
+        var loadedSettings = BoardSettings.Load("../../../boardSettings.json");
 
         Assert.AreEqual(initialSettings.Width, loadedSettings.Width);
         Assert.AreEqual(initialSettings.Height, loadedSettings.Height);
@@ -162,26 +153,22 @@ public class ProgramTests
     [TestMethod]
     public void ValidateSaveBoardState_WithValidPath_FileIsCreated()
     {
-        var testFilePath = "../../../SaveDataGame.txt";
-
-        FileManager.SaveBoardState(new Board(), testFilePath);
-
-        Assert.IsTrue(File.Exists(testFilePath));
+        new Board().Save("../../../SaveDataGame.txt");
+        Assert.IsTrue(File.Exists("../../../SaveDataGame.txt"));
     }
 
     [TestMethod]
     public void TestLoadBoardState_FileExists_VerifyLoadedParameters()
     {
-        var initialBoardSettings = new BoardSettings(50, 20, 1);
-        var testFilePath = "../../../SaveDataGame.txt";
-        var board = new Board(initialBoardSettings);
+        var initialSettings = new BoardSettings(50, 20, 1);
+        var board = new Board(initialSettings);
 
-        FileManager.SaveBoardState(board, testFilePath);
-        board = FileManager.LoadBoardState(testFilePath);
+        board.Save("../../../SaveDataGame.txt");
+        board = Board.Load("../../../SaveDataGame.txt");
 
-        Assert.AreEqual(initialBoardSettings.Width, board.Width);
-        Assert.AreEqual(initialBoardSettings.Height, board.Height);
-        Assert.AreEqual(initialBoardSettings.CellSize, board.CellSize);
+        Assert.AreEqual(initialSettings.Width, board.Width);
+        Assert.AreEqual(initialSettings.Height, board.Height);
+        Assert.AreEqual(initialSettings.CellSize, board.CellSize);
     }
 
     [TestMethod]
@@ -195,22 +182,22 @@ public class ProgramTests
     [TestMethod]
     public void TestFigureEquality_ForIdenticalFigures_ShouldReturnTrue()
     {
-        var firstFigure = new Figure("Korovai", 6, 6, "        **   *  *   * *    *        ");
-        var secondFigure = new Figure("Korovai", 6, 6, "        **   *  *   * *    *        ");
+        var Shape1 = new Shape("Korovai", 6, 6, "        **   *  *   * *    *        ");
+        var Shape2 = new Shape("Korovai", 6, 6, "        **   *  *   * *    *        ");
 
-        Assert.IsTrue(firstFigure.Equals(secondFigure));
+        Assert.IsTrue(Shape1.Equals(Shape2));
     }
 
     [TestMethod]
     public void CheckSaveFigures_WithValidParameters_VerifyFileExists()
     {
-        var figures = new Figure[]
+        var shapes = new Shape[]
         {
-        new Figure("Korovai", 6, 6, "        **   *  *   * *    *        ")
+        new Shape("Korovai", 6, 6, "        **   *  *   * *    *        ")
         };
-        var testFilePath = "../../../figures.json";
+        var testFilePath = "../../../shapes.json";
 
-        FileManager.SaveFigures(figures, testFilePath);
+        IOmanager.SaveShapes(shapes, testFilePath);
 
         Assert.IsTrue(File.Exists(testFilePath));
     }
@@ -218,15 +205,15 @@ public class ProgramTests
     [TestMethod]
     public void ValidateLoadFigures_FromValidPath_VerifiesLoadedFigures()
     {
-        var figures = new Figure[]
+        var shapes = new Shape[]
         {
-        new Figure("Korovai", 6, 6, "        **   *  *   * *    *        ")
+        new Shape("Korovai", 6, 6, "        **   *  *   * *    *        ")
         };
-        var testFilePath = "../../../figures.json";
-        FileManager.SaveFigures(figures, testFilePath);
 
-        var loadedFigures = FileManager.LoadFigures(testFilePath);
+        IOmanager.SaveShapes(shapes, "../../../shapes.json");
 
-        Assert.IsTrue(figures[0].Equals(loadedFigures[0]));
+        var loadedShapes = IOmanager.LoadShapes("../../../shapes.json");
+
+        Assert.IsTrue(shapes[0].Equals(loadedShapes[0]));
     }
 }

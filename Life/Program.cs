@@ -14,129 +14,32 @@ using ScottPlot;
 
 namespace cli_life
 {
-    public class Figure
+    public sealed class Shape(string label, int width, int height, string stringRepresentation)
     {
-        // Свойства класса приватные по умолчанию и инициализируются нулями или пустыми строками.
-        public string Name { get; set; } = string.Empty;
-        public int Width { get; set; } = 0;
-        public int Height { get; set; } = 0;
-        public string FigureString { get; set; } = string.Empty;
+        public string Label { get; private set; } = label;
+        public int Width { get; private set; } = width;
+        public int Height { get; private set; } = height;
+        public string StringRepresentation { get; private set; } = stringRepresentation;
 
-        // Главный конструктор класса
-        public Figure(string name, int width, int height, string figureString)
-        {
-            Name = name;
-            Width = width;
-            Height = height;
-            FigureString = figureString;
-        }
-
-        // Пустой конструктор вызывает главный конструктор с пустыми значенийми.
-        public Figure() : this(string.Empty, 0, 0, string.Empty)
-        {
-        }
-
-        // Переопределение метода Equals
-        public override bool Equals(object obj)
-        {
-            return obj is Figure figure &&
-                   Width == figure.Width &&
-                   Height == figure.Height &&
-                   FigureString == figure.FigureString;
-        }
+        public override bool Equals(object obj) => obj is Shape shape &&
+                   Width == shape.Width &&
+                   Height == shape.Height &&
+                   StringRepresentation == shape.StringRepresentation;
+        public override int GetHashCode() => Width.GetHashCode() & Height.GetHashCode() & Label.GetHashCode() & StringRepresentation.GetHashCode();
     }
-    public class BoardSettings
+    public sealed record BoardSettings(int Width, int Height, int CellSize, double LiveDensity = 0.5)
     {
-        // Приватно инициализируем свойства класса с начальными значениями 0 или 0.5 для LiveDensity.
-        public int Width { get; set; } = 0;
-        public int Height { get; set; } = 0;
-        public int CellSize { get; set; } = 0;
-        public double LiveDensity { get; set; } = 0.5;
+        public static BoardSettings Load(string filePath) => JsonSerializer.Deserialize<BoardSettings>(File.ReadAllText(filePath));
 
-        // Главный конструктор класса.
-        public BoardSettings(int width, int height, int cellSize, double liveDensity = 0.5)
-        {
-            Width = width;
-            Height = height;
-            CellSize = cellSize;
-            LiveDensity = liveDensity;
-        }
-        // Пустой конструктор вызывает главный конструктор с начальными значениями
-        public BoardSettings() : this(0, 0, 0, 0.5)
-        {
-        }
+        public void Save(string filePath) => File.WriteAllText(filePath, JsonSerializer.Serialize(this));
     }
-    public class FileManager
+    public static class IOmanager
     {
-        public static BoardSettings LoadBoardSettings(string filePath)
-        {
-            var content = File.ReadAllText(filePath);
-            return JsonSerializer.Deserialize<BoardSettings>(content);
-        }
+        public static Shape[] LoadShapes(string filePath) => JsonSerializer.Deserialize<Shape[]>(File.ReadAllText(filePath));
 
-        public static void SaveBoardSettings(BoardSettings settings, string filePath)
-        {
-            File.WriteAllText(filePath, JsonSerializer.Serialize(settings));
-        }
+        public static void SaveShapes(Shape[] shapes, string filePath) => File.WriteAllText(filePath, JsonSerializer.Serialize(shapes, new JsonSerializerOptions { WriteIndented = true }));
 
-        public static void SaveBoardState(Board board, string filePath)
-        {
-            var state = new StringBuilder();
-            for (var i = 0; i < board.Height; ++i)
-            {
-                for (var j = 0; j < board.Width; ++j)
-                {
-                    state.Append(board.Cells[i, j].IsAlive ? '*' : ' ');
-                }
-                state.Append('\n');
-            }
-
-            state.Append($"cellSize={board.CellSize}\n");
-            state.Append($"generation={board.Generation}");
-
-            File.WriteAllText(filePath, state.ToString());
-        }
-
-        public static Board LoadBoardState(string filePath)
-        {
-            var content = File.ReadAllLines(filePath);
-            var length = content.Length;
-
-            int.TryParse(content[length - 2].Substring(content[length - 2].IndexOf('=') + 1), out int cellSize);
-            int.TryParse(content[length - 1].Substring(content[length - 1].IndexOf('=') + 1), out int generation);
-
-            cellSize = Math.Max(1, cellSize);
-            generation = Math.Max(0, generation);
-
-            var width = content[0].Length;
-            var height = length - 2;
-            var cells = new Cell[height / cellSize, width / cellSize];
-
-            for (var i = 0; i < height; i += cellSize)
-            {
-                for (var j = 0; j < width; j += cellSize)
-                {
-                    cells[i / cellSize, j / cellSize] = new Cell { IsAlive = (content[i][j] == '*') };
-                }
-            }
-            return new Board(new BoardSettings(width, height, cellSize), generation, cells);
-        }
-
-        public static Figure[] LoadFigures(string filePath)
-        {
-            return JsonSerializer.Deserialize<Figure[]>(File.ReadAllText(filePath));
-        }
-
-        public static void SaveFigures(Figure[] figures, string filePath)
-        {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            File.WriteAllText(filePath, JsonSerializer.Serialize(figures, options));
-        }
-
-        public static void SavePlotPng(Plot plot, string filePath, int width = 1920, int height = 1080)
-        {
-            plot.SavePng(filePath, width, height);
-        }
+        public static void SavePlotPng(Plot plot, string filePath, int width = 1920, int height = 1080) => plot.SavePng(filePath, width, height);
     }
     public class Cell
     {
@@ -290,156 +193,174 @@ namespace cli_life
                 }
             }
         }
+        public void Save(string filePath)
+        {
+            var state = new StringBuilder();
+
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    char cellIndicator = Cells[i, j].IsAlive ? '*' : ' ';
+                    state.Append(cellIndicator);
+                }
+                state.AppendLine();
+            }
+
+            state.AppendLine($"cellSize={CellSize}");
+            state.AppendLine($"generation={Generation}");
+
+            string finalState = state.ToString();
+            File.WriteAllText(filePath, finalState);
+        }
+        public static Board Load(string filePath)
+        {
+            var content = File.ReadAllLines(filePath);
+            var length = content.Length;
+
+            int.TryParse(content[length - 2].Substring(content[length - 2].IndexOf('=') + 1), out int cellSize);
+            int.TryParse(content[length - 1].Substring(content[length - 1].IndexOf('=') + 1), out int generation);
+
+            cellSize = Math.Max(1, cellSize);
+            generation = Math.Max(0, generation);
+
+            var width = content[0].Length;
+            var height = length - 2;
+            var cells = new Cell[height / cellSize, width / cellSize];
+
+            for (var i = 0; i < height; i += cellSize)
+            {
+                for (var j = 0; j < width; j += cellSize)
+                {
+                    cells[i / cellSize, j / cellSize] = new Cell { IsAlive = (content[i][j] == '*') };
+                }
+            }
+            return new Board(new BoardSettings(width, height, cellSize), generation, cells);
+        }
     }
     public class BoardAnalytics
     {
-        public static Figure[] Figures;
+        private static Shape[] _shapes;
         private readonly Board _board;
 
-        public BoardAnalytics(Board board) => _board = board;
+        public BoardAnalytics(Board board)
+        {
+            _board = board;
+            _shapes ??= IOmanager.LoadShapes("../../../shapes.json");
+        }
 
         public int GetAliveCellsCount() => GetAliveCellsCount(_board);
-
-        public static int GetAliveCellsCount(Board board)
+        private Shape CreateShape(int row, int col, int width, int height)
         {
-            int aliveCellsCount = 0;
-
-            foreach (Cell cell in board.Cells)
+            var shapeString = new StringBuilder();
+            for (var rowIndex = row; rowIndex < row + height; rowIndex++)
             {
-                if (cell != null && cell.IsAlive)
+                for (var columnIndex = col; columnIndex < col + width; columnIndex++)
                 {
-                    aliveCellsCount++;
+                    shapeString.Append((rowIndex < 0 ||
+                        rowIndex >= _board.Rows ||
+                        columnIndex < 0 ||
+                        columnIndex >= _board.Columns)
+                    ? ' '
+                    : (_board.Cells[rowIndex, columnIndex].IsAlive ? '*' : ' '));
                 }
             }
-
-            return aliveCellsCount;
+            return new Shape("shape", width, height, shapeString.ToString());
         }
-        public Dictionary<string, int> GetFiguresCount()
+        public Dictionary<string, int> GetShapesCount()
         {
-            var result = Figures.ToDictionary(figure => figure.Name, figure => 0);
-            int rows = _board.Rows, cols = _board.Columns;
+            var result = _shapes.ToDictionary(shape => shape.Label, shape => 0);
 
-            for (var row = -1; row < rows; row++)
+            for (var row = -1; row < _board.Rows; row++)
             {
-                for (var col = -1; col < cols; col++)
+                for (var col = -1; col < _board.Columns; col++)
                 {
-                    foreach (var figure in Figures)
+                    foreach (var shape in _shapes)
                     {
-                        if (figure.Equals(MakeFigure(row, col, figure.Width, figure.Height)))
-                            result[figure.Name]++;
+                        if (shape.Equals(CreateShape(row, col, shape.Width, shape.Height)))
+                            result[shape.Label]++;
                     }
                 }
             }
             return result;
         }
-
-        private Figure MakeFigure(int row, int col, int width, int height)
-        {
-            var figureString = new StringBuilder();
-
-            for (var rowIndex = row; rowIndex < row + height; rowIndex++)
-            {
-                for (var colIndex = col; colIndex < col + width; colIndex++)
-                {
-                    figureString.Append((rowIndex < 0 || rowIndex >= _board.Rows || colIndex < 0 || colIndex >= _board.Columns)
-                    ? ' '
-                    : (_board.Cells[rowIndex, colIndex].IsAlive ? '*' : ' '));
-                }
-            }
-            return new Figure("figure", width, height, figureString.ToString());
+        public static int GetAliveCellsCount(Board board)
+        {   
+            return board.Cells.Cast<Cell>().Where(cell => cell != null && cell.IsAlive).Count();
         }
+
+
     }
     class Program
     {
-        const string BoardSettingsPath = "../../../boardSettings.json";
-        const string BoardStatePath = "../../../SaveDataGame.txt";
-        const string FiguresPath = "../../../figures.json";
-        const string PlotPath = "../../../plot.png";
-        static int IterationsNum = 150;
+        const string PathBoardSettings = "../../../boardSettings.json";
+        const string PathBoardState = "../../../SaveDataGame.txt";
+        const string PathPlotPath = "../../../plot.png";
+        static int IterationsCount = 150;
         static bool LoadFromFile = false;
         static bool SaveToFile = false;
-        public static Board SimulationBoard;
+        public static Board LiveBoard;
         public static BoardAnalytics BoardAnalytics;
         public static BoardSettings BoardSettings = new BoardSettings(50, 20, 1, 0.5);
 
-        static private void Reset()
-        {
-            try
-            {
-                var settings = FileManager.LoadBoardSettings(BoardSettingsPath);
 
-                SimulationBoard = new Board(settings);
-            }
-            catch
-            {
-                SimulationBoard = new Board(BoardSettings);
-            }
 
-            BoardAnalytics = new(SimulationBoard);
-        }
-        static void Render()
+        static void View()
         {
-            for (var row = 0; row < SimulationBoard.Rows; row++)
+            for (var row = 0; row < LiveBoard.Rows; row++)
             {
-                for (var col = 0; col < SimulationBoard.Columns; col++)
+                for (var col = 0; col < LiveBoard.Columns; col++)
                 {
-                    var cell = SimulationBoard.Cells[row, col];
-
-                    Console.Write(cell.IsAlive
-                        ? '*'
-                        : ' ');
+                    Console.Write(LiveBoard.Cells[row, col].IsAlive ? '*' : ' ');
                 }
-
-                Console.Write('\n');
+                Console.WriteLine();
             }
         }
-        static void ConfigureSimulationStart()
-        {
-            Console.Write("Число итераций симуляции:\n>>");
-            IterationsNum = int.Parse(Console.ReadLine());
 
-            Console.Write("Загрузить из файла (1 - true, 0 - false):\n>>");
+        static void Setup()
+        {
+            Console.Write("Count of itterations:\n>>");
+            IterationsCount = int.Parse(Console.ReadLine());
+
+            Console.Write("Load from file (1 - true, 0 - false):\n>>");
             LoadFromFile = Console.ReadLine() == "1";
 
-            Console.Write("Выполнять сохранение результата в файл (1 - true, 0 - false):\n>>");
+            Console.Write("Save to file (1 - true, 0 - false):\n>>");
             SaveToFile = Console.ReadLine() == "1";
         }
-        static void RunRegularSimulation()
+        static void SimpleRun()
         {
-            ConfigureSimulationStart();
+            Setup();
             Reset();
-
-            BoardAnalytics.Figures = FileManager.LoadFigures(FiguresPath);
 
             if (LoadFromFile)
             {
                 try
                 {
-                    SimulationBoard = FileManager.LoadBoardState(BoardStatePath);
-                    BoardAnalytics = new(SimulationBoard);
-                    Console.WriteLine("Успешное чтение данных из файла.");
+                    LiveBoard = Board.Load(PathBoardState);
+                    BoardAnalytics = new(LiveBoard);
+                    Console.WriteLine("Complete load!");
                 }
                 catch
                 {
-                    Console.WriteLine("Ошибка при чтении данных из файла.");
+                    Console.WriteLine("Error loading!");
                     Reset();
                 }
-
                 Thread.Sleep(2000);
             }
 
-            for (var index = 0; index < IterationsNum; index++)
+            for (var index = 0; index < IterationsCount; index++)
             {
                 Console.Clear();
-                Render();
-                Console.WriteLine($"Текущее поколение: {SimulationBoard.Generation + 1}");
-                Console.WriteLine($"Число живых клеток: {BoardAnalytics.GetAliveCellsCount()}");
-                Console.WriteLine("Число каждой из фигур:");
-                foreach (var figure in BoardAnalytics.GetFiguresCount())
+                View();
+                Console.WriteLine($"Current generation: {LiveBoard.Generation + 1}");
+                Console.WriteLine($"Count of alive cells: {BoardAnalytics.GetAliveCellsCount()}");
+                Console.WriteLine("Shape counts:");
+                foreach (var shape in BoardAnalytics.GetShapesCount())
                 {
-                    Console.WriteLine($"{figure.Key}: {figure.Value}");
+                    Console.WriteLine($"{shape.Key}: {shape.Value}");
                 }
-                SimulationBoard.Advance();
+                LiveBoard.Advance();
                 Thread.Sleep(1000);
             }
 
@@ -447,23 +368,24 @@ namespace cli_life
             {
                 try
                 {
-                    FileManager.SaveBoardState(SimulationBoard, BoardStatePath);
-                    Console.WriteLine("Успешное сохранение результата в файл.");
+                    LiveBoard.Save(PathBoardState);
+                    Console.WriteLine("Comlete save!");
                 }
                 catch
                 {
-                    Console.WriteLine("Ошибка при сохранении результата в файл.");
+                    Console.WriteLine("Error saving boarstate!");
                 }
 
             }
         }
-        static void RunResearchSimulation()
+
+        static void AnalysisRun()
         {
             var rand = new Random();
 
             var plot = new Plot();
-            plot.XLabel("Поколение");
-            plot.YLabel("Живые клетки");
+            plot.XLabel("Generations");
+            plot.YLabel("Allive cells");
             plot.ShowLegend();
 
             var density = new double[]
@@ -472,7 +394,7 @@ namespace cli_life
             };
 
             var generations = Enumerable
-                .Repeat(0, IterationsNum)
+                .Repeat(0, IterationsCount)
                 .Select((index, generation) => generation + index)
                 .ToList();
             List<int> aliveCells;
@@ -481,7 +403,7 @@ namespace cli_life
             Board board;
             BoardAnalytics boardAnalytics;
             var boardsCount = density.Count();
-            var settings = new BoardSettings(BoardSettings.Width, BoardSettings.Height, BoardSettings.CellSize);
+            var baseSettings = new BoardSettings(BoardSettings.Width, BoardSettings.Height, BoardSettings.CellSize);
 
             Scatter scatter;
 
@@ -490,11 +412,11 @@ namespace cli_life
                 aliveCells = new();
                 generation = 0;
 
-                settings.LiveDensity = density[boardIndex];
+                var settings = baseSettings with { LiveDensity = density[boardIndex] };
                 board = new(density[boardIndex]);
                 boardAnalytics = new BoardAnalytics(board);
 
-                while (generation < IterationsNum)
+                while (generation < IterationsCount)
                 {
                     aliveCells.Add(boardAnalytics.GetAliveCellsCount());
                     board.Advance();
@@ -507,31 +429,38 @@ namespace cli_life
                 scatter.Color = new(rand.Next(0, 256), rand.Next(0, 256), rand.Next(0, 256));
             }
 
-            FileManager.SavePlotPng(plot, PlotPath);
+            IOmanager.SavePlotPng(plot, PathPlotPath);
         }
-        static void GetSimulationType()
+
+        static private void Reset()
         {
-            Console.Write("Симуляция: \n1. Обычная симуляция\n2. Анализ с графиком\n>>");
-            if (!int.TryParse(Console.ReadLine(), out int userChoice))
+            try
             {
-                throw new ArgumentException("Нужно вводить число!", nameof(userChoice));
+                LiveBoard = new Board(BoardSettings.Load(PathBoardSettings));
             }
+            catch
+            {
+                LiveBoard = new Board(BoardSettings);
+            }
+            BoardAnalytics = new(LiveBoard);
+        }
+     
+        static void Main()
+        {
+            Console.Write("View: \n1. Simple view\n2. Analys view\n>>");
+            _ = int.TryParse(Console.ReadLine(), out int userChoice);
 
             switch (userChoice)
             {
                 case 1:
-                    RunRegularSimulation();
+                    SimpleRun();
                     break;
                 case 2:
-                    RunResearchSimulation();
+                    AnalysisRun();
                     break;
                 default:
-                    throw new ArgumentException("Нужно выбрать 1 или 2!", nameof(userChoice));
+                    throw new ArgumentException("You must input 1 or 2 number!", nameof(userChoice));
             }
-        }
-        static void Main(string[] args)
-        {
-            GetSimulationType();
         }
     }
 }

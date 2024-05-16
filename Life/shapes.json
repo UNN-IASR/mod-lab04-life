@@ -1,0 +1,74 @@
+[
+    {
+        "Label": "Hive",
+        "Width": 5,
+        "Height": 6,
+        "StringRepresentation": "       *   * *  * *   *       "
+    },
+    {
+        "Label": "Korovai",
+        "Width": 6,
+        "Height": 6,
+        "StringRepresentation": "        **   *  *   * *    *        "
+    },
+    {
+        "Label": "Pond",
+        "Width": 6,
+        "Height": 6,
+        "StringRepresentation": "        **   *  *  *  *   **        "
+    },
+    {
+        "Label": "Box",
+        "Width": 5,
+        "Height": 5,
+        "StringRepresentation": "       *   * *   *       "
+    },
+    {
+        "Label": "Block",
+        "Width": 4,
+        "Height": 4,
+        "StringRepresentation": "     **  **     "
+    },
+    {
+        "Label": "Snake",
+        "Width": 6,
+        "Height": 4,
+        "StringRepresentation": "       * **  ** *       "
+    },
+    {
+        "Label": "Barge",
+        "Width": 6,
+        "Height": 6,
+        "StringRepresentation": "        *    * *    * *    *        "
+    },
+    {
+        "Label": "Boat",
+        "Width": 5,
+        "Height": 5,
+        "StringRepresentation": "       *   * *   **      "
+    },
+    {
+        "Label": "Ship",
+        "Width": 5,
+        "Height": 5,
+        "StringRepresentation": "      **   * *   **      "
+    },
+    {
+        "Label": "LongBarge",
+        "Width": 7,
+        "Height": 7,
+        "StringRepresentation": "         *     * *     * *     * *     *         "
+    },
+    {
+        "Label": "LongBoat",
+        "Width": 6,
+        "Height": 6,
+        "StringRepresentation": "        *    * *    * *    **       "
+    },
+    {
+        "Label": "LongShip",
+        "Width": 6,
+        "Height": 6,
+        "StringRepresentation": "       **    * *    * *    **       "
+    }
+]
