@@ -1,0 +1,9 @@
+{
+  "boardWidth": 50,
+  "boardHeight": 20,
+  "liveDensity": 0.5,
+  "liveSymbol": "*",
+  "deadSymbol": " ",
+  "iterations": 100,
+  "delay": 100
+}
