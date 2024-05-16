@@ -1,9 +1,11 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace cli_life
 {
@@ -62,6 +64,7 @@ namespace cli_life
             foreach (var cell in Cells)
                 cell.Advance();
         }
+
         private void ConnectNeighbors()
         {
             for (int x = 0; x < Columns; x++)
@@ -85,23 +88,51 @@ namespace cli_life
                 }
             }
         }
+        public int BlocksCount()
+        {
+            int count = 0;
+            for (int i = 1; i < Rows - 2; i++)
+            {
+                for (int j = 1; j < Columns - 2; j++)
+                {
+                    if (Cells[j, i].IsAlive && Cells[j, i + 1].IsAlive && Cells[j + 1, i].IsAlive && Cells[j + 1, i + 1].IsAlive)
+                    {
+                        if (!Cells[j - 1, i - 1].IsAlive && !Cells[j, i - 1].IsAlive && !Cells[j + 1, i - 1].IsAlive && !Cells[j + 2, i - 1].IsAlive
+                        && !Cells[j - 1, i + 2].IsAlive && !Cells[j, i + 2].IsAlive && !Cells[j + 1, i + 2].IsAlive && !Cells[j + 2, i + 2].IsAlive
+                        && !Cells[j - 1, i].IsAlive && !Cells[j + 2, i].IsAlive && !Cells[j - 1, i + 2].IsAlive && !Cells[j + 2, i + 2].IsAlive)
+                        {
+                            count++;
+                        }
+                    }
+                }
+            }
+            return count;
+        }
     }
-    class Program
+    public class LifeGame
     {
         static Board board;
-        static private void Reset()
-        {
-            board = new Board(
-                width: 50,
-                height: 20,
-                cellSize: 1,
-                liveDensity: 0.5);
+        public void Reset()
+        {string json = File.ReadAllText("settings.json");
+            board = JsonConvert.DeserializeObject<Board>(json);
         }
-        static void Render()
+        public int GetWidth()
+        {
+            return board.Width;
+        }
+        public int GetHeight()
+        {
+            return board.Height;
+        }
+        public int GetCellSize()
+        {
+            return board.CellSize;
+        }
+        public void Render()
         {
             for (int row = 0; row < board.Rows; row++)
             {
-                for (int col = 0; col < board.Columns; col++)   
+                for (int col = 0; col < board.Columns; col++)
                 {
                     var cell = board.Cells[col, row];
                     if (cell.IsAlive)
@@ -112,19 +143,132 @@ namespace cli_life
                     {
                         Console.Write(' ');
                     }
+                }Console.Write('\n');
+            }
+        }
+        public void SaveBoard()
+        {
+            string filename = "console_output" + ".txt";
+            using (StreamWriter writer = new StreamWriter(filename))
+            {
+                for (int row = 0; row < board.Rows; row++)
+                {
+                    for (int col = 0; col < board.Columns; col++)
+                    {
+                        var cell = board.Cells[col, row];
+                        if (cell.IsAlive)
+                        {
+                            writer.Write('*');
+                        }
+                        else
+                        {
+                            writer.Write(' ');
+                        }
+                    }
+                    writer.Write('\n');
+                }
+            }Console.WriteLine("\nФайл сохранен...");
+        }
+
+        public void ReadBoard(string FileName)
+        {
+            int Rows = board.Rows;
+            int Columns = board.Columns;
+            // открываем файл и создаем объект StreamReader
+            using (StreamReader reader = new StreamReader(FileName))
+            {
+                int CurRow = 0;
+                int CurCol = 0;
+                // читаем содержимое файла построчно и выводим на консоль
+                int symbol;
+                while ((symbol = reader.Read()) != -1)
+                {
+                    if (symbol == '\n') // переход на следующую строку
+                    {
+                        CurRow++;
+                        CurCol = 0;
+                    }
+                    else // записываем символ в массив
+                    {
+                        var cell = board.Cells[CurCol, CurRow];
+                        if ((char)symbol == '*')
+                        {
+                            cell.IsAlive = true;
+                        }
+                        else
+                        {
+                            cell.IsAlive = false;
+                        }
+                        CurCol++;
+                    }
+                }
+            }
+        }
+        public int CountAliveCells()
+        {
+            int value = 0;
+            for (int row = 0; row < board.Rows; row++)
+            {
+                for (int col = 0; col < board.Columns; col++)
+                {
+                    var cell = board.Cells[col, row];
+                    if (cell.IsAlive)
+                    {
+                        value++;
+                    }
                 }
                 Console.Write('\n');
             }
+            return value;
         }
+        public void Advance()
+        {
+            board.Advance();
+        }
+
+        public int BlocksCount()
+        {
+            return board.BlocksCount();
+        }
+
+    }
+    public class Program
+    {
         static void Main(string[] args)
         {
-            Reset();
+            LifeGame LG = new LifeGame();
+            LG.Reset();
             while(true)
             {
                 Console.Clear();
-                Render();
-                board.Advance();
-                Thread.Sleep(1000);
+                LG.Render();
+                Console.WriteLine("Меню:\n1. Сохранить\n2. Загрузить\n3. Продолжить\n4. Подсчитать количество живых клеток");
+                Console.Write("Выбирите действие: ");
+                char Key = Console.ReadKey().KeyChar;
+                if (Key == '1')
+                {
+                    LG.SaveBoard();
+                    Console.WriteLine("Для продолжение нажмите любую клавишу");
+                    Console.ReadKey();
+                }
+                else if (Key == '2')
+                {
+                    Console.Clear();
+                    Console.WriteLine("Введите название файла:");
+                    string FileName = Console.ReadLine()+".txt";
+                    LG.ReadBoard(FileName);
+                    Console.WriteLine("Файл загружен...\nДля продолжение нажмите любую клавишу");
+                    Console.ReadKey();
+                }
+                else if(Key == '3')
+                {
+                    LG.Advance();
+                }
+                else if (Key == '4')
+                {
+                    Console.WriteLine("Живых клеток: "+ LG.CountAliveCells());
+                    Console.ReadKey();
+                }
             }
         }
     }
