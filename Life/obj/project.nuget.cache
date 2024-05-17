@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "29fxAgEWvwnJcwUhmQgwk9UUWTNBG+jQWqSPP0NcIYxwXTabGJVX76aR/tBVFMEoppQP+bZBJYad7x9I7kkzHw==",
+  "success": true,
+  "projectFilePath": "/Users/egorlogutov/Desktop/mod-lab04-life/Life/Life.csproj",
+  "expectedPackageFiles": [
+    "/Users/egorlogutov/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
