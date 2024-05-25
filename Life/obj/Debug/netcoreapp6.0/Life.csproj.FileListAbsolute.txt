@@ -1,0 +1,15 @@
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\bin\Debug\netcoreapp6.0\Life.exe
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\bin\Debug\netcoreapp6.0\Life.deps.json
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\bin\Debug\netcoreapp6.0\Life.runtimeconfig.json
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\bin\Debug\netcoreapp6.0\Life.dll
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\bin\Debug\netcoreapp6.0\ref\Life.dll
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\bin\Debug\netcoreapp6.0\Life.pdb
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\obj\Debug\netcoreapp6.0\Life.csproj.AssemblyReference.cache
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\obj\Debug\netcoreapp6.0\Life.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\obj\Debug\netcoreapp6.0\Life.AssemblyInfoInputs.cache
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\obj\Debug\netcoreapp6.0\Life.AssemblyInfo.cs
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\obj\Debug\netcoreapp6.0\Life.csproj.CoreCompileInputs.cache
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\obj\Debug\netcoreapp6.0\Life.dll
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\obj\Debug\netcoreapp6.0\ref\Life.dll
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\obj\Debug\netcoreapp6.0\Life.pdb
+C:\Users\Admin\source\repos\МИПС лабы\4\mod-lab04-life\Life\obj\Debug\netcoreapp6.0\Life.genruntimeconfig.cache
