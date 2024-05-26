@@ -403,7 +403,7 @@ namespace cli_life
             {
                 double wantedDensity;
                 Console.WriteLine();
-                Console.Write("Введите желаемую плотность (от 0 до 1. Например: 0,3): ");
+                Console.Write("Введите желаемую плотность в диапозоне от 0 до 1. Например: 0,3: ");
                 wantedDensity = Convert.ToDouble(Console.ReadLine());
                 board.Randomize(wantedDensity);
                 while (true)

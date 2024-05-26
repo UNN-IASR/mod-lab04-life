@@ -1,7 +1,7 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {
+    "net8.0": {
       "DynamicObj/2.0.0": {
         "type": "package",
         "dependencies": {
@@ -9,19 +9,27 @@
           "Newtonsoft.Json": "13.0.1"
         },
         "compile": {
-          "lib/netstandard2.0/DynamicObj.dll": {}
+          "lib/netstandard2.0/DynamicObj.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/netstandard2.0/DynamicObj.dll": {}
+          "lib/netstandard2.0/DynamicObj.dll": {
+            "related": ".xml"
+          }
         }
       },
       "FSharp.Core/6.0.7": {
         "type": "package",
         "compile": {
-          "lib/netstandard2.1/FSharp.Core.dll": {}
+          "lib/netstandard2.1/FSharp.Core.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/netstandard2.1/FSharp.Core.dll": {}
+          "lib/netstandard2.1/FSharp.Core.dll": {
+            "related": ".xml"
+          }
         },
         "resource": {
           "lib/netstandard2.1/cs/FSharp.Core.resources.dll": {
@@ -78,25 +86,33 @@
           "FSharp.Core": "6.0.7"
         },
         "compile": {
-          "lib/net6.0/Giraffe.ViewEngine.StrongName.dll": {}
+          "lib/net6.0/Giraffe.ViewEngine.StrongName.dll": {
+            "related": ".pdb;.xml"
+          }
         },
         "runtime": {
-          "lib/net6.0/Giraffe.ViewEngine.StrongName.dll": {}
+          "lib/net6.0/Giraffe.ViewEngine.StrongName.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       },
       "Microsoft.Win32.SystemEvents/8.0.0": {
         "type": "package",
         "compile": {
-          "lib/net6.0/Microsoft.Win32.SystemEvents.dll": {}
+          "lib/net8.0/Microsoft.Win32.SystemEvents.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net6.0/Microsoft.Win32.SystemEvents.dll": {}
+          "lib/net8.0/Microsoft.Win32.SystemEvents.dll": {
+            "related": ".xml"
+          }
         },
         "build": {
           "buildTransitive/net6.0/_._": {}
         },
         "runtimeTargets": {
-          "runtimes/win/lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
+          "runtimes/win/lib/net8.0/Microsoft.Win32.SystemEvents.dll": {
             "assetType": "runtime",
             "rid": "win"
           }
@@ -105,19 +121,27 @@
       "Newtonsoft.Json/13.0.1": {
         "type": "package",
         "compile": {
-          "lib/netstandard2.0/Newtonsoft.Json.dll": {}
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/netstandard2.0/Newtonsoft.Json.dll": {}
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
         }
       },
       "OxyPlot.Core/2.1.2": {
         "type": "package",
         "compile": {
-          "lib/netstandard2.0/OxyPlot.dll": {}
+          "lib/netstandard2.0/OxyPlot.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/netstandard2.0/OxyPlot.dll": {}
+          "lib/netstandard2.0/OxyPlot.dll": {
+            "related": ".xml"
+          }
         }
       },
       "Plotly.NET/4.2.0": {
@@ -129,10 +153,14 @@
           "Newtonsoft.Json": "13.0.1"
         },
         "compile": {
-          "lib/netstandard2.0/Plotly.NET.dll": {}
+          "lib/netstandard2.0/Plotly.NET.dll": {
+            "related": ".pdb;.xml"
+          }
         },
         "runtime": {
-          "lib/netstandard2.0/Plotly.NET.dll": {}
+          "lib/netstandard2.0/Plotly.NET.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       },
       "ScottPlot/5.0.34": {
@@ -142,10 +170,14 @@
           "SkiaSharp.NativeAssets.Linux.NoDependencies": "2.88.8"
         },
         "compile": {
-          "lib/net6.0/ScottPlot.dll": {}
+          "lib/net8.0/ScottPlot.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net6.0/ScottPlot.dll": {}
+          "lib/net8.0/ScottPlot.dll": {
+            "related": ".xml"
+          }
         }
       },
       "SkiaSharp/2.88.8": {
@@ -155,10 +187,14 @@
           "SkiaSharp.NativeAssets.macOS": "2.88.8"
         },
         "compile": {
-          "lib/net6.0/SkiaSharp.dll": {}
+          "lib/net6.0/SkiaSharp.dll": {
+            "related": ".pdb;.xml"
+          }
         },
         "runtime": {
-          "lib/net6.0/SkiaSharp.dll": {}
+          "lib/net6.0/SkiaSharp.dll": {
+            "related": ".pdb;.xml"
+          }
         }
       },
       "SkiaSharp.NativeAssets.Linux.NoDependencies/2.88.8": {
@@ -235,10 +271,14 @@
           "Microsoft.Win32.SystemEvents": "8.0.0"
         },
         "compile": {
-          "lib/net6.0/System.Drawing.Common.dll": {}
+          "lib/net8.0/System.Drawing.Common.dll": {
+            "related": ".pdb;.xml"
+          }
         },
         "runtime": {
-          "lib/net6.0/System.Drawing.Common.dll": {}
+          "lib/net8.0/System.Drawing.Common.dll": {
+            "related": ".pdb;.xml"
+          }
         },
         "build": {
           "buildTransitive/net6.0/_._": {}
@@ -627,7 +667,7 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net6.0": [
+    "net8.0": [
       "OxyPlot.Core >= 2.1.2",
       "Plotly.NET >= 4.2.0",
       "ScottPlot >= 5.0.34",
@@ -651,15 +691,15 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "netcoreapp6.0"
+        "netcoreapp8.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "netcoreapp6.0",
+        "net8.0": {
+          "targetAlias": "netcoreapp8.0",
           "projectReferences": {}
         }
       },
@@ -667,11 +707,16 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
-      "net6.0": {
-        "targetAlias": "netcoreapp6.0",
+      "net8.0": {
+        "targetAlias": "netcoreapp8.0",
         "dependencies": {
           "OxyPlot.Core": {
             "target": "Package",
@@ -696,7 +741,8 @@
           "net47",
           "net471",
           "net472",
-          "net48"
+          "net48",
+          "net481"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -705,7 +751,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
