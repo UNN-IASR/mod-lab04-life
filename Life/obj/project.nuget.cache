@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "0TMLn7TzPlngBItrZrl7QxQNDabUBpoQZ4cxb7TkGa3h06afa/HKIuZwlJDBPUa80zDxKKTJPxWyRy8dSCZz0Q==",
+  "dgSpecHash": "s2dT9QXEupEaJu5Hnh0SJd2RYD6OU/gn8J4GYmSoCBfDpJVizovqxiofqx4vfXDGdi0Atr7VBjBtcRnumQgtoA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Admin\\source\\repos\\МИПС лабы\\4\\mod-lab04-life\\Life\\Life.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.win32.systemevents\\8.0.0\\microsoft.win32.systemevents.8.0.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\system.drawing.common\\8.0.5\\system.drawing.common.8.0.5.nupkg.sha512"
+  ],
   "logs": []
 }

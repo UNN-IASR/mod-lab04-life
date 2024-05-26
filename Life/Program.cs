@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading;
 
 namespace cli_life
 {
@@ -12,24 +11,50 @@ namespace cli_life
     {
         public bool IsAlive;
         public readonly List<Cell> neighbors = new List<Cell>();
-        private bool IsAliveNext;
+        public bool IsAliveNext;
 
         public void DetermineNextLiveState()
         {
             int liveNeighbors = neighbors.Where(x => x.IsAlive).Count();
             if (IsAlive)
-            {
                 IsAliveNext = liveNeighbors == 2 || liveNeighbors == 3;
-            }
             else
-            {
                 IsAliveNext = liveNeighbors == 3;
-            }
         }
 
         public void Advance()
         {
             IsAlive = IsAliveNext;
+        }
+    }
+
+    public class Pattern
+    {
+        public string Name { get; }
+        public string Classification { get; }
+        public bool[,] Cells { get; }
+
+        public Pattern(string name, string classification, bool[,] cells)
+        {
+            Name = name;
+            Classification = classification;
+            Cells = cells;
+        }
+
+        public static List<Pattern> GetStandardPatterns()
+        {
+            return new List<Pattern>
+            {
+                new Pattern("Block", "Still Life", new bool[,] { { true, true }, { true, true } }),
+                new Pattern("Beehive", "Still Life", new bool[,] { { false, true, true, false }, { true, false, false, true }, { false, true, true, false } }),
+                new Pattern("Loaf", "Still Life", new bool[,] { { false, true, true, false }, { true, false, false, true }, { false, true, false, true }, { false, false, true, false } }),
+                new Pattern("Boat", "Still Life", new bool[,] { { true, true, false }, { true, false, true }, { false, true, false } }),
+                new Pattern("Blinker", "Oscillator", new bool[,] { { true, true, true } }),
+                new Pattern("Toad", "Oscillator", new bool[,] { { false, true, true, true }, { true, true, true, false } }),
+                new Pattern("Beacon", "Oscillator", new bool[,] { { true, true, false, false }, { true, true, false, false }, { false, false, true, true }, { false, false, true, true } }),
+                new Pattern("Glider", "Spaceship", new bool[,] { { false, true, false }, { false, false, true }, { true, true, true } }),
+                new Pattern("Lightweight Spaceship", "Spaceship", new bool[,] { { true, false, false, true, false }, { false, false, false, false, true }, { true, false, false, false, true }, { false, true, true, true, true } })
+            };
         }
     }
 
@@ -43,48 +68,34 @@ namespace cli_life
         public int Width { get { return Columns * CellSize; } }
         public int Height { get { return Rows * CellSize; } }
 
-        public Board(int columns, int rows, int cellSize, bool[,] initialState = null)
+        private readonly List<string> stateHistory = new List<string>();
+
+        public Board(int width, int height, int cellSize, double liveDensity = .1)
         {
             CellSize = cellSize;
-            Cells = new Cell[columns, rows];
 
-            for (int x = 0; x < columns; x++)
-            {
-                for (int y = 0; y < rows; y++)
-                {
+            Cells = new Cell[width / cellSize, height / cellSize];
+            for (int x = 0; x < Columns; x++)
+                for (int y = 0; y < Rows; y++)
                     Cells[x, y] = new Cell();
-                }
-            }
 
             ConnectNeighbors();
-
-            if (initialState != null)
-            {
-                LoadInitialState(initialState);
-            }
+            Randomize(liveDensity);
         }
 
-        private readonly Random rand = new Random();
-
+        readonly Random rand = new Random();
         public void Randomize(double liveDensity)
         {
             foreach (var cell in Cells)
-            {
                 cell.IsAlive = rand.NextDouble() < liveDensity;
-            }
         }
 
         public void Advance()
         {
             foreach (var cell in Cells)
-            {
                 cell.DetermineNextLiveState();
-            }
-
             foreach (var cell in Cells)
-            {
                 cell.Advance();
-            }
         }
 
         private void ConnectNeighbors()
@@ -111,154 +122,191 @@ namespace cli_life
             }
         }
 
-        private void LoadInitialState(bool[,] initialState)
+        public void SaveState(string filePath)
         {
-            int columns = initialState.GetLength(0);
-            int rows = initialState.GetLength(1);
+            var state = Cells.Cast<Cell>().Select(cell => cell.IsAlive).ToArray();
+            File.WriteAllText(filePath, JsonSerializer.Serialize(state));
+        }
 
-            for (int x = 0; x < columns; x++)
+        public void LoadState(string filePath)
+        {
+            var state = JsonSerializer.Deserialize<bool[]>(File.ReadAllText(filePath));
+            for (int i = 0; i < state.Length; i++)
             {
-                for (int y = 0; y < rows; y++)
+                Cells[i % Columns, i / Columns].IsAlive = state[i];
+            }
+        }
+
+        public void LoadPattern(string patternFilePath)
+        {
+            var lines = File.ReadAllLines(patternFilePath);
+            for (int y = 0; y < lines.Length; y++)
+            {
+                for (int x = 0; x < lines[y].Length; x++)
                 {
-                    Cells[x, y].IsAlive = initialState[x, y];
+                    Cells[x, y].IsAlive = lines[y][x] == '1';
                 }
             }
         }
+
+        public int CountAliveCells()
+        {
+            return Cells.Cast<Cell>().Count(cell => cell.IsAlive);
+        }
+
+        public Dictionary<string, int> ClassifyElements()
+        {
+            var patterns = Pattern.GetStandardPatterns();
+            var classifications = new Dictionary<string, int>();
+
+            foreach (var pattern in patterns)
+            {
+                if (!classifications.ContainsKey(pattern.Classification))
+                {
+                    classifications[pattern.Classification] = 0;
+                }
+            }
+
+            for (int x = 0; x < Columns; x++)
+            {
+                for (int y = 0; y < Rows; y++)
+                {
+                    var classification = ClassifyElement(x, y, patterns);
+                    if (classification != "Unknown")
+                    {
+                        classifications[classification]++;
+                    }
+                }
+            }
+
+            return classifications;
+        }
+
+        private string ClassifyElement(int x, int y, List<Pattern> patterns)
+        {
+            foreach (var pattern in patterns)
+            {
+                if (MatchPattern(x, y, pattern))
+                {
+                    return pattern.Classification;
+                }
+            }
+            return "Unknown";
+        }
+
+        private bool MatchPattern(int x, int y, Pattern pattern)
+        {
+            for (int i = 0; i < pattern.Cells.GetLength(0); i++)
+            {
+                for (int j = 0; j < pattern.Cells.GetLength(1); j++)
+                {
+                    int boardX = (x + i) % Columns;
+                    int boardY = (y + j) % Rows;
+                    if (Cells[boardX, boardY].IsAlive != pattern.Cells[i, j])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public int CalculateAverageStableTime(int maxGenerations)
+        {
+            int totalGenerations = 0;
+            int stableCount = 0;
+
+            for (int i = 0; i < maxGenerations; i++)
+            {
+                bool isStable = true;
+                foreach (var cell in Cells)
+                {
+                    cell.DetermineNextLiveState();
+                }
+                foreach (var cell in Cells)
+                {
+                    if (cell.IsAlive != cell.IsAliveNext)
+                    {
+                        isStable = false;
+                        break;
+                    }
+                }
+                if (isStable)
+                {
+                    stableCount++;
+                    totalGenerations += i;
+                }
+                foreach (var cell in Cells)
+                {
+                    cell.Advance();
+                }
+            }
+
+            return stableCount > 0 ? totalGenerations / stableCount : maxGenerations;
+        }
+
+        public void PlotStablePhaseTransition(string filePath, int maxGenerations)
+        {
+            var densities = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
+            var results = new List<int>();
+
+            foreach (var density in densities)
+            {
+                Randomize(density);
+                int averageStableTime = CalculateAverageStableTime(maxGenerations);
+                results.Add(averageStableTime);
+            }
+s
+            for (int i = 0; i < densities.Length; i++)
+            {
+                Console.WriteLine($"Density: {densities[i]}, Average Stable Time: {results[i]}");
+            }
+        }
+
+        private string GetCurrentState()
+        {
+            return string.Join(",", Cells.Cast<Cell>().Select(cell => cell.IsAlive ? "1" : "0"));
+        }
+
+        public bool IsStable()
+        {
+            var currentState = GetCurrentState();
+            if (stateHistory.Contains(currentState))
+            {
+                return true;
+            }
+            stateHistory.Add(currentState);
+            if (stateHistory.Count > 10) stateHistory.RemoveAt(0); // Keep history limited to the last 10 states to detect loops
+            return false;
+        }
     }
 
-    public class Settings
+    public class Config
     {
         public int Width { get; set; }
         public int Height { get; set; }
         public int CellSize { get; set; }
         public double LiveDensity { get; set; }
 
-        public static Settings Load(string filePath)
+        public static Config Load(string filePath)
         {
-            string json = File.ReadAllText(filePath);
-            return JsonSerializer.Deserialize<Settings>(json);
-        }
-    }
-
-    public class GameState
-    {
-        [JsonConverter(typeof(BoolArrayConverter))]
-        public bool[,] Cells { get; set; }
-
-        public static GameState FromBoard(Board board)
-        {
-            int columns = board.Columns;
-            int rows = board.Rows;
-            var cells = new bool[columns, rows];
-
-            for (int x = 0; x < columns; x++)
-            {
-                for (int y = 0; y < rows; y++)
-                {
-                    cells[x, y] = board.Cells[x, y].IsAlive;
-                }
-            }
-
-            return new GameState { Cells = cells };
-        }
-
-        public void ToBoard(Board board)
-        {
-            int columns = Cells.GetLength(0);
-            int rows = Cells.GetLength(1);
-
-            for (int x = 0; x < columns; x++)
-            {
-                for (int y = 0; y < rows; y++)
-                {
-                    board.Cells[x, y].IsAlive = Cells[x, y];
-                }
-            }
-        }
-
-        public static GameState Load(string filePath)
-        {
-            string json = File.ReadAllText(filePath);
-            return JsonSerializer.Deserialize<GameState>(json);
-        }
-
-        public void Save(string filePath)
-        {
-            string json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(filePath, json);
-        }
-    }
-
-    public class BoolArrayConverter : JsonConverter<bool[,]>
-    {
-        public override bool[,] Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            var jsonDocument = JsonDocument.ParseValue(ref reader);
-            var rootElement = jsonDocument.RootElement;
-
-            int rows = rootElement.GetArrayLength();
-            int columns = rootElement[0].GetArrayLength();
-
-            var result = new bool[rows, columns];
-            int row = 0;
-
-            foreach (var jsonRow in rootElement.EnumerateArray())
-            {
-                int column = 0;
-                foreach (var jsonValue in jsonRow.EnumerateArray())
-                {
-                    result[row, column] = jsonValue.GetBoolean();
-                    column++;
-                }
-                row++;
-            }
-
-            return result;
-        }
-
-        public override void Write(Utf8JsonWriter writer, bool[,] value, JsonSerializerOptions options)
-        {
-            writer.WriteStartArray();
-
-            for (int i = 0; i < value.GetLength(0); i++)
-            {
-                writer.WriteStartArray();
-                for (int j = 0; j < value.GetLength(1); j++)
-                {
-                    writer.WriteBooleanValue(value[i, j]);
-                }
-                writer.WriteEndArray();
-            }
-
-            writer.WriteEndArray();
+            return JsonSerializer.Deserialize<Config>(File.ReadAllText(filePath));
         }
     }
 
     class Program
     {
         static Board board;
-
-        static void LoadSettings(string filePath)
-        {
-            Settings settings = Settings.Load(filePath);
-            board = new Board(settings.Width / settings.CellSize, settings.Height / settings.CellSize, settings.CellSize);
-        }
-
-        static void SaveState(string filePath)
-        {
-            GameState gameState = GameState.FromBoard(board);
-            gameState.Save(filePath);
-        }
-
-        static void LoadState(string filePath)
-        {
-            GameState gameState = GameState.Load(filePath);
-            board = new Board(gameState.Cells.GetLength(0), gameState.Cells.GetLength(1), 1, gameState.Cells);
-        }
+        static Config config;
+        static int generation = 0;
+        static Dictionary<string, int> initialClassifications;
+        static double initialDensity;
 
         static void Reset()
         {
-            //board = new Board(50, 20, 1, 0.5);
+            board = new Board(config.Width, config.Height, config.CellSize, config.LiveDensity);
+            initialDensity = config.LiveDensity;
+            initialClassifications = board.ClassifyElements();
         }
 
         static void Render()
@@ -270,34 +318,58 @@ namespace cli_life
                     var cell = board.Cells[col, row];
                     Console.Write(cell.IsAlive ? '*' : ' ');
                 }
-                Console.WriteLine();
+                Console.Write('\n');
+            }
+            Console.WriteLine($"Generation: {generation}");
+            Console.WriteLine($"Initial Density: {initialDensity}");
+            Console.WriteLine("Initial Classifications:");
+            foreach (var classification in initialClassifications)
+            {
+                Console.WriteLine($"{classification.Key}: {classification.Value}");
+            }
+            var currentClassifications = board.ClassifyElements();
+            Console.WriteLine($"Current Density: {(double)board.CountAliveCells() / (board.Columns * board.Rows)}");
+            Console.WriteLine("Current Classifications:");
+            foreach (var classification in currentClassifications)
+            {
+                Console.WriteLine($"{classification.Key}: {classification.Value}");
             }
         }
 
         static void Main(string[] args)
         {
-            string settingsFile = "settings.json";
-            string blockFile = "block.json";
-            string blinkerFile = "blinker.json";
-            string gliderFile = "glider.json";
-            string multiple_blocks_blinkers = "multiple_blocks_blinkers.json";
-            string random1 = "random1.json";
-            string random2 = "random2.json";
-            string random3 = "random3.json";
+            if (args.Length > 0 && File.Exists(args[0]))
+            {
+                config = Config.Load(args[0]);
+            }
+            else
+            {
+                config = new Config { Width = 50, Height = 20, CellSize = 1, LiveDensity = 0.5 };
+            }
 
+            Reset();
 
-            LoadSettings(settingsFile);
-            LoadState(random2);  // Загрузка блока
+            if (args.Length > 1 && File.Exists(args[1]))
+            {
+                board.LoadPattern(args[1]);
+            }
 
-            // Раскомментируйте для других конфигураций
-            // LoadState(blinkerFile);  // Загрузка блинкера
-            // LoadState(gliderFile);   // Загрузка глайдера
+            if (args.Length > 2 && File.Exists(args[2]))
+            {
+                board.LoadState(args[2]);
+            }
 
             while (true)
             {
                 Console.Clear();
                 Render();
+                if (board.IsStable())
+                {
+                    Console.WriteLine("System has reached a stable state. Simulation ending.");
+                    break;
+                }
                 board.Advance();
+                generation++;
                 Thread.Sleep(1000);
             }
         }
