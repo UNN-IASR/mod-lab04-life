@@ -40,6 +40,18 @@
         "net6.0": {
           "targetAlias": "netcoreapp6.0",
           "dependencies": {
+            "OxyPlot.Core": {
+              "target": "Package",
+              "version": "[2.1.2, )"
+            },
+            "Plotly.NET": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
+            "ScottPlot": {
+              "target": "Package",
+              "version": "[5.0.34, )"
+            },
             "System.Drawing.Common": {
               "target": "Package",
               "version": "[8.0.5, )"

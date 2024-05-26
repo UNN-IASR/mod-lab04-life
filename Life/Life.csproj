@@ -6,14 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Program.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Program.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="OxyPlot.Core" Version="2.1.2" />
+    <PackageReference Include="Plotly.NET" Version="4.2.0" />
+    <PackageReference Include="ScottPlot" Version="5.0.34" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.5" />
   </ItemGroup>
 

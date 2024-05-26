@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
+using ScottPlot;
 
 namespace cli_life
 {
@@ -86,6 +87,7 @@ namespace cli_life
         readonly Random rand = new Random();
         public void Randomize(double liveDensity)
         {
+            Program.initialDensity = liveDensity;
             foreach (var cell in Cells)
                 cell.IsAlive = rand.NextDouble() < liveDensity;
         }
@@ -245,22 +247,45 @@ namespace cli_life
             return stableCount > 0 ? totalGenerations / stableCount : maxGenerations;
         }
 
-        public void PlotStablePhaseTransition(string filePath, int maxGenerations)
+        public List<int> SimulateTransitions(int maxGenerations)
         {
-            var densities = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
+            var densities = new double[] { 0.05,0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5,
+                0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0 };
             var results = new List<int>();
 
             foreach (var density in densities)
             {
-                Randomize(density);
-                int averageStableTime = CalculateAverageStableTime(maxGenerations);
-                results.Add(averageStableTime);
+                double sumaryGenerations = 0;
+                
+                for (int i = 0; i < 10; i++)
+                {
+                    Console.WriteLine($"Запуск {i} для плотности {density}");
+                    Reset();
+                    Randomize(density);
+                    int generations = 0;
+                    while (generations < maxGenerations && !IsStable())
+                    {
+                        Advance();
+                        generations++;
+                    }
+                    sumaryGenerations += generations;
+                    Console.WriteLine($"Потребовалось поколений: {generations}");
+                }
+
+
+                results.Add(Convert.ToInt32(sumaryGenerations/10));
             }
-s
-            for (int i = 0; i < densities.Length; i++)
+
+            return results;
+        }
+
+        private void Reset()
+        {
+            foreach (var cell in Cells)
             {
-                Console.WriteLine($"Density: {densities[i]}, Average Stable Time: {results[i]}");
+                cell.IsAlive = false;
             }
+            stateHistory.Clear();
         }
 
         private string GetCurrentState()
@@ -276,7 +301,7 @@ s
                 return true;
             }
             stateHistory.Add(currentState);
-            if (stateHistory.Count > 10) stateHistory.RemoveAt(0); // Keep history limited to the last 10 states to detect loops
+            if (stateHistory.Count > 10) stateHistory.RemoveAt(0); // Ограничим историю до 10 состояний, чтобы оптимизировать память 
             return false;
         }
     }
@@ -300,7 +325,7 @@ s
         static Config config;
         static int generation = 0;
         static Dictionary<string, int> initialClassifications;
-        static double initialDensity;
+        public static double initialDensity;
 
         static void Reset()
         {
@@ -359,19 +384,65 @@ s
                 board.LoadState(args[2]);
             }
 
-            while (true)
+            Console.WriteLine("Выберите действие:");
+            Console.WriteLine("1 - Классификация элементов");
+            Console.WriteLine("2 - Запуск симуляции");
+            Console.WriteLine("3 - Запуск серии симуляций для построения графика");
+
+            var choice = Console.ReadKey().KeyChar;
+
+            if (choice == '1')
             {
-                Console.Clear();
-                Render();
-                if (board.IsStable())
+                var classifications = board.ClassifyElements();
+                foreach (var classification in classifications)
                 {
-                    Console.WriteLine("System has reached a stable state. Simulation ending.");
-                    break;
+                    Console.WriteLine($"{classification.Key}: {classification.Value}");
                 }
-                board.Advance();
-                generation++;
-                Thread.Sleep(1000);
             }
+            else if (choice == '2')
+            {
+                double wantedDensity;
+                Console.WriteLine();
+                Console.Write("Введите желаемую плотность (от 0 до 1. Например: 0,3): ");
+                wantedDensity = Convert.ToDouble(Console.ReadLine());
+                board.Randomize(wantedDensity);
+                while (true)
+                {            
+                    Console.Clear();
+                    Render();
+                    if (board.IsStable())
+                    {
+                        Console.WriteLine("Система достигла стабильного состояния. Симуляция завершена.");
+                        break;
+                    }
+                    board.Advance();
+                    generation++;
+                    Thread.Sleep(1000);
+                }
+            }
+            else if (choice == '3')
+            {
+                Console.WriteLine("Запуск серии симуляций для различных плотностей.");
+                var results = board.SimulateTransitions(1000);
+
+                Console.WriteLine("Создание изображения графика.");
+                GeneratePlotImage(results, "plot.png");
+                Console.WriteLine("График сохранен как plot.png.");
+            }
+        }
+
+        static void GeneratePlotImage(List<int> results, string outputImagePath)
+        {
+
+            var densities = new double[] { 0.05,0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5,
+                0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0 };
+
+            ScottPlot.Plot plt = new();
+            plt.Add.Scatter(densities.Select(d => d * 100).ToArray(), results.ToArray());
+            plt.Title("Среднее число поколений для перехода в стабильное состояние");
+            plt.XLabel("Плотность заполнения (%)");
+            plt.YLabel("Число поколений до стабильности");
+            plt.SavePng(outputImagePath, 600, 400);
         }
     }
 }
