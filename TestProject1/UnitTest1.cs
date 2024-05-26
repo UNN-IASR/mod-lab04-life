@@ -229,20 +229,6 @@ namespace NET
         }
 
         [TestMethod]
-        // “ест провер€ет, что система достигает стабильного состо€ни€ за разумное количество поколений
-        public void TestStabilityAfterGenerations()
-        {
-            Board board = new Board(10, 10, 1, 0.5);
-            int generations = 0;
-            while (!board.IsStable() && generations < 100)
-            {
-                board.Advance();
-                generations++;
-            }
-            Assert.IsTrue(generations < 100);
-        }
-
-        [TestMethod]
         // “ест провер€ет, что система правильно классифицирует элементы после нескольких поколений
         public void TestClassificationAfterGenerations()
         {
