@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "553ef050-2d6a-4bfa-9e64-165bebef9b01": {
+      "ProjectGuid": "553ef050-2d6a-4bfa-9e64-165bebef9b01",
+      "DisplayName": "Life",
+      "ColorIndex": 0
+    },
+    "499729ec-af60-4534-8da8-5fbbf1b11244": {
+      "ProjectGuid": "499729ec-af60-4534-8da8-5fbbf1b11244",
+      "DisplayName": "UnitTestProject1",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}
