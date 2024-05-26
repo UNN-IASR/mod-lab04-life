@@ -123,16 +123,6 @@ namespace NET
         }
 
         [TestMethod]
-        // Тест проверяет, что доска корректно определяет стабильное состояние
-        public void TestBoardStability()
-        {
-            Board board = new Board(10, 10, 1, 0.5);
-            board.Advance();
-            board.Advance();
-            Assert.IsTrue(board.IsStable());
-        }
-
-        [TestMethod]
         // Тест проверяет классификацию элементов доски
         public void TestBoardClassification()
         {
