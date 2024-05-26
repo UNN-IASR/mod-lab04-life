@@ -1,0 +1,75 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Admin\\source\\repos\\\u041C\u0418\u041F\u0421 \u043B\u0430\u0431\u044B\\4\\mod-lab04-life\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{19C857CF-7719-4268-B6E0-0C7CE70CAFF3}|TestProject1\\TestProject1.csproj|c:\\users\\admin\\source\\repos\\\u043C\u0438\u043F\u0441 \u043B\u0430\u0431\u044B\\4\\mod-lab04-life\\testproject1\\unittest1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{19C857CF-7719-4268-B6E0-0C7CE70CAFF3}|TestProject1\\TestProject1.csproj|solutionrelative:testproject1\\unittest1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{553EF050-2D6A-4BFA-9E64-165BEBEF9B01}|Life\\Life.csproj|c:\\users\\admin\\source\\repos\\\u043C\u0438\u043F\u0441 \u043B\u0430\u0431\u044B\\4\\mod-lab04-life\\life\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{553EF050-2D6A-4BFA-9E64-165BEBEF9B01}|Life\\Life.csproj|solutionrelative:life\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{553EF050-2D6A-4BFA-9E64-165BEBEF9B01}|Life\\Life.csproj|c:\\users\\admin\\source\\repos\\\u043C\u0438\u043F\u0441 \u043B\u0430\u0431\u044B\\4\\mod-lab04-life\\life\\life.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{553EF050-2D6A-4BFA-9E64-165BEBEF9B01}|Life\\Life.csproj|solutionrelative:life\\life.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UnitTest1.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\\u041C\u0418\u041F\u0421 \u043B\u0430\u0431\u044B\\4\\mod-lab04-life\\TestProject1\\UnitTest1.cs",
+              "RelativeDocumentMoniker": "TestProject1\\UnitTest1.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\\u041C\u0418\u041F\u0421 \u043B\u0430\u0431\u044B\\4\\mod-lab04-life\\TestProject1\\UnitTest1.cs",
+              "RelativeToolTip": "TestProject1\\UnitTest1.cs",
+              "ViewState": "AQIAAOEAAAAAAAAAAIAuwO8AAAA7AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-26T12:02:37.353Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\\u041C\u0418\u041F\u0421 \u043B\u0430\u0431\u044B\\4\\mod-lab04-life\\Life\\Program.cs",
+              "RelativeDocumentMoniker": "Life\\Program.cs",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\\u041C\u0418\u041F\u0421 \u043B\u0430\u0431\u044B\\4\\mod-lab04-life\\Life\\Program.cs",
+              "RelativeToolTip": "Life\\Program.cs",
+              "ViewState": "AQIAAIABAAAAAAAAAIAiwI0BAAARAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-26T07:24:26.612Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Life.csproj",
+              "DocumentMoniker": "C:\\Users\\Admin\\source\\repos\\\u041C\u0418\u041F\u0421 \u043B\u0430\u0431\u044B\\4\\mod-lab04-life\\Life\\Life.csproj",
+              "RelativeDocumentMoniker": "Life\\Life.csproj",
+              "ToolTip": "C:\\Users\\Admin\\source\\repos\\\u041C\u0418\u041F\u0421 \u043B\u0430\u0431\u044B\\4\\mod-lab04-life\\Life\\Life.csproj",
+              "RelativeToolTip": "Life\\Life.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-05-26T14:24:16.843Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "dgSpecHash": "KwTY4GiXXNs=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Admin\\source\\repos\\МИПС лабы\\4\\mod-lab04-life\\Life\\Life.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\dynamicobj\\2.0.0\\dynamicobj.2.0.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\fsharp.core\\6.0.7\\fsharp.core.6.0.7.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\giraffe.viewengine.strongname\\2.0.0-alpha1\\giraffe.viewengine.strongname.2.0.0-alpha1.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.win32.systemevents\\8.0.0\\microsoft.win32.systemevents.8.0.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\oxyplot.core\\2.1.2\\oxyplot.core.2.1.2.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\plotly.net\\4.2.0\\plotly.net.4.2.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\scottplot\\5.0.34\\scottplot.5.0.34.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\skiasharp\\2.88.8\\skiasharp.2.88.8.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\skiasharp.nativeassets.linux.nodependencies\\2.88.8\\skiasharp.nativeassets.linux.nodependencies.2.88.8.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\skiasharp.nativeassets.macos\\2.88.8\\skiasharp.nativeassets.macos.2.88.8.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\skiasharp.nativeassets.win32\\2.88.8\\skiasharp.nativeassets.win32.2.88.8.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\system.drawing.common\\8.0.5\\system.drawing.common.8.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
