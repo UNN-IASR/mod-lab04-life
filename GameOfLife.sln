@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Life", "Life\Life.csproj", "{553EF050-2D6A-4BFA-9E64-165BEBEF9B01}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cli_life_Tests", "cli_life.Tests\cli_life_Tests.csproj", "{BDE84DFE-9D68-4452-B815-FF5502BF8034}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cli_life_Tests", "Tests\cli_life_Tests.csproj", "{BDE84DFE-9D68-4452-B815-FF5502BF8034}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
