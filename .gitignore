@@ -1,5 +1,5 @@
 .vs/
-.Life/bin/
-.Life/obg/
-.Test/bin/
-.Test/obg/
+.Life/bin
+.Life/obg
+.Test/bin
+.Test/obg
