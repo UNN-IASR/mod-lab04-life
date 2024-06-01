@@ -222,14 +222,6 @@ namespace cli_life
             double[] xs = new double[50]; 
             double[] ys = new double[50];
 
-            while (true)
-            {
-                Reset(0.5, "../../../gen2.txt");
-                Render();
-                Console.WriteLine(board.isStable());
-                Thread.Sleep(1000);
-                Console.Clear();
-            }
 
             for (int i = 1; i <= 50; i++)
             {
