@@ -133,7 +133,7 @@ namespace cli_life
         public  Board board;
         public void Reset()
         {
-            string json = File.ReadAllText("C:\\Users\\Юрий\\Source\\Repos\\mod-lab04-life\\Life\\Settings.json");
+            string json = File.ReadAllText("../../../Settings.json");
             board = JsonConvert.DeserializeObject<Board>(json);
         }
         public int GetWidth()
