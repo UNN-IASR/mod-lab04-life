@@ -31,6 +31,7 @@ namespace cli_life
     {
         public readonly Cell[,] Cells;
         public readonly int CellSize;
+        public List<string> poses = new List<string>();
 
         public int Columns { get { return Cells.GetLength(0); } }
         public int Rows { get { return Cells.GetLength(1); } }
@@ -50,10 +51,42 @@ namespace cli_life
             if (useState)
             {
                 ReadFromFile("../../../state.txt");
-            } else
+            }
+            else
             {
                 Randomize(liveDensity);
-            }  
+            }
+        }
+
+        public int AliveCellsCount()
+        {
+            int result = 0;
+            foreach (Cell c in Cells)
+            {
+                if (c.IsAlive)
+                {
+                    result++;
+                }
+            }
+            return result;
+        }
+
+        public string RecordPosition(Board board)
+        {
+            string str = "";
+
+            foreach (Cell cell in board.Cells)
+            {
+                if (cell.IsAlive)
+                {
+                    str += '1';
+                }
+                else
+                {
+                    str += '0';
+                } 
+            }
+            return str;
         }
 
         readonly Random rand = new Random();
@@ -96,16 +129,16 @@ namespace cli_life
         public void ReadFromFile(string filePath)
         {
             using (StreamReader reader = new StreamReader(filePath))
-            for (int row = 0; row < Rows; row++)
-            {
-                var line = reader.ReadLine();
-                var split = line.ToCharArray();
-                for (int col = 0; col < Columns; col++)
+                for (int row = 0; row < Rows; row++)
                 {
-                    var cell = Cells[col, row];
-                    cell.IsAlive = split[col].Equals('*');
+                    var line = reader.ReadLine();
+                    var split = line.ToCharArray();
+                    for (int col = 0; col < Columns; col++)
+                    {
+                        var cell = Cells[col, row];
+                        cell.IsAlive = split[col].Equals('*');
+                    }
                 }
-            }
         }
     }
     public class Program
@@ -120,7 +153,7 @@ namespace cli_life
         {
             for (int row = 0; row < board.Rows; row++)
             {
-                for (int col = 0; col < board.Columns; col++)   
+                for (int col = 0; col < board.Columns; col++)
                 {
                     var cell = board.Cells[col, row];
                     if (cell.IsAlive)
@@ -164,7 +197,8 @@ namespace cli_life
         }
         static void Main(string[] args)
         {
-            while(true)
+            Graph.Create();
+            while (true)
             {
                 Reset("../../../settings.json");
                 Console.Clear();
@@ -173,6 +207,68 @@ namespace cli_life
                 WriteToFile();
                 Thread.Sleep(1000);
             }
+        }
+    }
+
+    public class Graph
+    {
+
+        public static void Create()
+        {
+            ScottPlot.Plot plot = new ScottPlot.Plot();
+            plot.XLabel("Номер поколения");
+            plot.YLabel("Количество живых клеток");
+            plot.ShowLegend();
+
+            Random rnd = new Random();
+            List<double> liveDensities = new List<double>() { 0.1, 0.2, 0.3 };
+
+            var list = CreateList(liveDensities);
+            for (int i = 0; i < list.Count; i++)
+            {
+                var item = list[i];
+                var scatter = plot.Add.Scatter(item.Keys.ToArray(), item.Values.ToArray());
+                scatter.LegendText = liveDensities[i].ToString();
+                scatter.Color = new ScottPlot.Color(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+            }
+            plot.SavePng("../../../../plot.png", 1920, 1080);
+        }
+
+        public static List<Dictionary<int, int>> CreateList(List<double> liveDensities)
+        {
+            List<Dictionary<int,int>> list = new List<Dictionary<int, int>>();
+
+            for (int i = 0; i < liveDensities.Count; i++)
+            {
+                list.Add(AliveCellsInGeneration(liveDensities[i]));
+            }
+            list.Sort((x, y) => x.Count - y.Count);
+            return list;
+        }
+
+        public static Dictionary<int, int> AliveCellsInGeneration(double liveDensity)
+        {
+            Dictionary<int, int> result = new Dictionary<int, int>();
+            int width = 100;
+            int height = 30;
+            int cellSize = 1;
+            Board board = new Board(width, height, cellSize, liveDensity);
+
+            while (true)
+            {
+                result.Add(board.poses.Count, board.AliveCellsCount());
+
+                if (!board.poses.Contains(board.RecordPosition(board)))
+                {
+                    board.poses.Add(board.RecordPosition(board));
+                }
+                else
+                {
+                    break;
+                }
+                board.Advance();
+            }
+            return result;
         }
     }
 }
