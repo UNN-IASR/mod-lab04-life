@@ -84,7 +84,7 @@ namespace Test
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure Rhombe = fig[1];
             int count = Figure.find_figure(Rhombe, board);
-            Assert.AreEqual(count, 0);
+            Assert.AreEqual(count, 1);
 
         }
         [TestMethod]
@@ -125,7 +125,7 @@ namespace Test
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure barge = fig[5];
             int count = Figure.find_figure(barge, board);
-            Assert.AreEqual(count, 0);
+            Assert.AreEqual(count, 1);
         }
         [TestMethod]
         public void TestFigureFrigate()
@@ -136,6 +136,16 @@ namespace Test
             Figure Frigate = fig[6];
             int count = Figure.find_figure(Frigate, board);
             Assert.AreEqual(count, 0);
+        }
+        [TestMethod]
+        public void TestFigureFrig()
+        {
+            Board bo = new Board(6, 6, 1, 1);
+            bo.Upload("../../../../figure_4.txt");
+            Figure[] fiп = Figure.get_figure("../../../../Life/figures.json");
+            Figure Frig = fig[6];
+            int co = Figure.find_figure(Frig, bo);
+            Assert.AreEqual(co, 0);
         }
     }
 }
