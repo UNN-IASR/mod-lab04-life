@@ -1,125 +1,202 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
 using System.Text.Json;
+using System.Numerics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
+using System.Reflection.Metadata;
+using System.Net;
 
-namespace cli_life
+namespace game_of_life
 {
+    public class Templates
+    {
+        public List<Prefab> pref;
+        public Templates(out string str)
+        {
+            pref = new List<Prefab>();
+            string[] namePrefab = File.ReadAllLines("../../../../Name.txt");
+            foreach (string name in namePrefab)
+            {
+                string[] prefab = File.ReadAllLines("../../../../" + name + ".txt");
+                int[,] matrix = Get_matrix(prefab);
+                pref.Add(new Prefab(prefab[0].Length, prefab.Length, matrix, name));
+            }
+            str = "Выполнено";
+        }
+
+        public Templates()
+        {
+            pref = new List<Prefab>();
+            string[] nameFigures = File.ReadAllLines("../../../../Name.txt");
+            foreach (string name in nameFigures)
+            {
+                string[] prefab = File.ReadAllLines("../../../../" + name + ".txt");
+                int[,] matrix = Get_matrix(prefab);
+                pref.Add(new Prefab(prefab[0].Length, prefab.Length, matrix, name));
+            }
+        }
+
+        public void Detection(Board _board)
+        {
+            foreach (var prefab in pref)
+            {
+                Console.WriteLine(prefab._name + " " + prefab.Check_prefab(_board));
+            }
+        }
+
+        public int[,] Get_matrix(string[] prefab)
+        {
+            int[,] matrix = new int[prefab[0].Length, prefab.Length];
+            for (int i = 0; i < prefab.Length; i++)
+            {
+                for (int j = 0; j < prefab[0].Length; j++)
+                {
+
+                    matrix[i, j] = (int)prefab[i][j] - 48;
+                }
+            }
+            return matrix;
+        }
+    }
+
+    public class Prefab
+    {
+        public string _name = "";
+        public int _width = 0;
+        public List<int> buf_Matrix = new();
+        public int _height = 0;
+        public int[,] _matrix;
+
+        public Prefab(int Width, int Height, int[,] martix, string name)
+        {
+            _width = Width;
+            _height = Height;
+            _matrix = martix;
+            _name = name;
+        }
+
+        public int Check_prefab(Board board)
+        {
+            int CreatingCoeff = 0;
+            int count = 0;
+            int[,] MTRX = new int[_width, _height];
+            buf_Matrix.Clear();
+            for (int Rows = 0; Rows < board.Rows; Rows++)
+            {
+                buf_Matrix.Remove(Rows);
+                for (int Cool = 0; Cool < board.Columns; Cool++)
+                {
+                    buf_Matrix.Remove(Cool);
+                    if (buf_Matrix.Count > 0)
+                    {
+                        CreatingCoeff = 0;
+                        buf_Matrix.Add(Rows - Cool);
+                    }
+                    else
+                    {
+                        CreatingCoeff++;
+                    }
+                    for (int MartI = 0; MartI < _height; MartI++)
+                    {
+                        for (int MartJ = 0; MartJ < _width; MartJ++)
+                        {
+                            int y = Rows + MartI < board.Rows ? Rows + MartI : Rows + MartI - board.Rows;
+                            int x = Cool + MartJ < board.Columns ? Cool + MartJ : Cool + MartJ - board.Columns;
+                            if (!board.Cells[x, y].Is_alive)
+                            {
+                                buf_Matrix.Remove(x);
+                                MTRX[MartI, MartJ] = 0;
+                                CreatingCoeff--;
+                            }
+                            else
+                            {
+                                buf_Matrix.Remove(y - x);
+                                MTRX[MartI, MartJ] = 1;
+                                CreatingCoeff--;
+                            }
+
+                        }
+                    }
+                    count += Equip_prefab(MTRX);
+                }
+            }
+            buf_Matrix.Clear();
+            return count;
+        }
+
+        int Equip_prefab(int[,] matr1)
+        {
+            int rows = matr1.GetUpperBound(0) + 1;
+            int columns = matr1.Length / rows;
+            int result = 1;
+            for (int i = 0; i < rows; i++)
+            {
+                buf_Matrix.Add(i);
+                for (int j = 0; j < columns; j++)
+                {
+                    if (matr1[i, j] != _matrix[i, j])
+                    {
+                        buf_Matrix.Clear();
+                        result = 0;
+                    }
+                }
+            }
+            return result;
+        }
+    }
+
+    public class Settings
+    {
+        public double liveDensity { get; set; }
+        public int cellSize { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
+
     public class Cell
     {
-        public bool IsAlive;
+        public bool Is_alive;
         public readonly List<Cell> neighbors = new List<Cell>();
-        private bool IsAliveNext;
+        private bool Is_alive_next;
 
-        public void DetermineNextLiveState()
+        public Cell(bool _is_alive)
         {
-            int liveNeighbors = neighbors.Where(x => x.IsAlive).Count();
-            if (IsAlive)
-                IsAliveNext = liveNeighbors == 2 || liveNeighbors == 3;
+            Is_alive = _is_alive;
+        }
+        public Cell() { }
+
+        public void Next_state()
+        {
+            int liveNeighbors = neighbors.Where(x => x.Is_alive).Count();
+            if (Is_alive)
+                Is_alive_next = liveNeighbors == 2 || liveNeighbors == 3;
             else
-                IsAliveNext = liveNeighbors == 3;
+                Is_alive_next = liveNeighbors == 3;
         }
 
         public void Advance()
         {
-            IsAlive = IsAliveNext;
+            Is_alive = Is_alive_next;
         }
     }
 
     public class Board
     {
-        public readonly Cell[,] Cells;
         public readonly int CellSize;
-        readonly Random rand = new Random();
 
+        public Cell[,] Cells;
+        public int NumberGenerations;
         public int Columns { get { return Cells.GetLength(0); } }
         public int Rows { get { return Cells.GetLength(1); } }
         public int Width { get { return Columns * CellSize; } }
         public int Height { get { return Rows * CellSize; } }
-        public Board(int width, int height, int cellSize, double liveDensity = 0.1)
-        {
-            CellSize = cellSize;
-            Cells = new Cell[width / cellSize, height / cellSize];
 
-            for (int x = 0; x < Columns; x++)
-            {
-                for (int y = 0; y < Rows; y++)
-                {
-                    Cells[x, y] = new Cell();
-                }
-            }
-
-            connect_neighbors();
-
-            randomize(liveDensity);
-        }
-
-        public Board(int width, int height, int cellSize, string fname)
-        {
-            CellSize = cellSize;
-            Cells = new Cell[width / cellSize, height / cellSize];
-
-            for (int x = 0; x < Columns; x++)
-            {
-                for (int y = 0; y < Rows; y++)
-                {
-                    Cells[x, y] = new Cell();
-                }
-            }
-
-            connect_neighbors();
-
-            foreach (var cell in Cells)
-            {
-                cell.IsAlive = false;
-            }
-            string[] lines = File.ReadAllLines(fname + ".txt");
-            for (int x = 0; x < lines.Count(); x++)
-            {
-                List<char> values = lines[x].ToList().FindAll(e => e == '0' || e == '1');
-                for (int y = 0; y < values.Count - 1; y++)
-                {
-                    Cells[y, x].IsAlive = values[y] != '0';
-                }
-            }
-        }
-
-        public List<List<bool>> get_condition()
-        {
-            List<List<bool>> condition = new List<List<bool>>();
-            for (int row = 0; row < Rows; row++)
-            {
-                condition.Add(new List<bool>());
-                for (int col = 0; col < Columns; col++)
-                {
-                    condition[row].Add(Cells[col, row].IsAlive);
-                }
-            }
-            return condition;
-        }
-
-        public void randomize(double liveDensity)
-        {
-            foreach (var cell in Cells)
-            {
-                cell.IsAlive = rand.NextDouble() < liveDensity;
-            }
-        }
-
-        public void advance()
-        {
-            foreach (var cell in Cells)
-            {
-                cell.DetermineNextLiveState();
-            }
-            foreach (var cell in Cells)
-            {
-                cell.Advance();
-            }
-        }
-        private void connect_neighbors()
+        private void New_neighbors()
         {
             for (int x = 0; x < Columns; x++)
             {
@@ -141,410 +218,244 @@ namespace cli_life
             }
         }
 
-        public int element_counter(Element element)
+        public void Randomize(double liveDensity)
         {
-            int count = 0;
-            foreach (bool[,] condition in element.conditions)
+            Random rnd = new Random();
+            foreach (var cell in Cells)
+                cell.Is_alive = rnd.NextDouble() < liveDensity;
+        }
+
+        public Board(int width, int height, int cellSize, double liveDensity = .1)
+        {
+            NumberGenerations = 0;
+            CellSize = cellSize;
+
+            Cells = new Cell[width / cellSize, height / cellSize];
+            for (int x = 0; x < Columns; x++)
+                for (int y = 0; y < Rows; y++)
+                    Cells[x, y] = new Cell();
+            New_neighbors();
+            Randomize(liveDensity);
+        }
+
+        public void Advance()
+        {
+            foreach (var cell in Cells)
+                cell.Next_state();
+            foreach (var cell in Cells)
+                cell.Advance();
+        }
+
+        public void Render()
+        {
+            int Live = 0;
+            for (int row = 0; row < Rows; row++)
             {
-                for (int x = 0; x <= Rows - condition.GetLength(0); x++)
+                for (int col = 0; col < Columns; col++)
                 {
-                    for (int y = 0; y <= Columns - condition.GetLength(1); y++)
+                    var cell = Cells[col, row];
+
+                    if (cell.Is_alive)
                     {
-                        bool is_coincedence = true;
-                        for (int i = 0; i < condition.GetLength(0) && is_coincedence; i++)
-                        {
-                            for (int j = 0; j < condition.GetLength(1) && is_coincedence; j++)
-                            {
-                                if (Cells[y + j, x + i].IsAlive != condition[i, j])
-                                {
-                                    is_coincedence = false;
-                                }
-                            }
-                        }
-                        if (is_coincedence)
-                        {
-                            count++;
-                        }
+                        Console.Write('*');
+                    }
+                    else
+                    {
+                        Console.Write(' ');
                     }
                 }
+                Console.Write('\n');
             }
-            return count;
+            foreach (var item in Cells)
+            {
+                if (item.Is_alive)
+                {
+                    Live++;
+                }
+            }
+        }
+
+        public string Board_save()
+        {
+            string Setting = Columns.ToString() + " " + Rows.ToString() + " " + NumberGenerations.ToString() + "\n";
+            foreach (var item in Cells)
+            {
+                Setting += item.Is_alive == true ? 1 : 0;
+            }
+            File.WriteAllText("../../../../OldBoard.txt", Setting);
+            return "save";
+        }
+
+        public bool Check_active()
+        {
+            string str = "";
+            foreach (var item in Cells)
+            {
+                str += item.Is_alive == true ? "1" : "0";
+            }
+            if (!lostComponation.Contains(str))
+            {
+                lostComponation.Add(str);
+                return true;
+            }
+            return false;
+        }
+
+        public string Discharge()
+        {
+            string[] Data = File.ReadAllLines("../../../../OldBoard.txt");
+            string[] setting = Data[0].Split(" ");
+            NumberGenerations = int.Parse(setting[2]);
+            Cells = new Cell[int.Parse(setting[1]), int.Parse(setting[0])];
+            int Colum = 0;
+            int Row = 0;
+            for (int i = 0; i < Data[1].Length; i++)
+            {
+                Cells[Row, Colum] = new Cell(Data[1][i] == '1');
+                if (Colum == Columns - 1)
+                {
+                    Colum = -1;
+                    Row++;
+                }
+                Colum++;
+            }
+            New_neighbors();
+            return "done";
+        }
+
+        static public Board Loading()
+        {
+            string filename = "../../../../config.json";
+            string jsonString = File.ReadAllText(filename);
+            Settings settings = JsonSerializer.Deserialize<Settings>(jsonString);
+            return new Board(width: settings.Width, height: settings.Height, cellSize: settings.cellSize, liveDensity: settings.liveDensity);
 
         }
 
-        public float[] percentage_symmetry()
-        {
-            int horizontal_coincedence_counter = 0;
-            for (int x = 0; x < Rows; x++)
-            {
-                for (int y = 0; y < Columns; y++)
-                {
-                    if (Cells[y, x].IsAlive == Cells[y, Rows - x - 1].IsAlive)
-                    {
-                        horizontal_coincedence_counter++;
-                    }
-                }
-            }
-            int wertical_coincedence_counter = 0;
-            for (int x = 0; x < Rows; x++)
-            {
-                for (int y = 0; y < Columns; y++)
-                {
-                    if (Cells[y, x].IsAlive == Cells[Columns - y - 1, x].IsAlive)
-                    {
-                        wertical_coincedence_counter++;
-                    }
-                }
-            }
-            int radial_coincedence_counter = 0;
-            for (int x = 0; x < Rows; x++)
-            {
-                for (int y = 0; y < Columns; y++)
-                {
-                    if (Cells[y, x].IsAlive == Cells[Columns - y - 1, Rows - x - 1].IsAlive)
-                    {
-                        radial_coincedence_counter++;
-                    }
-                }
-            }
-            return new float[] {
-                100 * horizontal_coincedence_counter / (Rows * Columns),
-                100 * wertical_coincedence_counter / (Rows * Columns),
-                100 * radial_coincedence_counter / (Rows * Columns)
-            };
-        }
+        public List<string> lostComponation = new List<string>();
+        public int CointStabiliti;
     }
 
-    public class Settings
+    public class CreateGrafic
     {
-        public int width { get; set; }
-        public int height { get; set; }
-        public int cellSize { get; set; }
-        public float liveDensity { get; set; }
-        public int delay { get; set; }
-    }
-
-    public class Element
-    {
-        public readonly string name;
-        public readonly List<bool[,]> conditions;
-        public readonly bool is_symmetrical;
-
-        public Element(string name, List<bool[,]> conditions)
+        public List<Dictionary<int, int>> NewList(List<double> listDesc, int count)
         {
-            this.name = name;
-            this.conditions = conditions;
-            is_symmetrical = symmetry();
+            int countPoint = 0;
+            var list = new List<Dictionary<int, int>>();
+            for (int i = 0; i < count; i++)
+            {
+                countPoint++;
+                if (countPoint > 0)
+                {
+                    countPoint = 0;
+                }
+                list.Add(Live_create(listDesc[i]));
+            }
+            countPoint = count;
+            list.Sort((x, y) => x.Count - y.Count);
+            return list;
         }
 
-        bool symmetry()
+        public Dictionary<int, int> Live_create(double density)
         {
-            foreach (bool[,] x in conditions)
+            bool flag = true;
+            Board board = new Board(30, 30, 1, density);
+            var Answer = new Dictionary<int, int>();
+            while (flag)
             {
-                for (int i = 0; i < x.GetLength(0); i++)
+                int count = 0;
+                foreach (var cell in board.Cells)
                 {
-                    for (int j = 0; j < x.GetLength(1); j++)
+                    if (cell.Is_alive)
                     {
-                        if (x[i, j] != x[x.GetLength(0) - i - 1, x.GetLength(1) - j - 1])
-                        {
-                            return false;
-                        }
+                        count++;
                     }
                 }
+                Answer.Add(board.lostComponation.Count, count);
+                string str = "";
+                foreach (var item in board.Cells)
+                {
+                    if (count == Answer.Count)
+                    {
+                        board.CointStabiliti++;
+                    }
+                    str += item.Is_alive == true ? "1" : "0";
+                }
+                if (!board.lostComponation.Contains(str))
+                {
+                    board.lostComponation.Add(str);
+                    board.CointStabiliti = 0;
+                }
+                else
+                {
+                    break;
+                }
+                board.Advance();
+                if (board.CointStabiliti < -10)
+                {
+                    flag = false;
+                }
+                else
+                {
+                    flag = true;
+                }
+
             }
-            return true;
+            return Answer;
+        }
+
+        public Cell NewCell(Board board)
+        {
+            bool live = false;
+            if (board.CointStabiliti > 0)
+            {
+                string str = "";
+                foreach (var cll in board.Cells)
+                {
+                    if (cll.Is_alive)
+                    {
+                        str += "1";
+                    }
+                    else
+                    {
+                        str = "0";
+                    }
+                }
+
+                if (board.lostComponation.Contains(str))
+                {
+                    live = true;
+                }
+            }
+
+            return new Cell(live);
         }
     }
 
     class Program
     {
-        static Board board;
-        static int delay;
-        static List<Element> elements = new List<Element>();
-
-        static private void reset()
+        static void Main(string[] args)
         {
-            string text = File.ReadAllText(@"settings.json");
-            Settings settings = JsonSerializer.Deserialize<Settings>(text);
-
-            Console.WriteLine("Start configuration:\nr - random\nf - file");
-            while (true)
+            Board board = Board.Loading();
+            Templates _tem = new Templates();
+            bool flag = true;
+            while (flag)
             {
-                if (Console.KeyAvailable)
-                {
-                    ConsoleKeyInfo name = Console.ReadKey();
-                    switch (name.KeyChar)
-                    {
-                        case 'r':
-                            board = new Board(
-                                width: settings.width,
-                                height: settings.height,
-                                cellSize: settings.cellSize,
-                                liveDensity: settings.liveDensity);
-                            delay = settings.delay;
-                            return;
-
-                        case 'f':
-                            Console.WriteLine("\nfile name:");
-                            string fname = Console.ReadLine();
-                            board = new Board(
-                                width: settings.width,
-                                height: settings.height,
-                                cellSize: settings.cellSize,
-                                fname: fname);
-                            delay = settings.delay;
-                            return;
-                    }
-                }
-            }
-        }
-
-        static void render()
-        {
-            for (int row = 0; row < board.Rows; row++)
-            {
-                for (int col = 0; col < board.Columns; col++)
-                    {
-                        var cell = board.Cells[col, row];
-                        if (cell.IsAlive)
-                        {
-                            Console.Write('*');
-                        }
-                        else
-                        {
-                            Console.Write(' ');
-                        }
-                    }
-                Console.Write('\n');
-            }
-        }
-
-        static void modeling()
-        {
-            int genCount = 0;
-            while (true)
-            {
-                if (Console.KeyAvailable)
-                {
-                    ConsoleKeyInfo name = Console.ReadKey();
-                    if (name.KeyChar == 'q')
-                    {
-                        break;
-                    }
-                    else if (name.KeyChar == 's')
-                    {
-                        string fname = "gen-" + genCount.ToString();
-                        StreamWriter writer = new StreamWriter(fname + ".txt");
-                        double[,] data = new double[board.Rows, board.Columns];
-
-                        for (int row = 0; row < board.Rows; row++)
-                        {
-                            for (int col = 0; col < board.Columns; col++)
-                            {
-                                var cell = board.Cells[col, row];
-                                if (cell.IsAlive)
-                                {
-                                    writer.Write('1');
-                                    data[row, col] = 1;
-                                }
-                                else
-                                {
-                                    writer.Write('0');
-                                    data[row, col] = 0;
-                                }
-                                writer.Write(',');
-                            }
-                            writer.Write("\n");
-                        }
-                        writer.Close();
-
-                        Console.WriteLine("Saved in file: " + fname + ".txt");
-                    }
-                }
-
                 Console.Clear();
-                render();
-                board.advance();
-                Thread.Sleep(delay);
-                ++genCount;
-            }
-        }
-
-        public static (int, int) counting()
-        {
-            int alive_count = 0;
-            for (int row = 0; row < board.Rows; row++)
-            {
-                for (int col = 0; col < board.Columns; col++)
-                {
-                    if (board.Cells[col, row].IsAlive)
-                    {
-                        alive_count++;
-                    }
-                }
-            }
-            return (alive_count, board.Rows * board.Columns - alive_count);
-        }
-
-        public static void classification()
-        {
-            Console.WriteLine("elements");
-            foreach (Element element in elements)
-            {
-                Console.WriteLine(element.name + ": " + board.element_counter(element).ToString());
-            }
-        }
-
-        public static (int, int) stabilization()
-        {
-            List<List<List<bool>>> conditions = new List<List<List<bool>>>();
-            while (true)
-            {
-                conditions.Add(board.get_condition());
-                Console.Clear();
-                render();
-                board.advance();
-                List<List<bool>> condition = board.get_condition();
-                for (int i = 0; i < conditions.Count; i++)
-                {
-                    bool is_equal = true;
-                    for (int x = 0; x < board.Rows && is_equal; x++)
-                    {
-                        for (int y = 0; y < board.Columns && is_equal; y++)
-                        {
-                            if (condition[x][y] != conditions[i][x][y])
-                            {
-                                is_equal = false;
-                            }
-                        }
-                    }
-                    if (is_equal)
-                    {
-                        return (conditions.Count + 1, conditions.Count - i);
-                    }
-                }
-            }
-        }
-
-        public static void symmetry()
-        {
-            Console.WriteLine("symmetrical elements");
-            foreach (Element element in elements)
-            {
-                if (element.is_symmetrical)
-                {
-                    Console.WriteLine(element.name + ": " + board.element_counter(element).ToString());
-                }
-            }
-            Console.WriteLine("\npercentage of symmetry by steps, horizontal / wertical / radial:");
-            int step = 0;
-            while (true)
-            {
-                step++;
-                Console.Write("\nstep " + step.ToString() + ")");
-                foreach (float x in board.percentage_symmetry())
-                {
-                    Console.Write(" " + (int)x);
-                }
-                board.advance();
-                Thread.Sleep(delay);
-            }
-        }
-
-        static void Main()
-        {
-            elements.Add(new Element("block", new List<bool[,]> {
-                new bool[4, 4] {
-                    { false, false, false, false },
-                    { false, true, true, false },
-                    { false, true, true, false },
-                    { false, false, false, false }
-                }
-            }));
-            elements.Add(new Element("blinker", new List<bool[,]> {
-                new bool[3, 5] {
-                    { false, false, false, false, false},
-                    { false, true, true, true, false},
-                    { false, false, false, false, false}
-                },
-                new bool[5, 3]
-                {
-                    { false, false, false },
-                    { false, true, false },
-                    { false, true, false },
-                    { false, true, false },
-                    { false, false, false }
-                }
-            }));
-            elements.Add(new Element("glider", new List<bool[,]> {
-                new bool[5, 5] {
-                    { false, false, false, false, false },
-                    { false, false, true, false, false },
-                    { false, false, false, true, false },
-                    { false, true, true, true, false },
-                    { false, false, false, false, false },
-                },
-                new bool[5, 5] {
-                    { false, false, false, false, false },
-                    { false, true, false, true, false },
-                    { false, false, true, true, false },
-                    { false, false, true, false, false },
-                    { false, false, false, false, false },
-                },
-                new bool[5, 5] {
-                    { false, false, false, false, false },
-                    { false, false, false, true, false },
-                    { false, true, false, true, false },
-                    { false, false, true, true, false },
-                    { false, false, false, false, false },
-                },
-                new bool[5, 5] {
-                    { false, false, false, false, false },
-                    { false, true, false, false, false },
-                    { false, false, true, true, false },
-                    { false, true, true, false, false },
-                    { false, false, false, false, false },
-                }
-            }));
-
-            reset();
-            Console.WriteLine(
-                "\nm - modeling" +
-                "\nn - number of cells" +
-                "\nc - classification of elements" +
-                "\nt - time of stabilization" +
-                "\ns - symmetry and number of symmetrical elements");
-            while (true)
-            {
                 if (Console.KeyAvailable)
                 {
-                    ConsoleKeyInfo name = Console.ReadKey();
-                    switch (name.KeyChar)
-                    {
-                        case 'm':
-                            Console.Clear();
-                            modeling();
-                            break;
-                        case 'n':
-                            Console.Clear();
-                            (int alive, int dead) = counting();
-                            Console.WriteLine("alive cells: " + alive.ToString() + "\ndead cells: " + dead.ToString());
-                            break;
-                        case 'c':
-                            Console.Clear();
-                            classification();
-                            break;
-                        case 't':
-                            Console.Clear();
-                            (int step, int duration) = stabilization();
-                            Console.WriteLine("\n\ntransition to a stable phase in step: " + step.ToString() + " with cycle duration: " + duration.ToString());
-                            break;
-                        case 's':
-                            Console.Clear();
-                            symmetry();
-                            break;
-                    }
+                    ConsoleKeyInfo key = Console.ReadKey();
+                    if (key.KeyChar == 'q')
+                        flag = false;
+                    else if (key.KeyChar == 's')
+                        board.Board_save();
+                    else if (key.KeyChar == 'u')
+                        board.Discharge();
                 }
+                board.Render();
+                _tem.Detection(board);
+                flag = board.Check_active();
+                board.Advance();
             }
         }
     }
