@@ -140,7 +140,7 @@ namespace Test
         [TestMethod]
         public void TestFigureFrig()
         {
-            Board bo = new Board(6, 6, 1, 1);
+            Board bo = new Board(5, 5, 1, 1);
             bo.Upload("../../../../figure_4.txt");
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure Frig = fig[6];
