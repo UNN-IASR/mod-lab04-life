@@ -18,7 +18,7 @@ namespace UnitTestProject1
         {
             Templates templates = new Templates();
             string[] myStrings = { "10", "01" };
-            int[,] mtr = { { 1, 1 }, { 1, 1 } };
+            int[,] mtr = { { 1, 0 }, { 0, 1 } };
             var go = templates.Get_matrix(myStrings);
             string fgf = "";
             string gfg = "";
