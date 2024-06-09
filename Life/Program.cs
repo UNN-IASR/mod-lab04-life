@@ -12,7 +12,7 @@ namespace cli_life
     public class Cell
     {
         public bool IsAlive;
-        public readonly List<Cell> neighbors = new List<Cell>();
+        public List<Cell> neighbors = new List<Cell>();
         public bool IsAliveNext;
         public void DetermineNextLiveState()
         {
