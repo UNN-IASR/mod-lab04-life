@@ -80,7 +80,7 @@ namespace Test
         public void TestFigureRhombe()
         {
             Board board = new Board(5, 5, 1, 1);
-            board.Upload("../../../../Fig/figure_1.txt");
+            board.Upload("../../../Fig/figure_1.txt");
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure Rhombe = fig[1];
             int count = Figure.find_figure(Rhombe, board);
