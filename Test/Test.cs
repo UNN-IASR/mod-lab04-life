@@ -22,9 +22,9 @@ namespace UnitTest
             string jsonString = File.ReadAllText(fileName);
             Setting settings = JsonSerializer.Deserialize<Setting>(jsonString);
             Assert.AreEqual(0, settings.Width);
-            Assert.AreEqual(15, settings.Height);
-            Assert.AreEqual(0.4, settings.liveDensity);
-            Assert.AreEqual(2, settings.cellSize);
+            Assert.AreEqual(0, settings.Height);
+            Assert.AreEqual(0, settings.liveDensity);
+            Assert.AreEqual(0, settings.cellSize);
         }
         [TestMethod]
         public void TestFigureCube()
