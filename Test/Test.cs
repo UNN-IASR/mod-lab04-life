@@ -31,7 +31,7 @@ namespace UnitTest
         {
             Board board = new Board(4, 4, 1, 1);
             board.Upload("../../../../cube.txt");
-            Figure[] fig = Figure.getFig("../Life/fig.json");
+            Figure[] fig = Figure.getFig("../../../Life/fig.json");
             Figure cube = fig[0];
             int count = Figure.findFig(cube, board);
             Assert.AreEqual(count, 1);
@@ -41,7 +41,7 @@ namespace UnitTest
         {
             Board board = new Board(4, 4, 1, 1);
             board.Upload("../../../../No.txt");
-            Figure[] fig = Figure.getFig("../Life/fig.json");
+            Figure[] fig = Figure.getFig("../../../Life/fig.json");
             Figure cube = fig[0];
             int count = Figure.findFig(cube, board);
             Assert.AreEqual(count, 0);
@@ -52,7 +52,7 @@ namespace UnitTest
         {
             Board board = new Board(5, 5, 1, 1);
             board.Upload("../../../../romb.txt");
-            Figure[] fig = Figure.getFig("../Life/fig.json");
+            Figure[] fig = Figure.getFig("../../../Life/fig.json");
             Figure Rhombe = fig[1];
             int count = Figure.findFig(Rhombe, board);
             Assert.AreEqual(count, 1);
@@ -63,7 +63,7 @@ namespace UnitTest
         {
             Board board = new Board(6, 6, 1, 1);
             board.Upload("../../../../ring.txt");
-            Figure[] fig = Figure.getFig("../Life/fig.json");
+            Figure[] fig = Figure.getFig("../../../Life/fig.json");
             Figure Ring = fig[2];
             int count = Figure.findFig(Ring, board);
             Assert.AreEqual(count, 1);
@@ -73,7 +73,7 @@ namespace UnitTest
         {
             Board board = new Board(5, 5, 1, 1);
             board.Upload("../../../../ship.txt");
-            Figure[] fig = Figure.getFig("../Life/fig.json");
+            Figure[] fig = Figure.getFig("../../../Life/fig.json");
             Figure Ship = fig[3];
             int count = Figure.findFig(Ship, board);
             Assert.AreEqual(count, 1);
@@ -83,7 +83,7 @@ namespace UnitTest
         {
             Board board = new Board(6, 6, 1, 1);
             board.Upload("../../../../leaf.txt");
-            Figure[] fig = Figure.getFig("../Life/fig.json");
+            Figure[] fig = Figure.getFig("../../../Life/fig.json");
             Figure leaf = fig[4];
             int count = Figure.findFig(leaf, board);
             Assert.AreEqual(count, 1);
@@ -93,7 +93,7 @@ namespace UnitTest
         {
             Board board = new Board(7, 4, 1, 1);
             board.Upload("../../../../many.txt");
-            Figure[] fig = Figure.getFig("../Life/fig.json");
+            Figure[] fig = Figure.getFig("../../../Life/fig.json");
             Figure cube = fig[0];
             int count = Figure.findFig(cube, board);
             Assert.AreEqual(count, 2);
@@ -103,7 +103,7 @@ namespace UnitTest
         {
             Board board = new Board(6, 6, 1, 1);
             board.Upload("../../../../barge.txt");
-            Figure[] fig = Figure.getFig("../Life/fig.json");
+            Figure[] fig = Figure.getFig("../../../Life/fig.json");
             Figure barge = fig[5];
             int count = Figure.findFig(barge, board);
             Assert.AreEqual(count, 1);
@@ -113,7 +113,7 @@ namespace UnitTest
         {
             Board board = new Board(5, 5, 1, 1);
             board.Upload("../../../../frigate.txt");
-            Figure[] fig = Figure.getFig("../Life/fig.json");
+            Figure[] fig = Figure.getFig("../../../Life/fig.json");
             Figure Frigate = fig[6];
             int count = Figure.findFig(Frigate, board);
             Assert.AreEqual(count, 1);
