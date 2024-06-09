@@ -11,7 +11,7 @@ using System.Xml.Linq;
 using System.Reflection.Metadata;
 using System.Net;
 
-namespace ConsoleApp1
+namespace Client
 {
     public class Templates
     {
