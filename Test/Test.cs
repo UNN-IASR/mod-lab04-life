@@ -20,7 +20,7 @@ namespace Test
         {
             string fname = "Settings.json";
             string jstr = File.ReadAllText(fname);
-            Settings settings = JsonSerializer.Deserialize<Settings>(jstr);
+            Setting settings = JsonSerializer.Deserialize<Setting>(jstr);
             Assert.AreEqual(40, settings.Width);
             Assert.AreEqual(15, settings.Height);
             Assert.AreEqual(0.4, settings.liveDensity);
