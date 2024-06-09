@@ -1,210 +1,145 @@
-using System.Collections.Generic;
-using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using cli_life;
+using Client;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace NET
+namespace Client.Tests
 {
-    [TestClass]
-    public class UnitTest1
+    [TestClass()]
+    public class Test
     {
-        [TestMethod]
-        public void test_is_symmetrical_1()
+        [TestMethod()]
+        public void Test1()
         {
-            Element element = new Element("glider", new List<bool[,]> {
-                new bool[5, 5] {
-                    { false, false, false, false, false },
-                    { false, false, true, false, false },
-                    { false, true, true, true, false },
-                    { false, false, true, false, false },
-                    { false, false, false, false, false },
-                },
-                new bool[5, 5] {
-                    { false, false, false, false, false },
-                    { false, false, true, true, false },
-                    { false, false, true, true, false },
-                    { false, false, false, false, false },
-                    { false, false, false, false, false },
-                }
-            });
-            Assert.IsTrue(element.is_symmetrical == false);
+            Cell cell = new Cell(false);
+            Assert.AreEqual(cell.IsAlive, false);
         }
-
-        [TestMethod]
-        public void test_is_symmetrical_2()
+        [TestMethod()]
+        public void Test2()
         {
-            Element element = new Element("glider", new List<bool[,]> {
-                new bool[5, 5] {
-                    { false, false, false, false, false },
-                    { false, true, true, true, false },
-                    { false, true, true, true, false },
-                    { false, true, true, true, false },
-                    { false, false, false, false, false },
-                },
-                new bool[5, 5] {
-                    { false, false, false, false, false },
-                    { false, false, true, true, false },
-                    { false, true, true, true, false },
-                    { false, true, true, false, false },
-                    { false, false, false, false, false },
-                }
-            });
-            Assert.IsTrue(element.is_symmetrical == true);
+            Templates templates = new Templates();
+            string[] myStrings = { "10", "01" };
+            int[,] mtr = { { 1, 1 }, { 1, 1 } };
+            var go = templates.GetMatrix(myStrings);
+            string fgf = "";
+            string gfg = "";
+            foreach (var fg in go)
+            {
+                fgf += fg.ToString();
+            }
+            foreach (var ds in mtr)
+            {
+                gfg += ds.ToString();
+            }
+            Assert.AreEqual(fgf, gfg);
         }
-
-        [TestMethod]
-        public void test_get_condition()
+        [TestMethod()]
+        public void Test3()
         {
-            int[,] condition =
+            Templates templates = new Templates();
+            string[] myStrings = { "100", "110", "111" };
+            int[,] mtr = { { 1, 0, 0 }, { 1, 1, 0 }, { 1, 1, 1 } };
+            var go = templates.GetMatrix(myStrings);
+            string fgf = "";
+            string gfg = "";
+            foreach (var fg in go)
             {
-                { 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 },
-                { 1, 1, 1, 1, 0, 0, 0, 0, 1, 1 },
-                { 0, 0, 0, 1, 1, 0, 1, 1, 1, 1 },
-                { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
-                { 1, 1, 1, 1, 0, 1, 1, 1, 0, 0 }
-            };
-
-            StreamWriter writer = new StreamWriter("test.txt");
-            for (int i = 0; i < condition.GetLength(0); i++)
-            {
-                for (int j = 0; j < condition.GetLength(0); j++)
-                {
-                    writer.Write(condition[i, j] != 0 ? "1," : "0,");
-                }
-                writer.Write("\n");
+                fgf += fg.ToString();
             }
-
-            Board board = new Board (
-                                width: 10,
-                                height: 10,
-                                cellSize: 1,
-                                fname: "test");
-
-            List<List<bool>> board_condition = board.get_condition();
-            bool is_equal = true;
-            for (int i = 0; i < condition.GetLength(0) && is_equal; i++)
+            foreach (var ds in mtr)
             {
-                for (int j = 0; j < condition.GetLength(0) && is_equal; j++)
-                {
-                    is_equal = (condition[i, j] != 0) == board_condition[i][j];
-                }
+                gfg += ds.ToString();
             }
-
-            Assert.IsTrue(is_equal);
+            Assert.AreEqual(fgf, gfg);
         }
-
-        [TestMethod]
-        public void test_element_counter()
+        [TestMethod()]
+        public void Test4()
         {
-            int[,] condition =
-            {
-                { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 },
-                { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 },
-                { 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0 },
-                { 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1 },
-                { 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1 },
-                { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 },
-                { 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0 },
-                { 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1 },
-                { 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0 },
-                { 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1 },
-                { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0 },
-                { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 }
-            };
-
-            StreamWriter writer = new StreamWriter("test.txt");
-            for (int i = 0; i < condition.GetLength(0); i++)
-            {
-                for (int j = 0; j < condition.GetLength(0); j++)
-                {
-                    writer.Write(condition[i, j] != 0 ? "1," : "0,");
-                }
-                writer.Write("\n");
-            }
-
-            Board board = new Board(
-                                width: 10,
-                                height: 10,
-                                cellSize: 1,
-                                fname: "test");
-
-            Element element = new Element("glider", new List<bool[,]> {
-                new bool[4, 5] {
-                    { false, false, false, false, false },
-                    { false, false, true, false, false },
-                    { false, true, false, true, false },
-                    { false, true, true, true, false }
-                },
-                new bool[5, 4] {
-                    { false, false, false, false },
-                    { false, true, false, false },
-                    { false, true, true, false },
-                    { false, false, true, false },
-                    { false, false, true, false }
-                }
-            });
-
-            Assert.IsTrue(board.element_counter(element) == 5);
+            Templates templates = new Templates(out string str);
+            Assert.AreEqual(str, "Выполнено");
         }
-
-        [TestMethod]
-        public void test_counting()
+        [TestMethod()]
+        public void Test5()
         {
-            int[,] condition =
-            {
-                { 1, 0, 0, 1 },
-                { 1, 1, 1, 1 },
-                { 0, 0, 0, 1 }
-            };
-
-            StreamWriter writer = new StreamWriter("test.txt");
-            for (int i = 0; i < condition.GetLength(0); i++)
-            {
-                for (int j = 0; j < condition.GetLength(0); j++)
-                {
-                    writer.Write(condition[i, j] != 0 ? "1," : "0,");
-                }
-                writer.Write("\n");
-            }
-
-            Board board = new Board(
-                                width: 10,
-                                height: 10,
-                                cellSize: 1,
-                                fname: "test");
-
-            Assert.IsTrue(Program.counting() == (7, 5));
+            int[,] mtr = { { 1, 1 }, { 1, 1 } };
+            Prefab prefab = new(2, 2, mtr, "figure name");
+            Assert.AreEqual(prefab._height, 2);
         }
-
-        [TestMethod]
-        public void test_stabilization()
+        [TestMethod()]
+        public void Test6()
         {
-            int[,] condition =
-            {
-                { 0, 0, 0 },
-                { 1, 1, 1 },
-                { 0, 0, 0 }
-            };
-
-            StreamWriter writer = new StreamWriter("test.txt");
-            for (int i = 0; i < condition.GetLength(0); i++)
-            {
-                for (int j = 0; j < condition.GetLength(0); j++)
-                {
-                    writer.Write(condition[i, j] != 0 ? "1," : "0,");
-                }
-                writer.Write("\n");
-            }
-
-            Board board = new Board(
-                                width: 10,
-                                height: 10,
-                                cellSize: 1,
-                                fname: "test");
-
-            Assert.IsTrue(Program.stabilization() == (1, 2));
+            int[,] mtr = { { 1, 1 }, { 1, 1 } };
+            Prefab prefab = new(2, 2, mtr, "figure name");
+            Assert.AreEqual(prefab._name, "figure name");
+        }
+        [TestMethod()]
+        public void Test7()
+        {
+            int[,] mtr = { { 1, 1 }, { 1, 1 } };
+            Prefab prefab = new(2, 2, mtr, "figure name");
+            Assert.AreEqual(prefab.CheckPrefab(new Board(1, 1, 1)), 0);
+        }
+        [TestMethod()]
+        public void Test8()
+        {
+            int[,] mtr = { { 1, 1, 1 }, { 1, 1, 1 } };
+            Prefab prefab = new(2, 2, mtr, "figure name");
+            Assert.AreEqual(prefab.CheckPrefab(new Board(1, 1, 1)), 0);
+        }
+        [TestMethod()]
+        public void Test9()
+        {
+            var board = new Board(1, 1, 1);
+            board.Advance();
+            Assert.AreEqual(board.CheckActive(), true);
+        }
+        [TestMethod()]
+        public void Test101()
+        {
+            var board = new Board(1, 1, 1);
+            var str = board.BoardSave();
+            Assert.AreEqual(str, "save");
+        }
+        [TestMethod()]
+        public void Test11()
+        {
+            var board = new Board(1, 1, 1);
+            var str = board.Discharge();
+            Assert.AreEqual(str, "done");
+        }
+        [TestMethod()]
+        public void Test12()
+        {
+            var board = new Board(1, 1, 1);
+            var str = Board.Loading();
+            Assert.IsTrue(str is Board);
+        }
+        [TestMethod()]
+        public void Test13()
+        {
+            var board = new Board(1, 1, 1);
+            var str = Board.Loading();
+            Assert.IsTrue(str.Width == 30);
+        }
+        [TestMethod()]
+        public void Test14()
+        {
+            var board = new Board(1, 1, 1);
+            var str = Board.Loading();
+            Cell cell = new Cell(false);
+            Assert.AreEqual(cell.IsAlive, false);
+        }
+        [TestMethod()]
+        public void Test15()
+        {
+            var str = Board.Loading();
+            Cell cell = new Cell(false);
+            var board = new Board(1, 1, 1);
+            board.Advance();
+            Assert.AreEqual(board.CheckActive(), true);
         }
     }
 }
