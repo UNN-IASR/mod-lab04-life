@@ -26,7 +26,7 @@ namespace Client
                 int[,] matrix = Get_matrix(prefab);
                 pref.Add(new Prefab(prefab[0].Length, prefab.Length, matrix, name));
             }
-            str = "Выполнено";
+            str = "done";
         }
 
         public Templates()
