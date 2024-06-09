@@ -22,7 +22,7 @@ namespace UnitTest
         }
         
         [TestMethod]
-        public void TestBoardGenerating()
+        public void TestBoardGener()
         {
             Board board = new Board(100, 100, 1, 0.5);
             Assert.AreEqual(100, board.Height);
@@ -47,7 +47,7 @@ namespace UnitTest
         }
         
         [TestMethod]
-        public void TestJsonSettings()
+        public void TestJsonSet()
         {
             string fileName = "../../../../Life/config.json";
             string jsonString = File.ReadAllText(fileName);
@@ -100,7 +100,7 @@ namespace UnitTest
         }
         
         [TestMethod]
-        public void TestFigureRing()
+        public void TestFigureR()
         {
             Board bo = new Board(6, 6, 1, 1);
             bo.Upload("../../../../ring.txt");
