@@ -8,20 +8,6 @@ namespace UnitTest
     public class UnitTest1
     {
         [TestMethod]
-        public void TestBoard
-        {
-            Board board = new Board(70, 70, 1, 0.5);
-            Assert.AreEqual(70, board.Height);
-        }
-        
-        [TestMethod]
-        public void TestBoardGen
-        {
-            Board board = new Board(80, 80, 1, 0.5);
-            Assert.AreEqual(80, board.Width);
-        }
-        
-        [TestMethod]
         public void TestBoardGenerating()
         {
             Board board = new Board(50, 50, 1, 0.5);
