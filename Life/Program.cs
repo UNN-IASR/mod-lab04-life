@@ -10,6 +10,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Reflection.Metadata;
 using System.Net;
+using ScottPlot;
 
 namespace Client
 {
@@ -427,39 +428,38 @@ namespace Client
                     live = true;
                 }
             }
-
             return new Cell(live);
         }
 
-        //public CreateGrafic()
-        //{
-        //    var board = new Board(30, 30, 1);
-        //    var plot = new Plot();
-        //    plot.XLabel("Итерация");
-        //    var cell = NewCell(board);
-        //    plot.YLabel("Живые");
-        //    plot.ShowLegend();
-        //    Random rnd = new Random();
-        //    List<double> density = new List<double>() { 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 };
-        //    var list = NewList(density, density.Count);
-        //    int count = 0;
-        //    foreach (var item in list)
-        //    {
-        //        if (cell.IsAlive)
-        //        {
+        public CreateGrafic()
+        {
+            var board = new Board(30, 30, 1);
+            var plot = new Plot();
+            plot.XLabel("Итерация");
+            var cell = NewCell(board);
+            plot.YLabel("Живые");
+            plot.ShowLegend();
+            Random rnd = new Random();
+            List<double> density = new List<double>() { 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 };
+            var list = NewList(density, density.Count);
+            int count = 0;
+            foreach (var item in list)
+            {
+                if (cell.Is_alive)
+                {
 
-        //            if (board.lostComponation.Count > 10)
-        //            {
-        //                board.NumberGenerations = 0;
-        //            }
-        //        }
-        //        var drow = plot.Add.Scatter(item.Keys.ToArray(), item.Values.ToArray());
-        //        drow.Label = density[count].ToString();
-        //        drow.Color = new ScottPlot.Color(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-        //        count++;
-        //    }
-        //    plot.SavePng("plot.png", 1920, 1080);
-        //}
+                    if (board.lostComponation.Count > 10)
+                    {
+                        board.NumberGenerations = 0;
+                    }
+                }
+                var drow = plot.Add.Scatter(item.Keys.ToArray(), item.Values.ToArray());
+                drow.Label = density[count].ToString();
+                drow.Color = new ScottPlot.Color(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                count++;
+            }
+            plot.SavePng("plot.png", 1920, 1080);
+        }
     }
 
     class Program
