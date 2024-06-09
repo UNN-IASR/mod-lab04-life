@@ -9,44 +9,89 @@ namespace UnitTestProject
         [TestMethod]
         public void CheckJson()
         {
-
             Board board = Json.Change_setting("setting.json");
             Board expected_board = new Board(5, 5, 1, 0.5);
             Assert.AreEqual(expected_board, board);
         }
 
         [TestMethod]
-        public void CheckRead()
+        public void CheckRead_Cell_0_0()
         {
             string file = "block.txt";
             Board board = TextFile.Read_File(file);
             Assert.IsTrue(board.Cells[0, 0].IsAlive);
-            Assert.IsTrue(board.Cells[0, 1].IsAlive);
-            Assert.IsTrue(board.Cells[1, 0].IsAlive);
-            Assert.IsTrue(board.Cells[1, 1].IsAlive);
-
         }
 
         [TestMethod]
-        public void CheckSave()
+        public void CheckRead_Cell_0_1()
+        {
+            string file = "block.txt";
+            Board board = TextFile.Read_File(file);
+            Assert.IsTrue(board.Cells[0, 1].IsAlive);
+        }
+
+        [TestMethod]
+        public void CheckRead_Cell_1_0()
+        {
+            string file = "block.txt";
+            Board board = TextFile.Read_File(file);
+            Assert.IsTrue(board.Cells[1, 0].IsAlive);
+        }
+
+        [TestMethod]
+        public void CheckRead_Cell_1_1()
+        {
+            string file = "block.txt";
+            Board board = TextFile.Read_File(file);
+            Assert.IsTrue(board.Cells[1, 1].IsAlive);
+        }
+
+        [TestMethod]
+        public void CheckSave_Cell_0_0()
         {
             string file = "test_save.txt";
             Board board = new Board(2, 2, 1, 0.5);
             board.Cells[0, 0].IsAlive = true;
-            board.Cells[0, 1].IsAlive = false;
-            board.Cells[1, 0].IsAlive = true;
-            board.Cells[1, 1].IsAlive = false;
-
             TextFile.Save_File(file, board);
 
+            Board board_expected = TextFile.Read_File(file);
+            Assert.AreEqual(board_expected.Cells[0, 0].IsAlive, board.Cells[0, 0].IsAlive);
+        }
+
+        [TestMethod]
+        public void CheckSave_Cell_0_1()
+        {
+            string file = "test_save.txt";
+            Board board = new Board(2, 2, 1, 0.5);
+            board.Cells[0, 1].IsAlive = false;
+            TextFile.Save_File(file, board);
 
             Board board_expected = TextFile.Read_File(file);
-
-            Assert.AreEqual(board_expected.Cells[0, 0].IsAlive, board.Cells[0, 0].IsAlive);
             Assert.AreEqual(board_expected.Cells[0, 1].IsAlive, board.Cells[0, 1].IsAlive);
-            Assert.AreEqual(board_expected.Cells[1, 0].IsAlive, board.Cells[1, 0].IsAlive);
-            Assert.AreEqual(board_expected.Cells[1, 1].IsAlive, board.Cells[1, 1].IsAlive);
+        }
 
+        [TestMethod]
+        public void CheckSave_Cell_1_0()
+        {
+            string file = "test_save.txt";
+            Board board = new Board(2, 2, 1, 0.5);
+            board.Cells[1, 0].IsAlive = true;
+            TextFile.Save_File(file, board);
+
+            Board board_expected = TextFile.Read_File(file);
+            Assert.AreEqual(board_expected.Cells[1, 0].IsAlive, board.Cells[1, 0].IsAlive);
+        }
+
+        [TestMethod]
+        public void CheckSave_Cell_1_1()
+        {
+            string file = "test_save.txt";
+            Board board = new Board(2, 2, 1, 0.5);
+            board.Cells[1, 1].IsAlive = false;
+            TextFile.Save_File(file, board);
+
+            Board board_expected = TextFile.Read_File(file);
+            Assert.AreEqual(board_expected.Cells[1, 1].IsAlive, board.Cells[1, 1].IsAlive);
         }
 
         [TestMethod]
@@ -79,23 +124,23 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void CheckTypeFigures()
+        public void CheckTypeFigures_ReverseBoat()
         {
             string file1 = "reverse_boat.txt";
-            string file2 = "test_save.txt";
-
             Board board1 = TextFile.Read_File(file1);
-            Board board2 = TextFile.Read_File(file2);
-
             string type1 = TextFile.Type_Figures(file1, board1);
-            string type2 = TextFile.Type_Figures(file2, board2);
-
             string expected_type1 = "boat";
-            string expected_type2 = "";
-
             Assert.AreEqual(expected_type1, type1);
-            Assert.AreEqual(expected_type2, type2);
+        }
 
+        [TestMethod]
+        public void CheckTypeFigures_TestSave()
+        {
+            string file2 = "test_save.txt";
+            Board board2 = TextFile.Read_File(file2);
+            string type2 = TextFile.Type_Figures(file2, board2);
+            string expected_type2 = "";
+            Assert.AreEqual(expected_type2, type2);
         }
 
         [TestMethod]
@@ -114,32 +159,40 @@ namespace UnitTestProject
             }
 
             Assert.AreEqual(expected_count, step_stable_phase);
-
         }
 
         [TestMethod]
-        public void CheckSimmetry()
+        public void CheckSimmetry_Pond()
         {
             string file1 = "pond.txt";
-            string file2 = "boat.txt";
-            string file3 = "ox_simmetry.txt";
-            string file4 = "oy_simmetry.txt";
-
-
             Board board1 = TextFile.Read_File(file1);
-            Board board2 = TextFile.Read_File(file2);
-            Board board3 = TextFile.Read_File(file3);
-            Board board4 = TextFile.Read_File(file4);
-
             Assert.AreEqual(true, board1.Check_Simmetri_OX());
             Assert.AreEqual(true, board1.Check_Simmetri_OY());
+        }
 
+        [TestMethod]
+        public void CheckSimmetry_Boat()
+        {
+            string file2 = "boat.txt";
+            Board board2 = TextFile.Read_File(file2);
             Assert.AreEqual(false, board2.Check_Simmetri_OX());
             Assert.AreEqual(false, board2.Check_Simmetri_OY());
+        }
 
+        [TestMethod]
+        public void CheckSimmetry_OxSimmetry()
+        {
+            string file3 = "ox_simmetry.txt";
+            Board board3 = TextFile.Read_File(file3);
             Assert.AreEqual(true, board3.Check_Simmetri_OX());
             Assert.AreEqual(false, board3.Check_Simmetri_OY());
+        }
 
+        [TestMethod]
+        public void CheckSimmetry_OySimmetry()
+        {
+            string file4 = "oy_simmetry.txt";
+            Board board4 = TextFile.Read_File(file4);
             Assert.AreEqual(false, board4.Check_Simmetri_OX());
             Assert.AreEqual(true, board4.Check_Simmetri_OY());
         }
