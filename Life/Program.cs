@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
@@ -11,7 +11,7 @@ using System.Xml.Linq;
 using System.Reflection.Metadata;
 using System.Net;
 
-namespace game_of_life
+namespace ConsoleApp1
 {
     public class Templates
     {
@@ -19,10 +19,10 @@ namespace game_of_life
         public Templates(out string str)
         {
             pref = new List<Prefab>();
-            string[] namePrefab = File.ReadAllLines("../../../../Name.txt");
+            string[] namePrefab = File.ReadAllLines("C:\\Users\\Maria\\Documents\\Учеба\\3 курс, 6 семестр\\Моделирование информационных процессов и систем (С++)\\ConsoleApp1\\Name.txt");
             foreach (string name in namePrefab)
             {
-                string[] prefab = File.ReadAllLines("../../../../" + name + ".txt");
+                string[] prefab = File.ReadAllLines("C:\\Users\\Maria\\Documents\\Учеба\\3 курс, 6 семестр\\Моделирование информационных процессов и систем (С++)\\ConsoleApp1\\" + name + ".txt");
                 int[,] matrix = Get_matrix(prefab);
                 pref.Add(new Prefab(prefab[0].Length, prefab.Length, matrix, name));
             }
@@ -32,10 +32,10 @@ namespace game_of_life
         public Templates()
         {
             pref = new List<Prefab>();
-            string[] nameFigures = File.ReadAllLines("../../../../Name.txt");
+            string[] nameFigures = File.ReadAllLines("C:\\Users\\Maria\\Documents\\Учеба\\3 курс, 6 семестр\\Моделирование информационных процессов и систем (С++)\\ConsoleApp1\\Name.txt");
             foreach (string name in nameFigures)
             {
-                string[] prefab = File.ReadAllLines("../../../../" + name + ".txt");
+                string[] prefab = File.ReadAllLines("C:\\Users\\Maria\\Documents\\Учеба\\3 курс, 6 семестр\\Моделирование информационных процессов и систем (С++)\\ConsoleApp1\\" + name + ".txt");
                 int[,] matrix = Get_matrix(prefab);
                 pref.Add(new Prefab(prefab[0].Length, prefab.Length, matrix, name));
             }
@@ -68,7 +68,7 @@ namespace game_of_life
     {
         public string _name = "";
         public int _width = 0;
-        public List<int> buf_Matrix = new();
+        public List<int> buf_Matrix = new List<int>();
         public int _height = 0;
         public int[,] _matrix;
 
@@ -282,7 +282,7 @@ namespace game_of_life
             {
                 Setting += item.Is_alive == true ? 1 : 0;
             }
-            File.WriteAllText("../../../../OldBoard.txt", Setting);
+            File.WriteAllText("C:\\Users\\Maria\\Documents\\Учеба\\3 курс, 6 семестр\\Моделирование информационных процессов и систем (С++)\\ConsoleApp1\\OldBoard.txt", Setting);
             return "save";
         }
 
@@ -303,8 +303,8 @@ namespace game_of_life
 
         public string Discharge()
         {
-            string[] Data = File.ReadAllLines("../../../../OldBoard.txt");
-            string[] setting = Data[0].Split(" ");
+            string[] Data = File.ReadAllLines("C:\\Users\\Maria\\Documents\\Учеба\\3 курс, 6 семестр\\Моделирование информационных процессов и систем (С++)\\ConsoleApp1\\OldBoard.txt");
+            string[] setting = Data[0].Split();
             NumberGenerations = int.Parse(setting[2]);
             Cells = new Cell[int.Parse(setting[1]), int.Parse(setting[0])];
             int Colum = 0;
@@ -325,7 +325,7 @@ namespace game_of_life
 
         static public Board Loading()
         {
-            string filename = "../../../../config.json";
+            string filename = "C:\\Users\\Maria\\Documents\\Учеба\\3 курс, 6 семестр\\Моделирование информационных процессов и систем (С++)\\ConsoleApp1\\config.json";
             string jsonString = File.ReadAllText(filename);
             Settings settings = JsonSerializer.Deserialize<Settings>(jsonString);
             return new Board(width: settings.Width, height: settings.Height, cellSize: settings.cellSize, liveDensity: settings.liveDensity);
@@ -430,6 +430,36 @@ namespace game_of_life
 
             return new Cell(live);
         }
+
+        //public CreateGrafic()
+        //{
+        //    var board = new Board(30, 30, 1);
+        //    var plot = new Plot();
+        //    plot.XLabel("Итерация");
+        //    var cell = NewCell(board);
+        //    plot.YLabel("Живые");
+        //    plot.ShowLegend();
+        //    Random rnd = new Random();
+        //    List<double> density = new List<double>() { 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 };
+        //    var list = NewList(density, density.Count);
+        //    int count = 0;
+        //    foreach (var item in list)
+        //    {
+        //        if (cell.IsAlive)
+        //        {
+
+        //            if (board.lostComponation.Count > 10)
+        //            {
+        //                board.NumberGenerations = 0;
+        //            }
+        //        }
+        //        var drow = plot.Add.Scatter(item.Keys.ToArray(), item.Values.ToArray());
+        //        drow.Label = density[count].ToString();
+        //        drow.Color = new ScottPlot.Color(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+        //        count++;
+        //    }
+        //    plot.SavePng("plot.png", 1920, 1080);
+        //}
     }
 
     class Program
