@@ -142,7 +142,7 @@ namespace Test
         {
             Board bo = new Board(6, 6, 1, 1);
             bo.Upload("../../../../figure_4.txt");
-            Figure[] fiп = Figure.get_figure("../../../../Life/figures.json");
+            Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure Frig = fig[6];
             int co = Figure.find_figure(Frig, bo);
             Assert.AreEqual(co, 0);
