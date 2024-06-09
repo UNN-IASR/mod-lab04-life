@@ -2,10 +2,10 @@
 # Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
 ################################################################################
 
-/Life/bin/Debug/netcoreapp3.0
-/Life/obj/Debug/netcoreapp3.0
+/Life/bin/Debug/netcoreapp8.0
+/Life/obj/Debug/netcoreapp8.0
 /Life/obj
 /.vs/GameOfLife/v16/TestStore/0
 /.vs/GameOfLife/v16
-/UnitTestProject1/bin/Debug/netcoreapp3.1
+/UnitTestProject1/bin/Debug/netcoreapp8.0
 /UnitTestProject1/obj
