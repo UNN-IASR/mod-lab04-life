@@ -117,6 +117,7 @@ namespace cli_life
                 cellSize: 1,
                 liveDensity: (double)forecastNode!["LiveDensity"]!);
         }
+
         public static void Render()
         {
             double[,] c = new double[board.Columns, board.Rows];
