@@ -59,7 +59,7 @@ namespace Test
         public void TestFigureCube()
         {
             Board board = new Board(4, 4, 1, 1);
-            board.Upload("../../../figure_3.txt");
+            board.Upload("../../../../figure_3.txt");
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure cube = fig[0];
             int count = Figure.find_figure(cube, board);
@@ -69,7 +69,7 @@ namespace Test
         public void TestNoFigure()
         {
             Board board = new Board(4, 4, 1, 1);
-            board.Upload("../../../figure_7.txt");
+            board.Upload("../../../../figure_7.txt");
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure cube = fig[0];
             int count = Figure.find_figure(cube, board);
@@ -80,7 +80,7 @@ namespace Test
         public void TestFigureRhombe()
         {
             Board board = new Board(5, 5, 1, 1);
-            board.Upload("../../../figure_1.txt");
+            board.Upload("../../../../figure_1.txt");
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure Rhombe = fig[1];
             int count = Figure.find_figure(Rhombe, board);
@@ -91,7 +91,7 @@ namespace Test
         public void TestFigureRing()
         {
             Board board = new Board(6, 6, 1, 1);
-            board.Upload("../../../figure_8.txt");
+            board.Upload("../../../../figure_8.txt");
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure Ring = fig[2];
             int count = Figure.find_figure(Ring, board);
@@ -101,7 +101,7 @@ namespace Test
         public void TestFigureShip()
         {
             Board board = new Board(5, 5, 1, 1);
-            board.Upload("../../../figure_9.txt");
+            board.Upload("../../../../figure_9.txt");
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure Ship = fig[3];
             int count = Figure.find_figure(Ship, board);
@@ -111,7 +111,7 @@ namespace Test
         public void TestFigureLeaf()
         {
             Board board = new Board(6, 6, 1, 1);
-            board.Upload("../../../figure_5.txt");
+            board.Upload("../../../../figure_5.txt");
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure leaf = fig[4];
             int count = Figure.find_figure(leaf, board);
@@ -121,7 +121,7 @@ namespace Test
         public void TestFigureBarge()
         {
             Board board = new Board(6, 6, 1, 1);
-            board.Upload("../../../figure_2.txt");
+            board.Upload("../../../../figure_2.txt");
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure barge = fig[5];
             int count = Figure.find_figure(barge, board);
@@ -131,7 +131,7 @@ namespace Test
         public void TestFigureFrigate()
         {
             Board board = new Board(5, 5, 1, 1);
-            board.Upload("../../../figure_4.txt");
+            board.Upload("../../../../figure_4.txt");
             Figure[] fig = Figure.get_figure("../../../../Life/figures.json");
             Figure Frigate = fig[6];
             int count = Figure.find_figure(Frigate, board);
