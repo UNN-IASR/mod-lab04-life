@@ -20,7 +20,7 @@ namespace UnitTest
         {
             string fileName = "Settings.json";
             string jsonString = File.ReadAllText(fileName);
-            Settings settings = JsonSerializer.Deserialize<Settings>(jsonString);
+            Setting settings = JsonSerializer.Deserialize<Setting>(jsonString);
             Assert.AreEqual(40, settings.Width);
             Assert.AreEqual(15, settings.Height);
             Assert.AreEqual(0.4, settings.liveDensity);
