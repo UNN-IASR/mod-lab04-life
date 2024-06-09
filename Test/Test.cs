@@ -8,13 +8,44 @@ namespace UnitTest
     public class UnitTest1
     {
         [TestMethod]
+        public void TestBoard
+        {
+            Board board = new Board(70, 70, 1, 0.5);
+            Assert.AreEqual(70, board.Height);
+        }
+        
+        [TestMethod]
+        public void TestBoardGen
+        {
+            Board board = new Board(80, 80, 1, 0.5);
+            Assert.AreEqual(80, board.Width);
+        }
+        
+        [TestMethod]
         public void TestBoardGenerating()
         {
             Board board = new Board(50, 50, 1, 0.5);
             Assert.AreEqual(50, board.Height);
             Assert.AreEqual(50, board.Width);
         }
-
+        
+        [TestMethod]
+        public void TestBoardGenerating()
+        {
+            Board board = new Board(100, 100, 1, 0.5);
+            Assert.AreEqual(100, board.Height);
+            Assert.AreEqual(100, board.Width);
+        }
+        
+        [TestMethod]
+        public void TestJsonSettings()
+        {
+            string fileName = "../../../../Life/config.json";
+            string jsonString = File.ReadAllText(fileName);
+            Setting settings = JsonSerializer.Deserialize<Setting>(jsonString);
+            Assert.AreEqual(0, settings.Height);
+        }
+        
         [TestMethod]
         public void TestJsonSettings()
         {
@@ -23,8 +54,9 @@ namespace UnitTest
             Setting settings = JsonSerializer.Deserialize<Setting>(jsonString);
             Assert.AreEqual(0, settings.Width);
         }
+        
         [TestMethod]
-        public void TestFigureCube()
+        public void TestFigure
         {
             Board board = new Board(4, 4, 1, 1);
             board.Upload("../../../../cube.txt");
@@ -33,8 +65,20 @@ namespace UnitTest
             int count = Figure.findFig(cube, board);
             Assert.AreEqual(count, 1);
         }
+        
         [TestMethod]
-        public void TestNoFigure()
+        public void TestFigureCube()
+        {
+            Board bo = new Board(4, 4, 1, 1);
+            bo.Upload("../../../../cube.txt");
+            Figure[] fig = Figure.getFig("../../../../Life/fig.json");
+            Figure cub = fig[0];
+            int co = Figure.findFig(cub, bo);
+            Assert.AreEqual(co, 1);
+        }
+        
+        [TestMethod]
+        public void TestNo
         {
             Board board = new Board(4, 4, 1, 1);
             board.Upload("../../../../no.txt");
@@ -42,8 +86,8 @@ namespace UnitTest
             Figure cube = fig[0];
             int count = Figure.findFig(cube, board);
             Assert.AreEqual(count, 0);
-
         }
+        
         [TestMethod]
         public void TestFigureRing()
         {
@@ -54,6 +98,18 @@ namespace UnitTest
             int count = Figure.findFig(Ring, board);
             Assert.AreEqual(count, 0);
         }
+        
+        [TestMethod]
+        public void TestFigureRing()
+        {
+            Board bo = new Board(6, 6, 1, 1);
+            bo.Upload("../../../../ring.txt");
+            Figure[] fi = Figure.getFig("../../../../Life/fig.json");
+            Figure ring = fig[2];
+            int co = Figure.findFig(ring, bo);
+            Assert.AreEqual(co, 0);
+        }
+        
         [TestMethod]
         public void TestFigureShip()
         {
