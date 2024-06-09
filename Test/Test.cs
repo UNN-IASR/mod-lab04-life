@@ -8,11 +8,17 @@ namespace UnitTest
     public class UnitTest1
     {
         [TestMethod]
-        public void TestBoardGenerating()
+        public void TestBoard()
         {
-            Board board = new Board(50, 50, 1, 0.5);
-            Assert.AreEqual(50, board.Height);
-            Assert.AreEqual(50, board.Width);
+            Board board = new Board(70, 70, 1, 0.5);
+            Assert.AreEqual(70, board.Height);
+        }
+        
+        [TestMethod]
+        public void TestBoardGen()
+        {
+            Board board = new Board(80, 80, 1, 0.5);
+            Assert.AreEqual(80, board.Width);
         }
         
         [TestMethod]
@@ -21,6 +27,14 @@ namespace UnitTest
             Board board = new Board(100, 100, 1, 0.5);
             Assert.AreEqual(100, board.Height);
             Assert.AreEqual(100, board.Width);
+        }
+
+        [TestMethod]
+        public void TestBoardGenerating()
+        {
+            Board board = new Board(50, 50, 1, 0.5);
+            Assert.AreEqual(50, board.Height);
+            Assert.AreEqual(50, board.Width);
         }
         
         [TestMethod]
@@ -42,7 +56,7 @@ namespace UnitTest
         }
         
         [TestMethod]
-        public void TestFigure
+        public void TestFigure()
         {
             Board board = new Board(4, 4, 1, 1);
             board.Upload("../../../../cube.txt");
@@ -64,7 +78,7 @@ namespace UnitTest
         }
         
         [TestMethod]
-        public void TestNo
+        public void TestNo()
         {
             Board board = new Board(4, 4, 1, 1);
             board.Upload("../../../../no.txt");
