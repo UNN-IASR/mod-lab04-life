@@ -104,7 +104,7 @@ namespace UnitTest
         {
             Board bo = new Board(6, 6, 1, 1);
             bo.Upload("../../../../ring.txt");
-            Figure[] fi = Figure.getFig("../../../../Life/fig.json");
+            Figure[] fig = Figure.getFig("../../../../Life/fig.json");
             Figure ring = fig[2];
             int co = Figure.findFig(ring, bo);
             Assert.AreEqual(co, 0);
