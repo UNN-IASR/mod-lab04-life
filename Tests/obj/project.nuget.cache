@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "dgSpecHash": "1A7TGPv2/hsl0yvJwU9SxPMwcCPKZo1nNSYWevPEo5vKzrMFs+Mnd55fpmTMn1Kov/c5oVtQKYhiY2+BdQQdPg==",
+  "success": false,
+  "projectFilePath": "C:\\Users\\depos\\Desktop\\Университет\\6 семестр\\Моделирование информационных процессов и систем\\mod-lab04-life-main copy\\Tests\\cli_life.Tests.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\depos\\.nuget\\packages\\coverlet.collector\\6.0.0\\coverlet.collector.6.0.0.nupkg.sha512",
+    "C:\\Users\\depos\\.nuget\\packages\\microsoft.codecoverage\\17.8.0\\microsoft.codecoverage.17.8.0.nupkg.sha512",
+    "C:\\Users\\depos\\.nuget\\packages\\microsoft.net.test.sdk\\17.8.0\\microsoft.net.test.sdk.17.8.0.nupkg.sha512",
+    "C:\\Users\\depos\\.nuget\\packages\\microsoft.testplatform.objectmodel\\17.8.0\\microsoft.testplatform.objectmodel.17.8.0.nupkg.sha512",
+    "C:\\Users\\depos\\.nuget\\packages\\microsoft.testplatform.testhost\\17.8.0\\microsoft.testplatform.testhost.17.8.0.nupkg.sha512",
+    "C:\\Users\\depos\\.nuget\\packages\\mstest.testadapter\\3.1.1\\mstest.testadapter.3.1.1.nupkg.sha512",
+    "C:\\Users\\depos\\.nuget\\packages\\mstest.testframework\\3.1.1\\mstest.testframework.3.1.1.nupkg.sha512",
+    "C:\\Users\\depos\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\depos\\.nuget\\packages\\nuget.frameworks\\6.5.0\\nuget.frameworks.6.5.0.nupkg.sha512",
+    "C:\\Users\\depos\\.nuget\\packages\\system.reflection.metadata\\1.6.0\\system.reflection.metadata.1.6.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1105",
+      "level": "Error",
+      "message": "Не удалось найти сведения о проекте для \"C:\\Users\\depos\\Desktop\\Университет\\6 семестр\\Моделирование информационных процессов и систем\\mod-lab04-life-main copy\\Life\\Life.csproj\". Если вы используете Visual Studio, причина может заключаться в том, что проект выгружен или не является частью текущего решения. В этом случае выполните восстановление из командной строки. В противном случае причина может быть связана с тем, что файл проекта является недопустимым или отсутствуют целевые объекты, необходимые для восстановления.",
+      "libraryId": "C:\\Users\\depos\\Desktop\\Университет\\6 семестр\\Моделирование информационных процессов и систем\\mod-lab04-life-main copy\\Life\\Life.csproj",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}
